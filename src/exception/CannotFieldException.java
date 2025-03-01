@@ -1,6 +1,6 @@
 package exception;
 
-public abstract class CannotFieldException extends ActionException{
+public class CannotFieldException extends ActionException{
 	public CannotFieldException () {
 		super(); 
 	}

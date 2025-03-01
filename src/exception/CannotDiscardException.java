@@ -1,6 +1,6 @@
 package exception;
 
-public abstract class CannotDiscardException extends ActionException {
+public class CannotDiscardException extends ActionException {
 	public CannotDiscardException() {
 		super(); 
 	}
