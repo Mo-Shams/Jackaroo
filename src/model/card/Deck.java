@@ -62,7 +62,7 @@ class Deck {
 		ArrayList<Card> hand = new ArrayList<>();
 		Collections.shuffle(cardsPool);
 		for(int i = 0; i < 4; i++)
-			hand.add(cardsPool.remove(i));
+			hand.add(cardsPool.remove(0));
 		return hand;
 	}
 }
