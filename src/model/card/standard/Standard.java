@@ -3,7 +3,7 @@ import model.card.Card;
 import engine.GameManager;
 import engine.board.BoardManager;
 
-class Standard extends Card {
+public class Standard extends Card {
 	private final int rank;
 	private final Suit suit;
 

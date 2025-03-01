@@ -3,7 +3,7 @@ package model.card.wild;
 import engine.GameManager;
 import engine.board.BoardManager;
 
-class Saver extends Wild {
+public class Saver extends Wild {
 
 	public Saver(String name, String description, BoardManager boardManager, GameManager gameManager) {
 		super(name, description, boardManager, gameManager);
