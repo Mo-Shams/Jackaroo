@@ -12,7 +12,7 @@ import engine.board.BoardManager;
 import model.card.standard.*;
 import model.card.wild.*;
 
-class Deck {
+public class Deck {
 	private final static String CARDS_FILE = "Deck.csv";
 	private static ArrayList<Card> cardsPool = new ArrayList<>();
 	

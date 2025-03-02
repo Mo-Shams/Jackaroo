@@ -11,7 +11,7 @@ public class Board implements BoardManager {
     private final ArrayList<SafeZone> safeZones ;
     private int splitDistance ;
 
-    Board(ArrayList<Colour> colourOrder, GameManager gameManager){
+    public Board(ArrayList<Colour> colourOrder, GameManager gameManager){
         this.gameManager = gameManager ;
         this.track = new ArrayList<>();
         this.safeZones = new ArrayList<>();
