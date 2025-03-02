@@ -16,6 +16,7 @@ public class Deck {
 	private static ArrayList<Card> cardsPool = new ArrayList<>();
 	
 	public static void loadCardPool(BoardManager boardManager, GameManager gameManager) throws IOException{
+		cardsPool.clear(); 
 		BufferedReader br = new BufferedReader(new FileReader(CARDS_FILE));
 		String line = br.readLine();
 		while(line != null){
@@ -58,6 +59,10 @@ public class Deck {
 	}
 	
 	public static ArrayList<Card> drawCards(){
+		if (cardsPool.size() < 4) {
+	        throw new IllegalStateException("Not enough cards in the deck to draw.");
+	    }
+		
 		ArrayList<Card> hand = new ArrayList<>();
 		Collections.shuffle(cardsPool);
 		for(int i = 0; i < 4; i++)

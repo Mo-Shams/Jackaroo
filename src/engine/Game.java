@@ -44,10 +44,6 @@ public class Game implements GameManager {
         this.firePit = new ArrayList<>();
     }
 
-	public int getCurrentPlayerIndex() {
-		return currentPlayerIndex;
-	}
-
 	public Board getBoard() {
 		return board;
 	}
@@ -58,9 +54,5 @@ public class Game implements GameManager {
 
 	public ArrayList<Card> getFirePit() {
 		return firePit;
-	}
-
-	public void setTurn(int turn) {
-		this.turn = turn;
 	}
 }

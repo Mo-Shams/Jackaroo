@@ -29,9 +29,12 @@ public class Board implements BoardManager {
     private void assignTrapCell(){
         // this method is not developed yet 
     }
-	public int getSplitDistances() {
-		return splitDistance;
-	}
+    
+    @Override
+    public int getSplitDistance() {
+        return splitDistance;
+    }
+    
 	public void setSplitDistance(int splitDistance) {
 		this.splitDistance = splitDistance;
 	}
