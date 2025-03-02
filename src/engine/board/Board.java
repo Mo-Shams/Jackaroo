@@ -26,7 +26,7 @@ public class Board implements BoardManager {
     public void setupTrack(){
         // this method is not developed yet 
     }
-    public void assignTrapCell(){
+    private void assignTrapCell(){
         // this method is not developed yet 
     }
 	public int getSplitDistances() {

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import model.card.standard.Suit;
 import engine.GameManager;
 import engine.board.BoardManager;
 import model.card.standard.*;

@@ -48,10 +48,6 @@ public class Game implements GameManager {
 		return currentPlayerIndex;
 	}
 
-	public void setCurrentPlayerIndex(int currentPlayerIndex) {
-		this.currentPlayerIndex = currentPlayerIndex;
-	}
-
 	public Board getBoard() {
 		return board;
 	}
@@ -64,7 +60,7 @@ public class Game implements GameManager {
 		return firePit;
 	}
 
-	public int getTurn() {
-		return turn;
+	public void setTurn(int turn) {
+		this.turn = turn;
 	}
 }
