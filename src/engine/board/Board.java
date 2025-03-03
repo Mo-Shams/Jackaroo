@@ -24,7 +24,11 @@ public class Board implements BoardManager {
         }
     }
     public void setupTrack(){
-        // this method is not developed yet 
+        for (int i = 0; i < 100; i++) {
+        	if (i == 0 || i == 25 || i == 50 || i == 75) track.add(new Cell(CellType.BASE));
+        	else if (i == 23 || i == 48 || i == 73 || i == 98) track.add(new Cell(CellType.ENTRY));
+        	else track.add(new Cell(CellType.NORMAL)); 
+        }
     }
     private void assignTrapCell(){
         // this method is not developed yet 

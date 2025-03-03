@@ -1118,7 +1118,6 @@ public class Milestone1PublicTests {
 	public void testNameCardsLoadCardPoolInDeckReadingCSVLoadingWildCards() throws IOException {
 		savingCardsCSV();
 
-
 		try {
 			Field cardsPool_field= Class.forName(deckPath).getDeclaredField("cardsPool");
 			cardsPool_field.setAccessible(true);
