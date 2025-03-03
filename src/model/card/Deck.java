@@ -17,7 +17,7 @@ public class Deck {
 	private static ArrayList<Card> cardsPool = new ArrayList<>();
 	
 	public static void loadCardPool(BoardManager boardManager, GameManager gameManager) throws IOException{
-		cardsPool.clear(); 
+		cardsPool = new ArrayList<>(); 
 		BufferedReader br = new BufferedReader(new FileReader(CARDS_FILE));
 		String line = br.readLine();
 		while(line != null){
