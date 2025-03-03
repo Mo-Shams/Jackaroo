@@ -13,7 +13,7 @@ import model.card.standard.*;
 import model.card.wild.*;
 
 public class Deck {
-	private final static String CARDS_FILE = "Deck.csv";
+	private final static String CARDS_FILE = "Cards.csv";
 	private static ArrayList<Card> cardsPool = new ArrayList<>();
 	
 	public static void loadCardPool(BoardManager boardManager, GameManager gameManager) throws IOException{
@@ -60,10 +60,6 @@ public class Deck {
 	}
 	
 	public static ArrayList<Card> drawCards(){
-		if (cardsPool.size() < 4) {
-	        throw new IllegalStateException("Not enough cards in the deck to draw.");
-	    }
-		
 		ArrayList<Card> hand = new ArrayList<>();
 		Collections.shuffle(cardsPool);
 		for(int i = 0; i < 4; i++)
