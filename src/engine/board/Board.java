@@ -32,6 +32,7 @@ public class Board implements BoardManager {
         	else track.add(new Cell(CellType.NORMAL)); 
         }
     }
+    
     private void assignTrapCell(){
     	 int i = (int) (Math.random() * 100); 
     	 Cell cell = track.get(i);
