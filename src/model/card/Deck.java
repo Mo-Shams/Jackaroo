@@ -14,10 +14,10 @@ import model.card.wild.*;
 
 public class Deck {
 	private final static String CARDS_FILE = "Cards.csv";
-	private static ArrayList<Card> cardsPool = new ArrayList<>();
+	private static ArrayList<Card> cardsPool;
 	
 	public static void loadCardPool(BoardManager boardManager, GameManager gameManager) throws IOException{
-		cardsPool.clear(); 
+		cardsPool = new ArrayList<>(); 
 		BufferedReader br = new BufferedReader(new FileReader(CARDS_FILE));
 		String line = br.readLine();
 		while(line != null){
@@ -25,22 +25,18 @@ public class Deck {
 			int code = Integer.parseInt(data[0]);
 			int frequency = Integer.parseInt(data[1]);
 			String name = data[2];
-			String description = data[3];
+			String description = "";
 			if(code <= 13){
+				description = data[3];
 				int rank = Integer.parseInt(data[4]);
 				Suit suit = Suit.valueOf(data[5]);
 				switch (code){
 				
 				case 0 : while(frequency-- > 0) cardsPool.add(new Standard(name, description, rank, suit, boardManager, gameManager)); break;
 				case 1 : while(frequency-- > 0) cardsPool.add(new Ace(name, description, suit, boardManager, gameManager)); break;
-				case 2 : while(frequency-- > 0) cardsPool.add(new Standard(name, description, rank, suit, boardManager, gameManager)); break;
-				case 3 : while(frequency-- > 0) cardsPool.add(new Standard(name, description, rank, suit, boardManager, gameManager)); break;
 				case 4 : while(frequency-- > 0) cardsPool.add(new Four(name, description, suit, boardManager, gameManager)); break;
 				case 5 : while(frequency-- > 0) cardsPool.add(new Five(name, description, suit, boardManager, gameManager)); break;
-				case 6 : while(frequency-- > 0) cardsPool.add(new Standard(name, description, rank, suit, boardManager, gameManager)); break;
 				case 7 : while(frequency-- > 0) cardsPool.add(new Seven(name, description, suit, boardManager, gameManager)); break;
-				case 8 : while(frequency-- > 0) cardsPool.add(new Standard(name, description, rank, suit, boardManager, gameManager)); break;
-				case 9 : while(frequency-- > 0) cardsPool.add(new Standard(name, description, rank, suit, boardManager, gameManager)); break;
 				case 10: while(frequency-- > 0) cardsPool.add(new Ten(name, description, suit, boardManager, gameManager)); break;
 				case 11: while(frequency-- > 0) cardsPool.add(new Jack(name, description, suit, boardManager, gameManager)); break;
 				case 12: while(frequency-- > 0) cardsPool.add(new Queen(name, description, suit, boardManager, gameManager)); break;
@@ -49,6 +45,8 @@ public class Deck {
 				}
 			}
 			else{
+				for(int i = 3; i < data.length && !data[i].equals(""); i++)
+					description += data[i];
 				switch (code){
 				case 14: while(frequency-- > 0) cardsPool.add(new Burner(name, description, boardManager, gameManager)); break;
 				case 15: while(frequency-- > 0) cardsPool.add(new Saver(name, description, boardManager, gameManager)); break;
@@ -66,4 +64,5 @@ public class Deck {
 			hand.add(cardsPool.remove(0));
 		return hand;
 	}
+	
 }
