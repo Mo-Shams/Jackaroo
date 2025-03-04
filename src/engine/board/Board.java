@@ -17,7 +17,7 @@ public class Board implements BoardManager {
         this.safeZones = new ArrayList<>();
         this.splitDistance = 3 ;
         setupTrack();
-        assignTrapCell();
+        for (int i = 0; i < 8; i++) assignTrapCell();
 
         for (int i = 0; i < colourOrder.size(); i++) {
             safeZones.add(new SafeZone(colourOrder.get(i)));
@@ -25,13 +25,19 @@ public class Board implements BoardManager {
     }
     public void setupTrack(){
         for (int i = 0; i < 100; i++) {
-        	if (i == 0 || i == 25 || i == 50 || i == 75) track.add(new Cell(CellType.BASE));
-        	else if (i == 23 || i == 48 || i == 73 || i == 98) track.add(new Cell(CellType.ENTRY));
+        	if (i == 0 || i == 25 || i == 50 || i == 75) 
+        		track.add(new Cell(CellType.BASE));
+        	else if (i == 23 || i == 48 || i == 73 || i == 98) 
+        		track.add(new Cell(CellType.ENTRY));
         	else track.add(new Cell(CellType.NORMAL)); 
         }
     }
-    private void assignTrapCell(){
-        // this method is not developed yet 
+    public void assignTrapCell(){
+    	 int i = (int) (Math.random() * 100); 
+    	 Cell cell = track.get(i);
+    	 if (cell.getCellType() == CellType.NORMAL && !cell.isTrap())
+    		 cell.setTrap(true);
+    	 else assignTrapCell();
     }
     
     @Override
