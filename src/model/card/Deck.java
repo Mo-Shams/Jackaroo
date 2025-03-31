@@ -19,15 +19,16 @@ public class Deck {
 	public static void loadCardPool(BoardManager boardManager, GameManager gameManager) throws IOException{
 		cardsPool = new ArrayList<>(); 
 		BufferedReader br = new BufferedReader(new FileReader(CARDS_FILE));
-		String line = br.readLine();
-		while(line != null){
+		while(br.ready()){
+			String line = br.readLine();
 			String[] data = line.split(",");
+			if (data.length == 0) 
+				throw new IOException(line);
 			int code = Integer.parseInt(data[0]);
 			int frequency = Integer.parseInt(data[1]);
 			String name = data[2];
-			String description = "";
+			String description = data[3];
 			if(code <= 13){
-				description = data[3];
 				int rank = Integer.parseInt(data[4]);
 				Suit suit = Suit.valueOf(data[5]);
 				switch (code){
@@ -41,18 +42,16 @@ public class Deck {
 				case 11: while(frequency-- > 0) cardsPool.add(new Jack(name, description, suit, boardManager, gameManager)); break;
 				case 12: while(frequency-- > 0) cardsPool.add(new Queen(name, description, suit, boardManager, gameManager)); break;
 				case 13: while(frequency-- > 0) cardsPool.add(new King(name, description, suit, boardManager, gameManager)); break;
-				
+				default: throw new IOException(line);
 				}
 			}
 			else{
-				for(int i = 3; i < data.length && !data[i].equals(""); i++)
-					description += data[i];
 				switch (code){
 				case 14: while(frequency-- > 0) cardsPool.add(new Burner(name, description, boardManager, gameManager)); break;
 				case 15: while(frequency-- > 0) cardsPool.add(new Saver(name, description, boardManager, gameManager)); break;
+				default: throw new IOException(line);
 				}
 			}
-			line = br.readLine();
 		}
 		br.close();
 	}

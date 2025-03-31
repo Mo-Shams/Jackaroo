@@ -268,4 +268,22 @@ public class Board implements BoardManager {
 		
 		return actionableMarbles; 
 	}
+	@Override
+	public void moveBy(Marble marble, int steps, boolean destroy)
+			throws IllegalMovementException, IllegalDestroyException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void swap(Marble marble1, Marble marble2)
+			throws IllegalSwapException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void sendToBase(Marble marble) throws CannotFieldException,
+			IllegalDestroyException {
+		// TODO Auto-generated method stub
+		
+	}
 }

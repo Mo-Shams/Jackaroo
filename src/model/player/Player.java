@@ -2,6 +2,9 @@ package model.player;
 
 import java.util.ArrayList;
 
+import exception.GameException;
+import exception.InvalidCardException;
+import exception.InvalidMarbleException;
 import model.Colour;
 import model.card.Card;
 
@@ -20,7 +23,7 @@ public class Player {
 		this.hand = new ArrayList<Card>();
 		this.selectedMarbles = new ArrayList<Marble>();
 		this.marbles = new ArrayList<Marble>();
-		for(int i=0; i<4; i++) this.marbles.add(new Marble(this.colour));
+		for(int i=0; i<4; i++) this.marbles.add(new Marble(colour));
 		this.selectedCard = null;
 	}
 
