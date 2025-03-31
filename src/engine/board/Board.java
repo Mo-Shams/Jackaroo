@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import org.hamcrest.Condition.Step;
 
 import engine.GameManager;
-import exception.IllegalMovementException;
+import exception.*;
 import model.Colour;
-import model.player.Marble;
+import model.player.*;
 
 public class Board implements BoardManager {
 	private final GameManager gameManager;
@@ -173,5 +173,99 @@ public class Board implements BoardManager {
 	}
 	public ArrayList<SafeZone> getSafeZones() {
 		return safeZones;
+	}
+	
+	public void sendToSafe(Marble marble) throws InvalidMarbleException {
+		Colour currentColour = gameManager.getActivePlayerColour();
+		Colour marbleColour = marble.getColour(); 
+		// this is to check the marble colour is my own 
+		if (!marbleColour.equals(currentColour)) {
+			throw new InvalidMarbleException ("Attempting to save an Opponent Marble");
+		}
+		
+		// finding the indices of safezone and track and validate 
+		ArrayList<Cell> safeZoneCells = getSafeZone(marbleColour);
+		int positionInSafeZone = getPositionInPath(safeZoneCells, marble);
+		int positionOnTrack = getPositionInPath(track, marble); 
+		validateSavings(positionInSafeZone, positionOnTrack);
+		
+		ArrayList<Cell> freeCells = new ArrayList<>(); 
+		// place all the available free places here to pick one randomly and place marble there
+		for (Cell c : safeZoneCells) {
+			if (c.getMarble() == null) freeCells.add(c); 
+		}
+		if (freeCells.isEmpty()) {
+			throw new InvalidMarbleException("No available Space in SafeZone");
+		}
+		Cell randomCell = freeCells.get((int) (Math.random()*freeCells.size()));
+		randomCell.setMarble(marble);
+	}
+	
+	private void validateSavings (int positionInSafeZone, int positionOnTrack) throws InvalidMarbleException {
+		// check if it is already in safe zone
+		if (positionInSafeZone != -1) {
+			throw new InvalidMarbleException ("Marble is already in Safe Zone"); 
+		}
+		
+		// check that it is on the track
+		if (positionOnTrack < 0 || positionOnTrack >= 100) {
+			throw new InvalidMarbleException ("Marble is not on Track"); 
+		}
+		
+		/* To whomever reading this, make sure that in the parent method calling "sendToSafe", i checked that the marble i am saving is my own marble 
+			and not the opponent marble as this check can't be done using the parameters
+		 */
+	}
+	
+	public void destroyMarble (Marble marble) throws IllegalDestroyException {
+		Colour currentColour = gameManager.getActivePlayerColour();
+		Colour marbleColour = marble.getColour();
+		// this is to check the marble colour is my own 
+		if (marbleColour.equals(currentColour)) {
+			throw new IllegalDestroyException ("Attempting to destroy your own marble");
+		}
+		
+		int positionInPath = getPositionInPath(track, marble);
+	    validateDestroy(positionInPath);
+	    // if valid, destroy by removing it from the board completely  
+	    Cell current = track.get(positionInPath); 
+	    current.setMarble(null);
+	}
+	
+	private void validateDestroy (int positionInPath) throws IllegalDestroyException {
+		// check it is on the track
+		if (positionInPath == -1) {
+			throw new IllegalDestroyException ("Not on Track");
+		}
+		
+		// check that it is a normale/entry cell and not base or safe
+		Cell c = track.get(positionInPath); 
+		if (c.getCellType() == CellType.BASE || c.getCellType() == CellType.SAFE) {
+			throw new IllegalDestroyException ("Marble is on a protected Cell, Can't Destroy");
+		}
+	}
+	
+	public ArrayList<Marble> getActionableMarbles() {
+		ArrayList<Marble> actionableMarbles = new ArrayList<>(); 
+		Colour current = gameManager.getActivePlayerColour();
+		
+		// add all marbles on track 
+		for (Cell c : track) {
+			Marble m = c.getMarble();
+			if (m != null) actionableMarbles.add(m);
+		}
+		
+		// my safezone marbles 
+		for (SafeZone sz : safeZones) {
+			if (sz.getColour() == current) {
+				ArrayList<Cell> szc = sz.getCells();
+				for (Cell c : szc) {
+					Marble m = c.getMarble(); 
+					if (m!= null) actionableMarbles.add(m);
+				}
+			}
+		}
+		
+		return actionableMarbles; 
 	}
 }
