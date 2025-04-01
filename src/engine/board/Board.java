@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.hamcrest.Condition.Step;
 
+import engine.Game;
 import engine.GameManager;
 import exception.*;
 import model.Colour;
@@ -282,22 +283,59 @@ public class Board implements BoardManager {
 		
 		return actionableMarbles; 
 	}
+	
+	private void validateSwap(Marble marble_1, Marble marble_2) throws IllegalSwapException{
+		
+		int idx1 = -1, idx2 = -1;
+		for(int i=0; i<track.size(); i++){
+			if(i%25 == 0) continue;
+			if(track.get(i).getMarble() == marble_1) idx1 = i;
+			if(track.get(i).getMarble() == marble_2) idx2 = i;
+			if(idx1 != -1 && idx2 != -1) break;
+		}
+		if(idx1==-1 || idx2 == -1) throw new IllegalSwapException("Marbles cannot be swapped.");
+	}
+	
+	public void swap (Marble marble_1, Marble marble_2) throws IllegalSwapException{
+		// The first marble is always the current player's marble
+		validateSwap(marble_1, marble_2);
+		int idx1 = -1, idx2 = -1;
+		for(int i=0; i<track.size(); i++){
+			if(i%25 == 0) continue;
+			if(track.get(i).getMarble() == marble_1) idx1 = i;
+			if(track.get(i).getMarble() == marble_2) idx2 = i;
+			if(idx1 != -1 && idx2 != -1) break;
+		}
+		track.get(idx1).setMarble(marble_2);
+		track.get(idx2).setMarble(marble_1);
+	}
+	
+	private void validateFielding(Cell occupiedBaseCell) throws CannotFieldException{
+		for(int i=0; i<safeZones.size(); i++){
+			if(occupiedBaseCell.getMarble().getColour() == safeZones.get(i).getColour()){
+				if(track.get(i*25).getMarble() != null) 
+					throw new CannotFieldException("There is already a marble in the Base Cell.");
+			}
+		}
+	}
+	
+	public void sendToBase(Marble marble) throws CannotFieldException, IllegalDestroyException{
+		Cell cell = new Cell(CellType.BASE);
+		cell.setMarble(marble);
+		validateFielding(cell);
+		int pos = -1;
+		for(int i=0; i<safeZones.size(); i++){
+			if(marble.getColour()==safeZones.get(i).getColour()) pos = i*25;
+		}
+		if(track.get(pos).getMarble() != null) destroyMarble(track.get(pos).getMarble());
+		track.get(pos).setMarble(marble);
+	}
+	
 	@Override
 	public void moveBy(Marble marble, int steps, boolean destroy)
 			throws IllegalMovementException, IllegalDestroyException {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
-	public void swap(Marble marble1, Marble marble2)
-			throws IllegalSwapException {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void sendToBase(Marble marble) throws CannotFieldException,
-			IllegalDestroyException {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }
