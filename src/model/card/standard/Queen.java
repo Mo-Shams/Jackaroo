@@ -9,4 +9,17 @@ public class Queen extends Standard{
         super(name, description, 12, suit, boardManager, gameManager);
     }
 
+    public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
+        // check for validity
+        if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
+            throw new InvalidMarbleException("Queen needs one of my marble")
+        }
+
+        if (marbles.isEmpty()) gameManager.discardCard(); // discard random card from gameManager "Still to be implemented"
+        else if (marbles.size() == 1) {
+            Marble m = marbles.get(0);
+            boardManager.moveBy(m, 12, false);
+        }
+    }
+
 }

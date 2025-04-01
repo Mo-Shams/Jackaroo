@@ -203,7 +203,10 @@ public class Board implements BoardManager {
 		int positionInSafeZone = getPositionInPath(safeZoneCells, marble);
 		int positionOnTrack = getPositionInPath(track, marble); 
 		validateSavings(positionInSafeZone, positionOnTrack);
-		
+
+        // set the current cell of that marble to null to remove so to send it to one of the freeCells
+        Cell c = track.get(positionOnTrack);
+        c.setMarble(null);
 		ArrayList<Cell> freeCells = new ArrayList<>(); 
 		// place all the available free places here to pick one randomly and place marble there
 		for (Cell c : safeZoneCells) {
@@ -254,9 +257,14 @@ public class Board implements BoardManager {
 		}
 		
 		// check that it is a normale/entry cell and not base or safe
-		Cell c = track.get(positionInPath); 
-		if (c.getCellType() == CellType.BASE || c.getCellType() == CellType.SAFE) {
-			throw new IllegalDestroyException ("Marble is on a protected Cell, Can't Destroy");
+		Cell c = track.get(positionInPath);
+        Marble m = c.getMarble();
+
+		if (c.getCellType() == CellType.BASE) {
+            int expected = getBasePosition(m.getColour());
+            if (positionInPath == expected) {
+                throw new IllegalDestroyException ("Marble is on a protected Cell, Can't Destroy");
+            }
 		}
 	}
 	
