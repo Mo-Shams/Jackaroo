@@ -340,13 +340,13 @@ public class Board implements BoardManager {
 	
 	public void sendToSafe(Marble marble) throws InvalidMarbleException {
 		/*Colour currentColour = gameManager.getActivePlayerColour(); // the colour will be checked in the saver
-		Colour marbleColour = marble.getColour(); 
 		// this is to check the marble colour is my own 
 		if (!marbleColour.equals(currentColour)) {
 			throw new InvalidMarbleException ("Attempting to save an Opponent Marble");
 		}*/
 		
 		// finding the indices of safezone and track and validate 
+		Colour marbleColour = marble.getColour(); 
 		ArrayList<Cell> safeZoneCells = getSafeZone(marbleColour);
 		int positionInSafeZone = getPositionInPath(safeZoneCells, marble);
 		int positionOnTrack = getPositionInPath(track, marble); 

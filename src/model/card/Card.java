@@ -37,7 +37,7 @@ abstract public class Card {
 			return (marbles.size() == 0 || marbles.size() == 1);
 		} else return marbles.size() == 1;
 	}
-/*
+
 	public boolean validateMarbleColours(ArrayList<Marble> marbles) {
 		// for wild cards
 		if (this instanceof Wild) {
@@ -106,7 +106,7 @@ abstract public class Card {
 		return false;
 	}
 
-*/
+
 	public abstract void act (ArrayList<Marble> marbles) throws ActionException,
 			InvalidMarbleException;
 

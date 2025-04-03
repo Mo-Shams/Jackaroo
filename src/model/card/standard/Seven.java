@@ -2,6 +2,7 @@ package model.card.standard;
 
 import java.util.ArrayList;
 
+import model.Colour;
 import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
@@ -30,6 +31,7 @@ public class Seven extends Standard {
 			Colour marble_colour = marbles.get(0).getColour();
 			return marble_colour == playerColour;
 		}
+		return false;
 	}
 
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
@@ -42,12 +44,6 @@ public class Seven extends Standard {
 			boardManager.moveBy(m, 7, false);
 		} else if (marbles.size() == 2) {
 			Marble m1 = marbles.get(0); Marble m2 = marbles.get(1);
-			int attempted_split = boardManager.getSplitDistance();
-			try {
-				board.setSplitDistance(attempted_split);
-			} catch (SplitOutOfRangeException e) {
-				throw new ActionException("The card action failed: " + e.getMessage());
-			}
 			int splitDistance = boardManager.getSplitDistance();
 			boardManager.moveBy(m1, splitDistance, false);
 			boardManager.moveBy(m2, 7-splitDistance, false);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import model.Colour;
 import model.player.Marble;
+import model.player.Player;
+import engine.Game;
 import engine.GameManager;
 import engine.board.BoardManager;
 import exception.ActionException;
@@ -25,7 +27,7 @@ public class Ten extends Standard {
 		if (marbles.size() == 1) {
 			Colour playerColour = gameManager.getActivePlayerColour();
 			Colour marbleColour = marbles.get(0).getColour();
-			return (marbleColour == player_colour); // marble of same colour
+			return (marbleColour == playerColour); // marble of same colour
 		} else if (marbles.size() == 0) return true;
 		return false;
 	}
@@ -38,8 +40,8 @@ public class Ten extends Standard {
 			Marble m = marbles.get(0);
 			boardManager.moveBy(m, 10, false);
 		} else if (marbles.size() == 0) {
-			int nextPlayerIndex = gameManager.getNextPlayerColour();
-			gameManager.discardCard(nextPlayerIndex);
+			Colour nextPlayerColour = gameManager.getNextPlayerColour();
+			gameManager.discardCard(nextPlayerColour);
 		} else {
 			throw new InvalidMarbleException("Invalid Entry");
 		}

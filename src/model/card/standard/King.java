@@ -2,6 +2,7 @@ package model.card.standard;
 
 import java.util.ArrayList;
 
+import model.Colour;
 import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
@@ -12,6 +13,19 @@ public class King extends Standard{
 
 	public King(String name, String description, Suit suit, BoardManager boardManager, GameManager gameManager) {
         super(name, description, 13, suit, boardManager, gameManager);
+    }
+
+    public boolean validateMarbleSize (ArrayList<Marble> marbles) {
+        return (marbles.size() == 1);
+    }
+
+    public boolean validateMarbleColours (ArrayList<Marble> marbles) {
+        if (marbles.size() == 1) {
+            Colour playerColour = gameManager.getActivePlayerColour();
+            Colour marbleColour = marbles.get(0).getColour();
+            return (marbleColour == playerColour); // marble of same colour
+        }
+        return false;
     }
 
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
@@ -26,11 +40,8 @@ public class King extends Standard{
         if (!ActionMarbles.contains(m)) {
             boardManager.sendToBase(m);
         } else {
-            try {
-                boardManager.moveBy(m, 13, true);
-            } catch (IllegalMovementException | IllegalDestroyException e) {
-                throw new ActionException("This failed as: " + e.getMessage());
-            }
+            boardManager.moveBy(m, 13, true);
+            
         }
 
 

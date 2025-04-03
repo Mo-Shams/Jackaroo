@@ -2,6 +2,7 @@ package model.card.wild;
 
 import java.util.ArrayList;
 
+import model.Colour;
 import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
@@ -21,7 +22,7 @@ public class Saver extends Wild {
 		if (marbles.size() == 1) {
 			Colour playerColour = gameManager.getActivePlayerColour();
 			Colour marbleColour = marbles.get(0).getColour();
-			return (marbleColour == player_colour); // marble of same colour
+			return (marbleColour == playerColour); // marble of same colour
 		}
 		return false;
 	}
