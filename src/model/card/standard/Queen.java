@@ -2,7 +2,6 @@ package model.card.standard;
 
 import java.util.ArrayList;
 
-import model.Colour;
 import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
@@ -16,33 +15,13 @@ public class Queen extends Standard{
     }
 
     public boolean validateMarbleSize (ArrayList<Marble> marbles) {
-        return (marbles.size() == 1);
-    }
-
-    public boolean validateMarbleColours (ArrayList<Marble> marbles) {
-        // Card Discard
-        if (marbles.isEmpty()) {
-            return true; // always true as no color is always true
-            // Move
-        } else if (marbles.size() == 1) {
-            Colour playerColour = gameManager.getActivePlayerColour();
-            Colour marble_colour = marbles.get(0).getColour();
-            return marble_colour == playerColour;
-        }
-        return false;
+        return super.validateMarbleSize(marbles) || marbles.isEmpty();
     }
 
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        // check for validity
-        if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-            throw new InvalidMarbleException("Queen needs one of my marble");
-        }
-
-        if (marbles.isEmpty()) gameManager.discardCard(); // discard random card from gameManager "Still to be implemented"
-        else if (marbles.size() == 1) {
-            Marble m = marbles.get(0);
-            boardManager.moveBy(m, 12, false);
-        }
+    	if(marbles.size() == 1)
+			super.act(marbles);
+    	else
+    		gameManager.discardCard();
     }
-
 }

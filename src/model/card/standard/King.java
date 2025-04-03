@@ -2,7 +2,6 @@ package model.card.standard;
 
 import java.util.ArrayList;
 
-import model.Colour;
 import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
@@ -16,34 +15,13 @@ public class King extends Standard{
     }
 
     public boolean validateMarbleSize (ArrayList<Marble> marbles) {
-        return (marbles.size() == 1);
-    }
-
-    public boolean validateMarbleColours (ArrayList<Marble> marbles) {
-        if (marbles.size() == 1) {
-            Colour playerColour = gameManager.getActivePlayerColour();
-            Colour marbleColour = marbles.get(0).getColour();
-            return (marbleColour == playerColour); // marble of same colour
-        }
-        return false;
+        return super.validateMarbleSize(marbles) || marbles.isEmpty();
     }
 
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        // check for validity
-        if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-            throw new InvalidMarbleException("King needs one of my marble");
-        }
-
-        Marble m = marbles.get(0);
-        // i will get a list of all action marbles and check if my marble is there, if it isn't then this means it's in my home
-        ArrayList<Marble> ActionMarbles = boardManager.getActionableMarbles();
-        if (!ActionMarbles.contains(m)) {
-            boardManager.sendToBase(m);
-        } else {
-            boardManager.moveBy(m, 13, true);
-            
-        }
-
-
+    	if(marbles.size() == 1)
+    		boardManager.moveBy(marbles.get(0), getRank(), true);
+    	else
+    		gameManager.fieldMarble();
     }
 }

@@ -119,9 +119,10 @@ public class Player {
 	//method that executes the selected card action on the selected marbles if valid
 	public void play() throws GameException{
 		if(selectedCard == null) throw new InvalidCardException("You didn't choose a card yet");
-		/*if(!selectedCard.validateMarbleColours(selectedMarbles) || !selectedCard.validateMarbleSize(selectedMarbles))
-			throw new InvalidMarbleException("You cannot use the " + selectedCard.getName() + " card on the selected marble/s");*/
-		//will all the cards give the same exception?
+		if(!selectedCard.validateMarbleSize(selectedMarbles))
+			throw new InvalidMarbleException(selectedCard.getName() + " cannot act on " + selectedMarbles.size());
+		if(!selectedCard.validateMarbleColours(selectedMarbles))
+			throw new InvalidMarbleException(selectedCard.getName() + " cannot act on the selected marbles' colours");
 		selectedCard.act(selectedMarbles);
 	}
 	

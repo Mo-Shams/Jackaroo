@@ -16,35 +16,13 @@ public class Ace extends Standard {
     }
 
     public boolean validateMarbleSize (ArrayList<Marble> marbles) {
-        return (marbles.size() == 1);
-    }
-
-    public boolean validateMarbleColours (ArrayList<Marble> marbles) {
-        if (marbles.size() == 1) {
-            Colour playerColour = gameManager.getActivePlayerColour();
-            Colour marbleColour = marbles.get(0).getColour();
-            return (marbleColour == playerColour); // marble of same colour
-        }
-        return false;
+        return super.validateMarbleSize(marbles) || marbles.isEmpty();
     }
 
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-        // check for validity
-        if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-            throw new InvalidMarbleException("Ace Card needs one of my marble");
-        }
-
-        if (marbles.size() == 1) {
-            Marble m = marbles.get(0);
-            // i will get a list of all action marbles and check if my marble is there, if it isn't then this means it's in my home
-            ArrayList<Marble> ActionMarbles = boardManager.getActionableMarbles();
-            if (!ActionMarbles.contains(m)) {
-                boardManager.sendToBase(m);
-            } else {
-                boardManager.moveBy(m, 1, false);
-            }
-        } else {
-            throw new InvalidMarbleException("Invalid entry");
-        }
+        if (marbles.size() == 1) 
+        	super.act(marbles);
+        else
+        	gameManager.fieldMarble();
     }
 }

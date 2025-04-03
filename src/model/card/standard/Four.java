@@ -15,31 +15,8 @@ public class Four extends Standard{
 		super(name, description, 4, suit, boardManager, gameManager);
 	}
 
-	public boolean validateMarbleSize (ArrayList<Marble> marbles) {
-		return (marbles.size() == 1);
-	}
-
-	public boolean validateMarbleColours (ArrayList<Marble> marbles) {
-		if (marbles.size() == 1) {
-			Colour playerColour = gameManager.getActivePlayerColour();
-			Colour marbleColour = marbles.get(0).getColour();
-			return (marbleColour == playerColour); // marble of same colour
-		}
-		return false;
-	}
-
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
-		// check for validity
-		if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-			throw new InvalidMarbleException("Four needs one of my marbles");
-		}
-
-		if (marbles.size() == 1) {
-			Marble m = marbles.get(0);
-			boardManager.moveBy(m, -4, false);
-		} else {
-			throw new InvalidMarbleException("Invalid entry");
-		}
+		boardManager.moveBy(marbles.get(0), -4, false);
 	}
 
 }
