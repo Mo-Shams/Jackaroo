@@ -1,7 +1,13 @@
 package model.card.standard;
 
+import java.util.ArrayList;
+
+import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
+import exception.ActionException;
+import exception.InvalidMarbleException;
+import exception.SplitOutOfRangeException;
 
 public class Seven extends Standard {
 
@@ -13,7 +19,7 @@ public class Seven extends Standard {
 		// one marble
 		if (marbles.size() == 1) {
 			if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-				throw new InvalidMarbleException("Seven needs one of my marble")
+				throw new InvalidMarbleException("Seven needs one of my marble");
 			}
 			Marble m = marbles.get(0);
 			boardManager.moveBy(m, 7, false);

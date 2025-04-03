@@ -1,7 +1,12 @@
 package model.card.standard;
+import java.util.ArrayList;
+
 import model.card.Card;
+import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
+import exception.ActionException;
+import exception.InvalidMarbleException;
 
 public class Standard extends Card {
 	private final int rank;
@@ -19,6 +24,13 @@ public class Standard extends Card {
 
 	public Suit getSuit() {
 		return suit;
+	}
+
+	@Override
+	public void act(ArrayList<Marble> marbles) throws ActionException,
+			InvalidMarbleException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

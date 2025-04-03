@@ -1,6 +1,13 @@
 package model.card;
+import java.util.ArrayList;
+
+import model.Colour;
+import model.card.wild.Wild;
+import model.player.Marble;
 import engine.GameManager;
 import engine.board.BoardManager;
+import exception.ActionException;
+import exception.InvalidMarbleException;
 
 abstract public class Card {
 	private final String name;
@@ -29,15 +36,16 @@ abstract public class Card {
 		} else if (this instanceof model.card.standard.King || this instanceof model.card.standard.Ten) {
 			return (marbles.size() == 0 || marbles.size() == 1);
 		} else return marbles.size() == 1;
+	}
 
 	public boolean validateMarbleColours(ArrayList<Marble> marbles) {
 		// for wild cards
-		if (this instanceof model.card.wild.Wild) {
+		if (this instanceof Wild) {
 			Colour player_colour = gameManager.getActivePlayerColour();
 			Colour marbleColour = marbles.get(0).getColour();
 			if (marbles.size() != 1) return false;
-			if (this instanceof model.card.wild.Burner) return (!marbleColour.equals(playerColour)); // marble of diff colour
-			else if (this instanceof model.card.wild.Saver) return (marbleColour.equals(playerColour)); // marble of same colour
+			if (this instanceof model.card.wild.Burner) return (!marbleColour.equals(player_colour)); // marble of diff colour
+			else if (this instanceof model.card.wild.Saver) return (marbleColour.equals(player_colour)); // marble of same colour
 		}
 		// for standard ards
 		else if (this instanceof model.card.standard.Standard) {
@@ -66,7 +74,7 @@ abstract public class Card {
 				// Move
 				} else if (marbles.size() == 1) {
 					Colour marble_colour = marbles.get(0).getColour();
-					return marbleColour.equals(playerColour);
+					return marble_colour.equals(playerColour);
 				}
 			}
 			// Five
@@ -99,7 +107,7 @@ abstract public class Card {
 	}
 
 
-	abstract void act (ArrayList<Marble> marbles) throws ActionException,
+	public abstract void act (ArrayList<Marble> marbles) throws ActionException,
 			InvalidMarbleException;
 
 }
