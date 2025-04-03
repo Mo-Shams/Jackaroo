@@ -14,13 +14,29 @@ public class Burner extends Wild {
 		super(name, description, boardManager, gameManager);
 	}
 
+	public boolean validateMarbleSize (ArrayList<Marble> marbles) {
+		return marbles.size() == 1;
+	}
+
+	public boolean validateMarbleColours (ArrayList<Marble> marbles) {
+		if (marbles.size() == 1) {
+			Colour playerColour = gameManager.getActivePlayerColour();
+			Colour marbleColour = marbles.get(0).getColour();
+			return (marbleColour != player_colour); // marble of diff colour
+		}
+		return false;
+	}
+
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
 		// Both checks must be valid to work
 		if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-			throw new InvalidMarbleException("Burner Card needs one opponent marble");
+			throw new InvalidMarbleException("Burner Card needs one of opponent marble");
 		}
-
-		Marble m = marbles.get(0);
-		boardManager.destroyMarble(m);
+		if (marbles.size() == 1) {
+			Marble m = marbles.get(0);
+			boardManager.destroyMarble(m);
+		} else {
+			throw new InvalidMarbleException("Invalid entry");
+		}
 	}
 }

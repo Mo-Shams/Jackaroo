@@ -149,7 +149,7 @@ public class Board implements BoardManager {
             }
             path.add(track.get(i%100));
         }
-        return path ;
+        return path;
     }
     private ArrayList<Cell> validateStepsOnSafeZone(Marble marble, int steps, int start) 
         throws IllegalMovementException {
@@ -177,7 +177,7 @@ public class Board implements BoardManager {
     //helper of the method moveBy
     private void validatePath(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalMovementException{
         boolean passedMarble = false ;
-        for (int i = 0; i < fullPath.size(); i++) {
+        for (int i = 1; i < fullPath.size(); i++) {
             Marble found = fullPath.get(i).getMarble();
             if (found != null){ 
 
@@ -191,8 +191,8 @@ public class Board implements BoardManager {
                         throw new IllegalMovementException("Can't destroy cells in your safezone");
                 }
                 else { // i fount an opponant marble 
-                    if (getEntryPosition(marble.getColour()) == i && i != fullPath.size()-1 && !destroy) 
-                        throw new IllegalMonitorStateException("Cannot enter the safezone (entry blockage)");
+                    if (track.get(getEntryPosition(marble.getColour())) == fullPath.get(i) && i != fullPath.size()-1 && !destroy)
+                        throw new IllegalMovementException("Cannot enter the safezone (entry blockage)");
 
                     if (passedMarble && !destroy && i != fullPath.size()-1) 
                         throw new IllegalMovementException("cannot pypass 2 opponentet marbles");
@@ -205,26 +205,45 @@ public class Board implements BoardManager {
     //helper method that carries out the actual movement process
     //helper of the method moveBy
     private void move(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalDestroyException{
-        for (int i = 0; i < fullPath.size(); i++) {
-            // if destroy destroy all of them 
-            // else destroy the target only 
-            // assign the target cell to the last one 
+        Cell start = fullPath.get(0);
+        start.setMarble(null);
+        if (destroy) {
+            for (int i = 1; i < fullPath.size(); i++) {
+                Cell curr = fullPath.get(i);
+                if (curr.getMarble() != null) {
+                    Marble blocked_marble = curr.getMarble();
+                    try {
+                        destroyMarble(blocked_marble);
+                    } catch (IllegalDestroyException e) {
+                        throw new IllegalDestroyException ("Can't destroy marble as : " + e.getMessage());
+                    }
+                    curr.setMarble(null);
+                }
+            }
+        }
+        // if no destroy, just place in the final position
+        Cell end = fullPath.get(fullPath.size()-1);
+        end.setMarble(marble);
+        // handle if target
+        if (end.isTrap()) {
+            try {
+                destroyMarble(marble);
+            } catch (IllegalDestroyException e) {
+                throw new IllegalDestroyException ("Can't destroy marble in Trap Cell as : " + e.getMessage());
+            }
+            end.setTrap(false);
+            assignTrapCell();
         }
     }
     
     //overriden method from the BoardManager interface that handles the movement using the above helper methods
     @Override
-	public void moveBy(Marble marble, int steps, boolean destroy)
-			throws IllegalMovementException, IllegalDestroyException {
-		// TODO Auto-generated method stub
+	public void moveBy(Marble marble, int steps, boolean destroy) throws IllegalMovementException, IllegalDestroyException {
+        ArrayList<Cell> fullPath = validateSteps(marble, steps);
+        validatePath(marble, fullPath, destroy);
+        move(marble, fullPath, destroy);
 		
 	}
-    
-    
-    
-    
-    
-    
     
     //methods to validate the swap process and carrying it out
     private void validateSwap(Marble marble_1, Marble marble_2) throws IllegalSwapException{
@@ -238,11 +257,13 @@ public class Board implements BoardManager {
             && index2 == getBasePosition(marble_2.getColour())) // opp on his base 
                 throw new IllegalSwapException(" opp on his base cell");
            
-        if (gameManager.getActivePlayerColour() == marble_2.getColour() // marble1 is the opp 
+        /*if (gameManager.getActivePlayerColour() == marble_2.getColour() // marble1 is the opp
             && index1 == getBasePosition(marble_1.getColour())) // opp on his base 
                 throw new IllegalSwapException(" opp on his base cell");
+        */ // no need as i handled this in the act method for jack
 
-        // will the marbles always be player and opponenet ? 
+        // will the marbles always be player and opponenet ?
+        // yes, refer to act in jack to see why
 	}
 	public void swap (Marble marble_1, Marble marble_2) throws IllegalSwapException{
 		validateSwap(marble_1, marble_2);
@@ -270,12 +291,12 @@ public class Board implements BoardManager {
             throw new IllegalDestroyException ("Marble is on a protected Cell, Can't Destroy");
 	}
     public void destroyMarble (Marble marble) throws IllegalDestroyException { // no need to validate colours 
-		Colour currentColour = gameManager.getActivePlayerColour();
+        /*Colour currentColour = gameManager.getActivePlayerColour();
 		Colour marbleColour = marble.getColour();
 		// this is to check the marble colour is my own 
 		if (marbleColour == currentColour) {
 			throw new IllegalDestroyException ("Attempting to destroy your own marble");
-		}
+		}*/
 		
 		int positionInPath = getPositionInPath(track, marble);
 	    validateDestroy(positionInPath);
@@ -318,12 +339,12 @@ public class Board implements BoardManager {
 	
 	
 	public void sendToSafe(Marble marble) throws InvalidMarbleException {
-		Colour currentColour = gameManager.getActivePlayerColour(); // the colour will be checked in the saver 
+		/*Colour currentColour = gameManager.getActivePlayerColour(); // the colour will be checked in the saver
 		Colour marbleColour = marble.getColour(); 
 		// this is to check the marble colour is my own 
 		if (!marbleColour.equals(currentColour)) {
 			throw new InvalidMarbleException ("Attempting to save an Opponent Marble");
-		}
+		}*/
 		
 		// finding the indices of safezone and track and validate 
 		ArrayList<Cell> safeZoneCells = getSafeZone(marbleColour);
@@ -332,8 +353,8 @@ public class Board implements BoardManager {
 		validateSavings(positionInSafeZone, positionOnTrack);
 
         // set the current cell of that marble to null to remove so to send it to one of the freeCells
-        Cell c = track.get(positionOnTrack);
-        c.setMarble(null);
+        Cell curr_cell = track.get(positionOnTrack);
+        curr_cell.setMarble(null);
 		ArrayList<Cell> freeCells = new ArrayList<>(); 
 		// place all the available free places here to pick one randomly and place marble there
 		for (Cell c : safeZoneCells) {

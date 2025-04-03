@@ -14,6 +14,23 @@ public class Queen extends Standard{
         super(name, description, 12, suit, boardManager, gameManager);
     }
 
+    public boolean validateMarbleSize (ArrayList<Marble> marbles) {
+        return (marbles.size() == 1);
+    }
+
+    public boolean validateMarbleColours (ArrayList<Marble> marbles) {
+        // Card Discard
+        if (marbles.isEmpty()) {
+            return true; // always true as no color is always true
+            // Move
+        } else if (marbles.size() == 1) {
+            Colour playerColour = gameManager.getActivePlayerColour();
+            Colour marble_colour = marbles.get(0).getColour();
+            return marble_colour == playerColour;
+        }
+        return false;
+    }
+
     public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
         // check for validity
         if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {

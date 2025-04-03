@@ -155,13 +155,7 @@ public class Game implements GameManager {
 		}
 		return null;
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	//methods that defines getting a marble in and out of the home zone
 	@Override
 	public void sendHome(Marble marble) {
@@ -176,13 +170,7 @@ public class Game implements GameManager {
 		board.sendToBase(marble);
 		players.get(currentPlayerIndex).getHand().remove(marble);
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	//methods that defines cards effects on other player's cards
 	@Override
 	public void discardCard(Colour colour) throws CannotDiscardException {
@@ -206,13 +194,7 @@ public class Game implements GameManager {
 		Player randomPlayer = players.get(randomIndex);
 		discardCard(randomPlayer.getColour());
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	//getter methods for the current and next turn
 	@Override
 	public Colour getActivePlayerColour() {

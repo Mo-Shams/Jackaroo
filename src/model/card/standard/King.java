@@ -26,7 +26,11 @@ public class King extends Standard{
         if (!ActionMarbles.contains(m)) {
             boardManager.sendToBase(m);
         } else {
-            boardManager.moveBy(m, 13, true);
+            try {
+                boardManager.moveBy(m, 13, true);
+            } catch (IllegalMovementException | IllegalDestroyException e) {
+                throw new ActionException("This failed as: " + e.getMessage());
+            }
         }
 
 

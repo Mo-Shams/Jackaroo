@@ -14,22 +14,48 @@ public class Jack extends Standard{
 		super(name, description, 11, suit, boardManager, gameManager);
 	}
 
+	public boolean validateMarbleSize (ArrayList<Marble> marbles) {
+		return (marbles.size() == 1 || marbles.size() == 2);
+	}
+
+	public boolean validateMarbleColours (ArrayList<Marble> marbles) {
+
+		Colour playerColour = gameManager.getActivePlayerColour();
+		if (marbles.size() == 2) {
+			Marble m1 = marbles.get(0); Marble m2 = marbles.get(1);
+			// i considered both situations, first is mine second is not and first is not mine and second is
+			boolean Mine_first = ((m1.getColour() == playerColour) && !(m2.getColour() == playerColour));
+			boolean Mine_second = (m1.getColour() != playerColour) && (m2.getColour() == playerColour));
+			return (Mine_first || Mine_second);
+			// no swap
+		} else if (marbles.size() == 1) {
+			// same colour as mine
+			Colour marble_colour = marbles.get(0).getColour();
+			return marble_colour == playerColour;
+		}
+	}
+
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
 		// check for validity
+		if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
+			throw new InvalidMarbleException("Jack needs two marbles, yours and opponents");
+		}
+
+		Colour playerColour = gameManager.getActivePlayerColour();
 		if (marbles.size() == 2) {
-			if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-				throw new InvalidMarbleException("Jack needs two marbles, yours and opponents");
-			}
 			Marble m1 = marbles.get(0); Marble m2 = marbles.get(1);
-			if (m1.getColour().equals(gameManager.getActivePlayerColour())) boardManager.swap(m1, m2);
-			else boardManager.swap(m2, m1);
-		} else if (marbles.size() == 1) {
-			if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-				throw new InvalidMarbleException("Jack movement requires one of your marble");
+			try {
+				if (m1.getColour() == playerColour) {
+					boardManager.swap(m1, m2);
+				} else {
+					boardManager.swap(m2, m1);
+				}
+			} catch (IllegalSwapException e) {
+				throw new ActionException("The swap failed due to: " + e.getMessage());
 			}
+		} else if (marbles.size() == 1) {
 			boardManager.moveBy(marbles.get(0), 11, false);
 		} else {
 			throw new InvalidMarbleException("Invalid entry");
-		}
 	}
 }

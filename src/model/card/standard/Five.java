@@ -15,18 +15,25 @@ public class Five extends Standard {
 		
 	}
 
+	public boolean validateMarbleSize (ArrayList<Marble> marbles) {
+		return (marbles.size() == 1);
+	}
+
+	public boolean validateMarbleColours (ArrayList<Marble> marbles) {
+		return true;
+	}
+
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
 		// check for validity
 		if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
 			throw new InvalidMarbleException("Five needs one marble of any player");
 		}
 
-		Marble m = marbles.get(0);
-		ArrayList<Marble> ActionMarbles = boardManager.getActionableMarbles();
-		if (!ActionMarbles.contains(m)) {
-			throw new InvalidMarbleException ("Attempting to move a marble not on the board");
-		} else {
+		if (marbles.size() == 1) {
+			Marble m = marbles.get(0);
 			boardManager.moveBy(m, 5, false);
+		} else {
+			throw new InvalidMarbleException("Invalid entry");
 		}
 	}
 

@@ -16,8 +16,7 @@ public class Player {
 	private final ArrayList<Marble> marbles;
 	private Card selectedCard;
 	private final ArrayList<Marble> selectedMarbles;
-	
-	
+
 	//constructor
 	public  Player(String name, Colour colour){
 		this.name = name;
@@ -28,29 +27,29 @@ public class Player {
 		for(int i=0; i<4; i++) this.marbles.add(new Marble(colour));
 		this.selectedCard = null;
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
 	//simple getter and setter methods for the instance variables
 	public ArrayList<Card> getHand() {
 		return hand;
 	}
+
 	public void setHand(ArrayList<Card> hand) {
 		this.hand = hand;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public Colour getColour() {
 		return colour;
 	}
+
 	public ArrayList<Marble> getMarbles() {
 		return marbles;
 	}
+
 	public Card getSelectedCard() {
 		return selectedCard;
 	}

@@ -15,27 +15,43 @@ public class Seven extends Standard {
 		super(name, description, 7, suit, boardManager, gameManager);
 	}
 
+	public boolean validateMarbleSize (ArrayList<Marble> marbles) {
+		return (marbles.size() == 1 || marbles.size() == 2);
+	}
+
+	public boolean validateMarbleColours (ArrayList<Marble> marbles) {
+		Colour playerColour = gameManager.getActivePlayerColour();
+		if (marbles.size() == 2) {
+			Marble m1 = marbles.get(0);
+			Marble m2 = marbles.get(1);
+			return (m1.getColour()== playerColour) && (m2.getColour() == playerColour);
+			// no split
+		} else if (marbles.size() == 1) {
+			Colour marble_colour = marbles.get(0).getColour();
+			return marble_colour == playerColour;
+		}
+	}
+
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
+		if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
+			throw new InvalidMarbleException("Seven needs one of my marble");
+		}
 		// one marble
 		if (marbles.size() == 1) {
-			if (!validateMarbleColours(marbles) || !validateMarbleSize(marbles)) {
-				throw new InvalidMarbleException("Seven needs one of my marble");
-			}
 			Marble m = marbles.get(0);
 			boardManager.moveBy(m, 7, false);
 		} else if (marbles.size() == 2) {
 			Marble m1 = marbles.get(0); Marble m2 = marbles.get(1);
-			int splitDistance;
+			int attempted_split = boardManager.getSplitDistance();
 			try {
-				/*
-				I have no idea yet how to deal with this so i can get the player split distance so i am leaving it empty for now
-				 */
+				board.setSplitDistance(attempted_split);
 			} catch (SplitOutOfRangeException e) {
-				throw new InvalidMarbleException ("Invalid Split Distance, Should be 1-6 and not " + e.getMessage());
+				throw new ActionException("The card action failed: " + e.getMessage());
 			}
+			int splitDistance = boardManager.getSplitDistance();
 			boardManager.moveBy(m1, splitDistance, false);
 			boardManager.moveBy(m2, 7-splitDistance, false);
-		} else {
+		}  else {
 			throw new InvalidMarbleException("Invalid entry");
 		}
 	}
