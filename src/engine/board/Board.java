@@ -56,7 +56,7 @@ public class Board implements BoardManager {
     
     
     
-  //simple getter method for the instance variables
+    //simple getter methods for the instance variables
     @Override
     public int getSplitDistance() {
         return splitDistance;
@@ -261,7 +261,7 @@ public class Board implements BoardManager {
 	
 	//methods to validate the destroy process and carrying it out
     private void validateDestroy (int positionInPath) throws IllegalDestroyException {
-		// ! check it is on the track
+		//  check it is on the track
 		if (positionInPath == -1) {
 			throw new IllegalDestroyException ("Not on Track");
 		}
@@ -294,10 +294,9 @@ public class Board implements BoardManager {
     //methods to validate the fielding process and carrying it out
     //helpers of the method fieldMarble overriden from the GameManager interface in the Game class
     private void validateFielding(Cell occupiedBaseCell) throws CannotFieldException{
-
         if (occupiedBaseCell.getMarble() != null && 
             occupiedBaseCell.getMarble().getColour() == gameManager.getActivePlayerColour())
-            throw new CannotFieldException("There is already a marble in the Base Cell.");
+            throw new CannotFieldException("There is already a marble in the Base Cell");
 
 	}
 	public void sendToBase(Marble marble) throws CannotFieldException, IllegalDestroyException{
