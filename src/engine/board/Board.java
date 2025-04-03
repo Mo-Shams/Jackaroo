@@ -12,11 +12,13 @@ import model.Colour;
 import model.player.*;
 
 public class Board implements BoardManager {
+	//instance variables
 	private final GameManager gameManager;
 	private final ArrayList<Cell> track;
     private final ArrayList<SafeZone> safeZones ;
     private int splitDistance ;
-
+    
+    //constructor
     public Board(ArrayList<Colour> colourOrder, GameManager gameManager){
         this.gameManager = gameManager ;
         this.track = new ArrayList<>();
@@ -29,6 +31,8 @@ public class Board implements BoardManager {
             safeZones.add(new SafeZone(colourOrder.get(i)));
         }
     }
+    
+    //helper methods for the constructor
     private void setupTrack(){
         for (int i = 0; i < 100; i++) {
         	if (i == 0 || i == 25 || i == 50 || i == 75) 
@@ -38,7 +42,6 @@ public class Board implements BoardManager {
         	else track.add(new Cell(CellType.NORMAL)); 
         }
     }
-    
     private void assignTrapCell(){
     	 int i = (int) (Math.random() * 100); 
     	 Cell cell = track.get(i);
@@ -46,7 +49,35 @@ public class Board implements BoardManager {
     		 cell.setTrap(true);
     	 else assignTrapCell();
     }
-
+    
+    
+    
+    
+    
+    
+    
+  //simple getter method for the instance variables
+    @Override
+    public int getSplitDistance() {
+        return splitDistance;
+    }
+	public void setSplitDistance(int splitDistance) {
+		this.splitDistance = splitDistance;
+	}
+	public ArrayList<Cell> getTrack() {
+		return track;
+	}
+	public ArrayList<SafeZone> getSafeZones() {
+		return safeZones;
+	}
+    
+    
+    
+    
+    
+    
+    //helper getter methods of special positions and cells
+    //must be used whenever possible in the upcoming methods
     private ArrayList<Cell> getSafeZone(Colour colour){
         for (int i = 0; i < safeZones.size(); i++) {
             SafeZone safezone = safeZones.get(i);
@@ -55,7 +86,6 @@ public class Board implements BoardManager {
         }
         return null ;
     }
-
     private int getPositionInPath(ArrayList<Cell> path, Marble marble){ 
         // get the track or the safezone.getCells()
         for (int i = 0; i < path.size(); i++) {
@@ -64,7 +94,6 @@ public class Board implements BoardManager {
         }
         return -1 ;
     }
-
     private int getBasePosition(Colour colour){
         for (int i = 0; i < safeZones.size(); i++) {
             SafeZone safeZone = safeZones.get(i);
@@ -81,6 +110,15 @@ public class Board implements BoardManager {
         }
         return -1 ;
     }
+    
+    
+    
+    
+    
+    
+    
+    //helper methods to validate the number of steps a marble can move
+    //helpers of the method moveBy
     private ArrayList<Cell> validateSteps(Marble marble, int steps) throws IllegalMovementException {
        
         int start = getPositionInPath(track, marble);
@@ -96,7 +134,6 @@ public class Board implements BoardManager {
 
         throw new IllegalMovementException("The Marble Cannnot be moved");
     }
-
     private ArrayList<Cell> validateStepsOnTrack(Marble marble, int steps, int start) throws IllegalMovementException {
     
         int target = start + steps ;
@@ -114,7 +151,6 @@ public class Board implements BoardManager {
         }
         return path ;
     }
-
     private ArrayList<Cell> validateStepsOnSafeZone(Marble marble, int steps, int start) 
         throws IllegalMovementException {
         ArrayList<Cell> safezone = getSafeZone(marble.getColour());
@@ -127,7 +163,6 @@ public class Board implements BoardManager {
         }
         return path ;
     }
-
     private ArrayList<Cell> validateStepsForFour(Marble marble, int steps, int start) throws IllegalMovementException {
         ArrayList<Cell> path = new ArrayList<>();
         int target = start + steps  ; // assuming it is -4 not 4 
@@ -137,7 +172,9 @@ public class Board implements BoardManager {
         return path ;
         // cannot move the four in the safezone 
     }
-
+    
+    //helper method to validate the path returned by validateSteps
+    //helper of the method moveBy
     private void validatePath(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalMovementException{
         boolean passedMarble = false ;
         for (int i = 0; i < fullPath.size(); i++) {
@@ -164,8 +201,9 @@ public class Board implements BoardManager {
             }
         }
     }
-
     
+    //helper method that carries out the actual movement process
+    //helper of the method moveBy
     private void move(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalDestroyException{
         for (int i = 0; i < fullPath.size(); i++) {
             // if destroy destroy all of them 
@@ -173,7 +211,22 @@ public class Board implements BoardManager {
             // assign the target cell to the last one 
         }
     }
-
+    
+    //overriden method from the BoardManager interface that handles the movement using the above helper methods
+    @Override
+	public void moveBy(Marble marble, int steps, boolean destroy)
+			throws IllegalMovementException, IllegalDestroyException {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    
+    
+    
+    
+    
+    
+    //methods to validate the swap process and carrying it out
     private void validateSwap(Marble marble_1, Marble marble_2) throws IllegalSwapException{
 
         int index1 = getPositionInPath(track, marble_1);
@@ -191,7 +244,6 @@ public class Board implements BoardManager {
 
         // will the marbles always be player and opponenet ? 
 	}
-	
 	public void swap (Marble marble_1, Marble marble_2) throws IllegalSwapException{
 		validateSwap(marble_1, marble_2);
         int index1 = getPositionInPath(track, marble_1);
@@ -200,7 +252,14 @@ public class Board implements BoardManager {
 		track.get(index1).setMarble(marble_2); 
 		track.get(index2).setMarble(marble_1);
 	}
-
+	
+	
+	
+	
+	
+	
+	
+	//methods to validate the destroy process and carrying it out
     private void validateDestroy (int positionInPath) throws IllegalDestroyException {
 		// ! check it is on the track
 		if (positionInPath == -1) {
@@ -210,7 +269,6 @@ public class Board implements BoardManager {
         if (getBasePosition(marble.getColour()) == positionInPath)
             throw new IllegalDestroyException ("Marble is on a protected Cell, Can't Destroy");
 	}
-
     public void destroyMarble (Marble marble) throws IllegalDestroyException { // no need to validate colours 
 		Colour currentColour = gameManager.getActivePlayerColour();
 		Colour marbleColour = marble.getColour();
@@ -226,7 +284,15 @@ public class Board implements BoardManager {
 	    current.setMarble(null);
         gameManager.sendHome(marble);
 	}
-
+    
+    
+    
+    
+    
+    
+    
+    //methods to validate the fielding process and carrying it out
+    //helpers of the method fieldMarble overriden from the GameManager interface in the Game class
     private void validateFielding(Cell occupiedBaseCell) throws CannotFieldException{
 
         if (occupiedBaseCell.getMarble() != null && 
@@ -234,7 +300,6 @@ public class Board implements BoardManager {
             throw new CannotFieldException("There is already a marble in the Base Cell.");
 
 	}
-	// send to base is a helper for field 
 	public void sendToBase(Marble marble) throws CannotFieldException, IllegalDestroyException{
         int index = getBasePosition(marble.getColour());
 		Cell baseCell = track.get(index);
@@ -245,14 +310,13 @@ public class Board implements BoardManager {
         
         // should i remove it from the players marbles 
 	}
-
-    @Override
-	public void moveBy(Marble marble, int steps, boolean destroy)
-			throws IllegalMovementException, IllegalDestroyException {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+    
+	
+	
+	
+	
+	
 	public void sendToSafe(Marble marble) throws InvalidMarbleException {
 		Colour currentColour = gameManager.getActivePlayerColour(); // the colour will be checked in the saver 
 		Colour marbleColour = marble.getColour(); 
@@ -320,25 +384,6 @@ public class Board implements BoardManager {
 		}
 		
 		return actionableMarbles; 
-	}
-	
-	
-
-    
-    @Override
-    public int getSplitDistance() {
-        return splitDistance;
-    }
-    
-	public void setSplitDistance(int splitDistance) {
-		this.splitDistance = splitDistance;
-	}
-
-	public ArrayList<Cell> getTrack() {
-		return track;
-	}
-	public ArrayList<SafeZone> getSafeZones() {
-		return safeZones;
 	}
 	
 }
