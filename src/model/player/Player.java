@@ -85,17 +85,16 @@ public class Player {
 	
 	//methods that validates and selects the given card and marble
 	public void selectCard(Card card) throws InvalidCardException {
-		boolean exist = false;
 		for(Card currentCard : hand){
 			if(currentCard.equals(card)){
 				selectedCard = currentCard;
-				exist = true;
+				return;
 			}
 		}
-		if(!exist) throw new InvalidCardException("You don't have this card");
+		throw new InvalidCardException("You don't have this card");
 	}
 	public void selectMarble(Marble marble) throws InvalidMarbleException{
-		if(selectedMarbles.size() == 2)
+		if(selectedMarbles.size() >= 2)
 			throw new InvalidMarbleException("You can't choose more than 2 marbles");
 		selectedMarbles.add(marble);
 	}
@@ -123,6 +122,7 @@ public class Player {
 		if(selectedCard == null) throw new InvalidCardException("You didn't choose a card yet");
 		if(!selectedCard.validateMarbleColours(selectedMarbles) || !selectedCard.validateMarbleSize(selectedMarbles))
 			throw new InvalidMarbleException("You cannot use the " + selectedCard.getName() + " card on the selected marble/s");
+		//will all the cards give the same exception?
 		selectedCard.act(selectedMarbles);
 	}
 	

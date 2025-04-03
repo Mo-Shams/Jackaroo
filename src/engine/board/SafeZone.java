@@ -24,8 +24,8 @@ public class SafeZone {
 	}
 	
 	public boolean isFull() {
-		for (Cell c : cells) {
-			if (c.getMarble() == null) return false;
+		for (Cell cell : cells) {
+			if (cell.getMarble() == null) return false;
 		}
 		return true;
 	}

@@ -133,7 +133,7 @@ public class Game implements GameManager {
 		if(turn % 4 == 0){
 			turn = 0;
 			for(Player player : players){
-				if (Deck.getPoolSize() < 4)
+				if (Deck.getPoolSize() < 4) //why not 16? (because you can refill while drawing the cards)
 					Deck.refillPool(firePit);
 				player.setHand(Deck.drawCards());
 			}
@@ -194,7 +194,7 @@ public class Game implements GameManager {
 		if(colourPlayer.getHand().isEmpty())
 			throw new CannotDiscardException("The player has no cards to be discarded");
 		int randomIndex = (int)(Math.random() * colourPlayer.getHand().size());
-		colourPlayer.getHand().remove(randomIndex);
+		firePit.add(colourPlayer.getHand().remove(randomIndex));
 	}
 	@Override
 	public void discardCard() throws CannotDiscardException {

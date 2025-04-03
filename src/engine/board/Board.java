@@ -307,7 +307,8 @@ public class Board implements BoardManager {
 		if(baseCell.getMarble() != null) destroyMarble(baseCell.getMarble());  // trhis is useless ? 
 		    baseCell.setMarble(marble);
         
-        // should i remove it from the players marbles 
+        // should i remove it from the players marbles?
+		// the remove was alraedy handled in the fieldMarble in the Game class
 	}
 	
     
