@@ -27,5 +27,6 @@ public class SafeZone {
 		for (Cell c : cells) {
 			if (c.getMarble() == null) return false;
 		}
+		return true;
 	}
 }
