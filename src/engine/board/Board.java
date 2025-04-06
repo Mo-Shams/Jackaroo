@@ -137,7 +137,7 @@ public class Board implements BoardManager {
     
         int target = start + steps ;
         ArrayList<Cell> path = new ArrayList<>();
-
+ 
         for (int i = start; i <= target; i++) {
             if (getEntryPosition(marble.getColour()) == i  && 
                 (steps != 5 || marble.getColour() == gameManager.getActivePlayerColour())) { 
@@ -175,31 +175,50 @@ public class Board implements BoardManager {
     //helper method to validate the path returned by validateSteps
     //helper of the method moveBy
     private void validatePath(Marble marble, ArrayList<Cell> fullPath, boolean destroy) throws IllegalMovementException{
-        boolean passedMarble = false ;
+    	Colour currPlayer = gameManager.getActivePlayerColour();  
+        Cell start = fullPath.get(0), end = fullPath.get(fullPath.size()-1); 
+        Colour movingMarble = marble.getColour();
+        
+        
+        // Safe Zone Entry         	
+        if (start.getCellType() == CellType.NORMAL && end.getCellType() == CellType.SAFE) {
+        	if (track.get(getEntryPosition(movingMarble)).getMarble() != null && !destroy) {
+                throw new IllegalMovementException("Safe Zone Entry");
+            }
+        }
+    	
+        // other problems  
+        int blockers = 0; 
         for (int i = 1; i < fullPath.size(); i++) {
             Marble found = fullPath.get(i).getMarble();
             if (found != null){ 
-            	//found a marble in its base cell
+            	// Base Cell Blockage
                 if (getBasePosition(found.getColour()) == track.indexOf(fullPath.get(i)))
                     throw new IllegalMovementException("found a cell on it's base");
-
-                if (found.getColour() == marble.getColour()){ // found my marble 
-                    if (!destroy)
+                
+                if (found.getColour() == movingMarble){ // marble same colour as me 
+                	// Self Blockage
+                	if (!destroy)  
                         throw new IllegalMovementException("can't pypass or destroy your own marbles");
+                    // Safe-Zone Immunity
                     if (fullPath.get(i).getCellType() == CellType.SAFE)
                         throw new IllegalMovementException("Can't destroy cells in your safezone");
-                }
-                else { // i fount an opponant marble 
-                    if (track.get(getEntryPosition(marble.getColour())) == fullPath.get(i) && i != fullPath.size()-1 && !destroy)
-                        throw new IllegalMovementException("Cannot enter the safezone (entry blockage)");
-
-                    if (passedMarble && !destroy && i != fullPath.size()-1) 
-                        throw new IllegalMovementException("cannot pypass 2 opponentet marbles");
-                    else passedMarble = true ; 
+                } else { // marble colour not same as the marble moving
+                    
+                    if (i != fullPath.size() - 1 && !destroy) {
+                        // Path Blockage
+                        blockers++;
+                        if (blockers > 1) {
+                            throw new IllegalMovementException("cannot bypass 2 opponentet marbles");
+                        }
+                    }
                 }
             }
         }
     }
+    
+    
+    
     
     //helper method that carries out the actual movement process
     //helper of the method moveBy
