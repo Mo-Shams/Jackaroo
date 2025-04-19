@@ -122,19 +122,22 @@ public class Game implements GameManager {
 	//method that ends the current player turn and sets the game ready for the next player
 	public void endPlayerTurn(){
 		Player currentPlayer = players.get(currentPlayerIndex);
-		if(currentPlayer.getHand().remove(currentPlayer.getSelectedCard()))
-			firePit.add(currentPlayer.getSelectedCard());
+		currentPlayer.getHand().remove(currentPlayer.getSelectedCard()); // adding the null to the cardsPool
+//		if(currentPlayer.getHand().remove(currentPlayer.getSelectedCard()))
+		firePit.add(currentPlayer.getSelectedCard());
 		deselectAll();
 		currentPlayerIndex++;
-		if(currentPlayerIndex % 4 == 0){
+		if(currentPlayerIndex == 4){
 			turn++;
 			currentPlayerIndex = 0;
 		}
-		if(turn % 4 == 0){
+		if(turn == 4){
 			turn = 0;
 			for(Player player : players){
-				if (Deck.getPoolSize() < 4) //why not 16? (because you can refill while drawing the cards)
+				if (Deck.getPoolSize() < 4){ //why not 16? (because you can refill while drawing the cards)
 					Deck.refillPool(firePit);
+					firePit.clear();
+				}
 				player.setHand(Deck.drawCards());
 			}
 		}
@@ -159,7 +162,9 @@ public class Game implements GameManager {
 	//methods that defines getting a marble in and out of the home zone
 	@Override
 	public void sendHome(Marble marble) {
-		players.get(currentPlayerIndex).regainMarble(marble);
+		for(Player player : players)
+			if(player.getColour() == marble.getColour())
+				player.regainMarble(marble);
 	}
 	@Override
 	public void fieldMarble() throws CannotFieldException, IllegalDestroyException{
@@ -168,7 +173,7 @@ public class Game implements GameManager {
 			throw new CannotFieldException("You don't have any marbles in your home zone");
 		
 		board.sendToBase(marble);
-		players.get(currentPlayerIndex).getHand().remove(marble);
+		players.get(currentPlayerIndex).getMarbles().remove(marble);
 	}
 
 	//methods that defines cards effects on other player's cards

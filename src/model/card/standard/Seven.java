@@ -15,7 +15,7 @@ public class Seven extends Standard {
 	}
 
 	public boolean validateMarbleSize (ArrayList<Marble> marbles) {
-		return super.validateMarbleColours(marbles) || marbles.size() == 2;
+		return super.validateMarbleSize(marbles) || marbles.size() == 2;
 	}
 
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
