@@ -207,7 +207,7 @@ public class Game implements GameManager {
 	}
 	@Override
 	public Colour getNextPlayerColour() {
-		return players.get((currentPlayerIndex + 1)%4).getColour();
+		return players.get((currentPlayerIndex + 1) % 4).getColour();
 	}
 	
 }

@@ -93,7 +93,7 @@ public class Player {
 		throw new InvalidCardException("You don't have this card");
 	}
 	public void selectMarble(Marble marble) throws InvalidMarbleException{
-		if(!selectedMarbles.isEmpty() && selectedMarbles.contains(marble)) return;
+		if(selectedMarbles.contains(marble)) return;
 		if(selectedMarbles.size() >= 2)
 			throw new InvalidMarbleException("You can't choose more than 2 marbles");
 		selectedMarbles.add(marble);

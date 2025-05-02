@@ -26,7 +26,7 @@ public class Seven extends Standard {
 			Marble m1 = marbles.get(0); Marble m2 = marbles.get(1);
 			int splitDistance = boardManager.getSplitDistance();
 			boardManager.moveBy(m1, splitDistance, false);
-			boardManager.moveBy(m2, 7-splitDistance, false);
+			boardManager.moveBy(m2, 7-splitDistance, false); //assuming marble1 precedes marble2 on track
 		}
 	}
 
