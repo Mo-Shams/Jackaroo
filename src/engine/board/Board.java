@@ -305,12 +305,11 @@ public class Board implements BoardManager {
             throw new IllegalDestroyException ("Marble is on a protected Cell, Can't Destroy");
 	}
     public void destroyMarble (Marble marble) throws IllegalDestroyException { // no need to validate colours 
-;
 		int positionInPath = getPositionInPath(track, marble);
 		
-		// if (gameManager.getActivePlayerColour() != marble.getColour())
+		if (gameManager.getActivePlayerColour() != marble.getColour()) validateDestroy(positionInPath); 
 		// If the marble doesn’t belong to the same player, it should validate ?? 
-	    validateDestroy(positionInPath);
+	    // But this doesn't handle the case when you destroy your own marble in its base cell
 	    Cell current = track.get(positionInPath); 
 	    current.setMarble(null);
         gameManager.sendHome(marble);
