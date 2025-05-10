@@ -6,11 +6,11 @@ import model.card.Card;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 
-public class HandView {
+public class HandView extends StackPane{
 	private final HBox handView;
 	private final ArrayList<Card> hand;
-	
 	public HandView (ArrayList<Card> hand){
 		this.hand = hand;
 		handView = new HBox(4);
@@ -20,6 +20,7 @@ public class HandView {
 			CardView cardView = new CardView(card);
 			handView.getChildren().add(cardView);
 		}
+		getChildren().add(handView);
 	}
 
 	public HBox getHandView() {

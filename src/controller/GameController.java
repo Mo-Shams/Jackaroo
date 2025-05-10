@@ -1,16 +1,19 @@
 package controller;
 
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import model.card.Card;
 import view.CardsView.CardView;
 import view.CardsView.HandView;
 import engine.Game;
 import exception.InvalidCardException;
 
-public class GameController {
+public class GameController extends Controller{
 	private final Game game;
-	public GameController(Game game){
+	public GameController(Game game, Stage stage){
+		super(stage);
 		this.game = game;
+		
 	}
 	public void addCardClickHandler(CardView cardView, HandView handView) {
 		cardView.setOnMouseClicked(event -> {

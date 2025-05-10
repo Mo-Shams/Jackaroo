@@ -1,40 +1,24 @@
 package scene;
 
-import java.util.List;
-
+import controller.Controller;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Scale;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class WelcomeScene extends Application {
-
+public class WelcomeScene{
 	String name;
-	@Override
-	
-	public void start(Stage primaryStage) {
+	public Scene createWelcomeScene(Stage stage) throws Exception {
+		Controller controller = new Controller(stage);
 	    // 1) Build your UI controls:
 	    Text text = new Text("Enter your name:");
 	    text.setFont(Font.font("Arial Rounded MT", 25));
@@ -45,6 +29,7 @@ public class WelcomeScene extends Application {
 	    Button play = makeImageButton("/resources/icon_images/play.png");
 	    Button about = makeImageButton("/resources/icon_images/about.png");
 	    Button settings = makeImageButton("/resources/icon_images/settings.png");
+	    controller.setGameSceneOnButtonClick(play);
 	    // 2) Put them in a VBox (only one instance!)
 	    VBox vbox = new VBox(10, text, inputField, play, about, settings);
 	    vbox.setAlignment(Pos.CENTER);
@@ -73,10 +58,8 @@ public class WelcomeScene extends Application {
 	    vbox.prefWidthProperty().bind(scene.widthProperty().multiply(0.75));
 	    vbox.prefHeightProperty().bind(scene.heightProperty().multiply(0.5));
 
-	    // 4) Show it
-	    primaryStage.setScene(scene);
-	    primaryStage.setTitle("Welcome screen");
-	    primaryStage.show();
+	    return scene;
+	    
 	}
 
 	// Helper: load an image‐only button that stretches its graphic

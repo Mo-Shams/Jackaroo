@@ -151,6 +151,8 @@ public class Board implements BoardManager {
     }
     private ArrayList<Cell> validateStepsOnSafeZone(Marble marble, int steps, int start) 
         throws IllegalMovementException {
+    	if(steps < 0)
+    		throw new IllegalMovementException("cannot move backwards in the safe zone");
         ArrayList<Cell> safezone = getSafeZone(marble.getColour());
         ArrayList<Cell> path = new ArrayList<>();
         int target = start + steps  ; // 0, 3

@@ -13,20 +13,21 @@ import javafx.stage.Stage;
 import model.player.Player;
 import view.CardsView.CardView;
 import view.CardsView.HandView;
+import view.marbleView.MarbleView;
 import controller.GameController;
 import engine.Game;
 
 public class GameScene {
-	private static Game game;
+	private final Game game;
 	public GameScene(String playerName) throws IOException{
-		GameScene.setGame(new Game(playerName));
+		game = new Game(playerName);
 	}
-	public static Scene createGameScene(Stage stage) throws IOException{
-		GameController controller = new GameController(getGame());
+	public Scene createGameScene(Stage stage){
+		GameController controller = new GameController(game, stage);
 		StackPane root = new StackPane();
 		root.setPadding(new Insets(20));
+		root.setStyle("-fx-background-color: lightgreen;");
 		Scene scene = new Scene(root, 1400, 900);
-		scene.setFill(Color.LIGHTGREEN);
 		HBox handBox = null;
 		int i = 0;
 		for(Player player: game.getPlayers()){
@@ -47,13 +48,14 @@ public class GameScene {
 			}
 			root.getChildren().add(handBox);
 			i++;
-		}		
+		}
+		MarbleView marbleView = new MarbleView(game.getPlayers().get(0).getMarbles().get(0));
+		StackPane.setAlignment(marbleView, Pos.CENTER);
+		root.getChildren().add(marbleView);
+		marbleView.toBack();
 		return scene;
 	}
-	public static Game getGame() {
+	public Game getGame() {
 		return game;
-	}
-	public static void setGame(Game game) {
-		GameScene.game = game;
 	}
 }

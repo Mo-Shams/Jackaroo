@@ -4,12 +4,12 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import scene.GameScene;
+import scene.WelcomeScene;
 
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		GameScene gameScene = new GameScene("Muhammad");
-		Scene scene = GameScene.createGameScene(primaryStage);
+		Scene scene = new WelcomeScene().createWelcomeScene(primaryStage);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Jackaroo");
 		primaryStage.show();
