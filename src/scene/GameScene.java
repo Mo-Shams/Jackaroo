@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 import model.player.Player;
 import view.CardsView.CardView;
 import view.CardsView.HandView;
+import view.boardView.TrackView;
 import view.marbleView.MarbleView;
 import controller.GameController;
 import engine.Game;
@@ -53,6 +55,13 @@ public class GameScene {
 		StackPane.setAlignment(marbleView, Pos.CENTER);
 		root.getChildren().add(marbleView);
 		marbleView.toBack();
+		
+		// initilize the track 
+		Group Track = new Group();
+		
+		TrackView trackView = new TrackView(game.getBoard().getTrack(), Track);;
+		root.getChildren().add(Track);
+		
 		return scene;
 	}
 	public Game getGame() {
