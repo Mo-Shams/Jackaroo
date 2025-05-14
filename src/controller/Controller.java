@@ -18,7 +18,8 @@ public class Controller {
 		Scene scene = new GameScene("Muhammad").createGameScene(stage);
 		button.setOnAction(event -> {
 	        stage.setScene(scene);
-	        stage.show();
+	        stage.setFullScreen(true);
+			stage.setResizable(false);
 	    });
 	}
 }

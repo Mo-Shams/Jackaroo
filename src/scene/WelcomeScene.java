@@ -1,9 +1,8 @@
 package scene;
 
-import controller.Controller;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -13,7 +12,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import controller.Controller;
 
 public class WelcomeScene{
 	String name;
@@ -37,7 +38,11 @@ public class WelcomeScene{
 	    vbox.setPadding(Insets.EMPTY);
 
 	    // 3) Create ONE Scene and bind your widths/heights to its properties
-	    Scene scene = new Scene(vbox, 1400, 900);
+	    Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds(); // Visual excludes taskbar
+
+		double width = screenBounds.getWidth();
+		double height = screenBounds.getHeight();
+	    Scene scene = new Scene(vbox, width, height);
 
 	    // TextField  = 15% width, 5% height of *this* scene
 
