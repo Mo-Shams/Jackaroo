@@ -9,7 +9,7 @@ import engine.board.Cell;
 import engine.board.CellType;
 
 public class CellView extends StackPane {
-	private static final double DEFAULT_RADIUS = 11;
+	private static final double DEFAULT_RADIUS = 12;
     private final Cell cell;
     private final Circle circle;
     private MarbleView marbleView;

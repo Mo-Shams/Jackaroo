@@ -18,11 +18,12 @@ public class GameController extends Controller {
     }
 
     public void addCardClickHandler(CardView cardView, HandView handView, FirePitView firePitView) {
-        cardView.setOnMouseClicked(event -> {
-            Card card = cardView.getCard();
+    	Card card = cardView.getCard();
+    	
+    	cardView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 // Double click detected
-            	cardView.sendToFirePit(firePitView);
+            	cardView.flip();
 //            	firePitView.sendCardToFirePit(cardView, handView);// Or any other action
             }
             if (!cardView.isSelected()) {

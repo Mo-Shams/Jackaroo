@@ -1,11 +1,9 @@
 package view.marbleView;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import model.player.Marble;
-
-import java.io.InputStream;
+import view.ImageCache;
 
 public final class MarbleView extends StackPane {
     private static final double DEFAULT_MARBLE_HEIGHT = 40;
@@ -18,15 +16,9 @@ public final class MarbleView extends StackPane {
         this.marble = marble;
         this.selected = false;
 
-        String imageName = marble.getColour().toString() + "_marble.png";
-        InputStream imageStream = getClass().getResourceAsStream("/resources/marble_images/" + imageName);
-
-        if (imageStream == null) {
-            throw new IllegalArgumentException("Image for marble not found: " + imageName);
-        }
-
-        Image image = new Image(imageStream);
-        imageView = new ImageView(image);
+        String imagePath = "/resources/marble_images/" + marble.getColour().name() + "_marble.png";
+        
+        imageView = new ImageView(ImageCache.getImage(imagePath));
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.setFitHeight(DEFAULT_MARBLE_HEIGHT);

@@ -16,6 +16,7 @@ import model.player.Marble;
 
 public class HomeZoneView {
 	private static final double SIDE_LENGTh = 100;
+	private static final double GAP = 5;
 	private ArrayList<Marble> marbles;
 	private ArrayList<MarbleView> marbleViews;
 	private final ArrayList<CellView> cellViews;
@@ -44,8 +45,8 @@ public class HomeZoneView {
 		homeZone = createSquare(SIDE_LENGTh, SIDE_LENGTh, color);
 		
 		cellGrid = new GridPane();
-		cellGrid.setHgap(5);
-		cellGrid.setVgap(5);
+		cellGrid.setHgap(GAP);
+		cellGrid.setVgap(GAP);
 		cellGrid.setAlignment(Pos.CENTER);
 
 		// Add cells to 2x2 Grid

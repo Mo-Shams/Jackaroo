@@ -2,6 +2,7 @@ package view.boardView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
@@ -40,7 +41,7 @@ public class TrackView extends GridPane {
 	
 	private static final double CELL_SPACING = 0.1;
 	
-	private final ArrayList<CellView> cellViewMap;
+	private final Map<Cell, CellView> cellToViewMap = new HashMap<>();
     private final ArrayList<Cell> track;
    
 
@@ -48,7 +49,6 @@ public class TrackView extends GridPane {
         this.track = track;
         setHgap(CELL_SPACING);
         setVgap(CELL_SPACING);
-        cellViewMap  = new ArrayList<>();
         ArrayList<SafeZoneView> safeZoneViews = new ArrayList<>();
         for(SafeZone safeZone : safeZones){
         	SafeZoneView safeZoneView = new SafeZoneView(safeZone);
@@ -93,7 +93,7 @@ public class TrackView extends GridPane {
                 else{
                 	cellView = new CellView(cell);
                 }
-                cellViewMap.add(cellView);
+                cellToViewMap.put(cell, cellView);
                 // If there's a marble on this cell, add a MarbleView
                 if (cell.getMarble() != null) {
                     Marble marble = cell.getMarble(); // get the model's marble

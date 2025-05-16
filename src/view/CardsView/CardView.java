@@ -7,49 +7,58 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import model.Colour;
 import model.card.Card;
 import model.card.standard.Standard;
-
-import java.io.InputStream;
+import view.ImageCache;
 
 public final class CardView extends StackPane {
     private static final double SCALE_ANIMATION_DURATION_MS = 150;
+    private static final double FLIPPING_ANIMATION_DURATION_MS = 200;
     private static final double GLOW_WIDTH = 40;
     private static final double GLOW_HEIGHT = 40;
 
     private final Card card;
     private final ImageView imageView;
     private boolean selected;
+    private final ImageView backImageView;
+    private boolean flipped;
 
-    public CardView(Card card) {
+    
+    public CardView(Card card, boolean showFrontInitially, Colour colour) {
         this.card = card;
         this.selected = false;
+        this.flipped = !showFrontInitially;
 
-        String imageName = generateImageName(card);
-        InputStream imageStream = getClass().getResourceAsStream("/resources/card_images/" + imageName);
-
-        if (imageStream == null) {
-            imageStream = getClass().getResourceAsStream("/resources/card_images/default.png");
-            if (imageStream == null) {
-                throw new IllegalArgumentException("Card image not found and no fallback image available: " + imageName);
-            }
-        }
-
-        Image image = new Image(imageStream);
-        imageView = new ImageView(image);
+        String imagePath = "/resources/card_images/" + generateImageName(card);
+        imageView = new ImageView(ImageCache.getImage(imagePath));
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
+        imageView.setFitHeight(140);
+        
+        
+        String backImagePath = "/resources/card_images/" + colour.name() + "_back.png";
+        backImageView = new ImageView(ImageCache.getImage(backImagePath));
+        backImageView.setPreserveRatio(true);
+        backImageView.setSmooth(true);
+        backImageView.setFitHeight(140);
+        if (showFrontInitially) {
+            imageView.setVisible(true);
+            backImageView.setVisible(false);
+        } else {
+            imageView.setVisible(false);
+            backImageView.setVisible(true);
+        }
 
-        getChildren().add(imageView);
+        getChildren().addAll(imageView, backImageView);
+        this.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         Tooltip.install(this, new Tooltip(card.toString()));
     }
 
@@ -151,8 +160,64 @@ public final class CardView extends StackPane {
 
         pt.setOnFinished(e -> {
             setMouseTransparent(true);
+            
         });
     }
+    
+    public void flip() {
+        if (flipped) {
+            flipToFront();
+        } else {
+            flipToBack();
+        }
+    }
+
+    private void flipToBack() {
+        RotateTransition rt1 = new RotateTransition(Duration.millis(FLIPPING_ANIMATION_DURATION_MS), this);
+        rt1.setAxis(javafx.geometry.Point3D.ZERO.add(0, 1, 0)); // Y-axis
+        rt1.setFromAngle(0);
+        rt1.setToAngle(90);
+        rt1.setInterpolator(Interpolator.EASE_IN);
+
+        RotateTransition rt2 = new RotateTransition(Duration.millis(FLIPPING_ANIMATION_DURATION_MS), this);
+        rt2.setAxis(javafx.geometry.Point3D.ZERO.add(0, 1, 0));
+        rt2.setFromAngle(-90);
+        rt2.setToAngle(0);
+        rt2.setInterpolator(Interpolator.EASE_OUT);
+
+        rt1.setOnFinished(e -> {
+            imageView.setVisible(false);
+            backImageView.setVisible(true);
+            rt2.play();
+        });
+
+        rt1.play();
+        flipped = true;
+    }
+
+    private void flipToFront() {
+        RotateTransition rt1 = new RotateTransition(Duration.millis(FLIPPING_ANIMATION_DURATION_MS), this);
+        rt1.setAxis(javafx.geometry.Point3D.ZERO.add(0, 1, 0));
+        rt1.setFromAngle(0);
+        rt1.setToAngle(90);
+        rt1.setInterpolator(Interpolator.EASE_IN);
+
+        RotateTransition rt2 = new RotateTransition(Duration.millis(FLIPPING_ANIMATION_DURATION_MS), this);
+        rt2.setAxis(javafx.geometry.Point3D.ZERO.add(0, 1, 0));
+        rt2.setFromAngle(-90);
+        rt2.setToAngle(0);
+        rt2.setInterpolator(Interpolator.EASE_OUT);
+
+        rt1.setOnFinished(e -> {
+            backImageView.setVisible(false);
+            imageView.setVisible(true);
+            rt2.play();
+        });
+
+        rt1.play();
+        flipped = false;
+    }
+
 
 
     

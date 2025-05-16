@@ -1,26 +1,27 @@
 package view.CardsView;
 
+import java.util.ArrayList;
+
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import model.Colour;
 import model.card.Card;
-
-import java.util.ArrayList;
 
 public class HandView extends StackPane {
     private final HBox handView;
     private final ArrayList<Card> hand;
 
-    public HandView(ArrayList<Card> hand) {
+    public HandView(ArrayList<Card> hand, Colour colour, boolean showFrontInitially) {
         this.hand = hand;
         handView = new HBox(20);
-        handView.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         for (int i = 0; i < hand.size(); i++) {
         	Card card = hand.get(i);
-            CardView cardView = new CardView(card);
+            CardView cardView = new CardView(card, showFrontInitially, colour);
             handView.getChildren().add(cardView);
         }
+        handView.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         getChildren().add(handView);
     }
 
@@ -51,8 +52,8 @@ public class HandView extends StackPane {
         }
     }
 
-    public void addCard(Card card) {
-        CardView cardView = new CardView(card);
+    public void addCard(Card card, Colour colour, boolean showFrontInitially) {
+        CardView cardView = new CardView(card, showFrontInitially, colour);
         hand.add(card);
         handView.getChildren().add(cardView);
     }

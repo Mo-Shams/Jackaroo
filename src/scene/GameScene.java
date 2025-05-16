@@ -15,6 +15,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
@@ -53,18 +54,17 @@ public class GameScene {
 		Scene scene = new Scene(root, width, height);
 
 		// Background
-		Rectangle background = generateBackground(width, height + 70, Color.SKYBLUE, Color.LIGHTGREEN, Color.YELLOWGREEN);
+		Rectangle background = generateBackground(width, height +70, Color.SKYBLUE, Color.LIGHTGREEN, Color.YELLOWGREEN);
+		FirePitView firePitView = new FirePitView(root);
+		
 		
 		root.getChildren().add(0, background);
 		// Hands
-		FirePitView firePitView = new FirePitView(root);
 		renderHands(root, scene, controller, width, height, firePitView);
 		renderHomeZones(root, width, height);
 		
-		// Sample marble + cell
 
 		renderTrack(root, width, height);
-		
 		firePitView.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		StackPane.setAlignment(firePitView, Pos.CENTER);
 		root.getChildren().add(firePitView);
@@ -82,7 +82,7 @@ public class GameScene {
 		LinearGradient gradient = new LinearGradient(
 			0, 1, 1, 0,
 			true,
-			javafx.scene.paint.CycleMethod.NO_CYCLE,
+			CycleMethod.NO_CYCLE,
 			new Stop(0, start),
 			new Stop(0.5, inbetween),
 			new Stop(1, end)
@@ -95,7 +95,7 @@ public class GameScene {
 		int i = 0;
 		StackPane container = new StackPane();
 		for (Player player : game.getPlayers()) {
-			HBox handBox = renderSingleHand(player, scene, controller, firePitView);
+			HBox handBox = renderSingleHand(player, scene, controller, firePitView, width, height);
 			switch (i) {
 				case 0:
 					StackPane.setAlignment(handBox, Pos.BOTTOM_CENTER);
@@ -128,16 +128,17 @@ public class GameScene {
 		root.getChildren().add(container);
 	}
 
-	private HBox renderSingleHand(Player player, Scene scene, GameController controller, FirePitView firePitView) {
-		HandView handView = new HandView(player.getHand());
+	private HBox renderSingleHand(Player player, Scene scene, GameController controller, FirePitView firePitView, double width, double height) {
+		boolean isPlayer = player.getColour() == game.getPlayers().get(0).getColour();
+		HandView handView = new HandView(player.getHand(), player.getColour(), isPlayer);
 		HBox handBox = handView.getHandView();
 
 		for (Node node : handBox.getChildren()) {
 			CardView cardView = (CardView) node;
-			cardView.getImageView().fitHeightProperty().bind(scene.heightProperty().multiply(0.1275));
-			cardView.getImageView().fitWidthProperty().bind(scene.widthProperty().multiply(0.85));
-			controller.addCardClickHandler(cardView, handView, firePitView);
-			controller.addCardHoverEffect(cardView);
+			if(isPlayer){
+				controller.addCardClickHandler(cardView, handView, firePitView);
+				controller.addCardHoverEffect(cardView);
+			}
 		}
 		return handBox;
 	}
