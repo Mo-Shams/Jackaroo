@@ -1,10 +1,10 @@
 package controller;
 
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.card.Card;
 import view.CardsView.CardView;
+import view.CardsView.FirePitView;
 import view.CardsView.HandView;
 import engine.Game;
 import exception.InvalidCardException;
@@ -17,10 +17,14 @@ public class GameController extends Controller {
         this.game = game;
     }
 
-    public void addCardClickHandler(CardView cardView, HandView handView) {
+    public void addCardClickHandler(CardView cardView, HandView handView, FirePitView firePitView) {
         cardView.setOnMouseClicked(event -> {
             Card card = cardView.getCard();
-
+            if (event.getClickCount() == 2) {
+                // Double click detected
+            	cardView.sendToFirePit(firePitView);
+//            	firePitView.sendCardToFirePit(cardView, handView);// Or any other action
+            }
             if (!cardView.isSelected()) {
                 try {
                 	game.deselectAll();

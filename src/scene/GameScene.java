@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import model.player.Marble;
 import model.player.Player;
 import view.CardsView.CardView;
+import view.CardsView.FirePitView;
 import view.CardsView.HandView;
 import view.boardView.CellView;
 import view.boardView.HomeZoneView;
@@ -53,16 +54,20 @@ public class GameScene {
 
 		// Background
 		Rectangle background = generateBackground(width, height + 70, Color.SKYBLUE, Color.LIGHTGREEN, Color.YELLOWGREEN);
+		
 		root.getChildren().add(0, background);
-
 		// Hands
-		renderHands(root, scene, controller, width, height);
+		FirePitView firePitView = new FirePitView(root);
+		renderHands(root, scene, controller, width, height, firePitView);
 		renderHomeZones(root, width, height);
-
+		
 		// Sample marble + cell
 
 		renderTrack(root, width, height);
-
+		
+		firePitView.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+		StackPane.setAlignment(firePitView, Pos.CENTER);
+		root.getChildren().add(firePitView);
 		return scene;
 	}
 
@@ -86,11 +91,11 @@ public class GameScene {
 		return background;
 	}
 
-	private void renderHands(StackPane root, Scene scene, GameController controller, double width, double height) {
+	private void renderHands(StackPane root, Scene scene, GameController controller, double width, double height, FirePitView firePitView) {
 		int i = 0;
 		StackPane container = new StackPane();
 		for (Player player : game.getPlayers()) {
-			HBox handBox = renderSingleHand(player, scene, controller);
+			HBox handBox = renderSingleHand(player, scene, controller, firePitView);
 			switch (i) {
 				case 0:
 					StackPane.setAlignment(handBox, Pos.BOTTOM_CENTER);
@@ -123,15 +128,15 @@ public class GameScene {
 		root.getChildren().add(container);
 	}
 
-	private HBox renderSingleHand(Player player, Scene scene, GameController controller) {
+	private HBox renderSingleHand(Player player, Scene scene, GameController controller, FirePitView firePitView) {
 		HandView handView = new HandView(player.getHand());
 		HBox handBox = handView.getHandView();
 
 		for (Node node : handBox.getChildren()) {
 			CardView cardView = (CardView) node;
-			cardView.getImageView().fitHeightProperty().bind(scene.heightProperty().multiply(0.12));
-			cardView.getImageView().fitWidthProperty().bind(scene.widthProperty().multiply(0.08));
-			controller.addCardClickHandler(cardView, handView);
+			cardView.getImageView().fitHeightProperty().bind(scene.heightProperty().multiply(0.1275));
+			cardView.getImageView().fitWidthProperty().bind(scene.widthProperty().multiply(0.85));
+			controller.addCardClickHandler(cardView, handView, firePitView);
 			controller.addCardHoverEffect(cardView);
 		}
 		return handBox;
@@ -165,23 +170,24 @@ public class GameScene {
 	        homeZoneView.getContainer().setMaxWidth(width * 0.6);
 	        homeZoneView.getContainer().setMaxHeight(height * 0.4);
 	        //homeZoneView.getContainer().setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-	        // Add the HomeZoneView container to the root
+	        //Add the HomeZoneView container to the root
 	        root.getChildren().add(1, homeZoneView.getContainer());
 	    }
 	}
 	
 	private void renderTrack(StackPane root, double width, double height) {
-	    ArrayList<Cell> track = game.getBoard().getTrack(); // or however you get it
+	    ArrayList<Cell> track = game.getBoard().getTrack();
 	    ArrayList<SafeZone> safeZones = game.getBoard().getSafeZones();
 	    TrackView trackView = new TrackView(track, safeZones);
-	    trackView.setLayoutX((width-1960) / 2);
-	    trackView.setLayoutY((height-980) / 2);
+	    trackView.setLayoutX((width-1925) / 2);
+	    trackView.setLayoutY((height-1025) / 2);
 	    trackView.setRotate(-45);
 	    Pane container = new Pane();
 	    container.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 	    container.getChildren().add(trackView);
 	    StackPane.setAlignment(container, Pos.CENTER);
-	    root.getChildren().add(2,container);
+	    root.getChildren().add(2, container);
 	}
+	
 
 }

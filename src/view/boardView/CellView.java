@@ -1,13 +1,15 @@
 package view.boardView;
 
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import view.marbleView.MarbleView;
 import engine.board.Cell;
+import engine.board.CellType;
 
 public class CellView extends StackPane {
-	private static final double DEFAULT_RADIUS = 12;
+	private static final double DEFAULT_RADIUS = 11;
     private final Cell cell;
     private final Circle circle;
     private MarbleView marbleView;
@@ -19,11 +21,21 @@ public class CellView extends StackPane {
         circle = new Circle(DEFAULT_RADIUS);
         circle.setFill(Color.LIGHTGRAY);
         circle.setStroke(Color.DARKRED);
-        circle.setStrokeWidth(2.5);
-
+        circle.setStrokeWidth(2);
         getChildren().add(circle);
     }
+    public CellView(Cell cell, Color color) {
+        this.cell = cell;
 
+        // Create the visual circular base
+        circle = new Circle(DEFAULT_RADIUS);
+        circle.setFill(Color.LIGHTGRAY);
+        circle.setStroke(color);
+        circle.setStrokeWidth(2);
+        if(cell.getCellType() == CellType.SAFE)
+        	applyGlow(color);
+        getChildren().add(circle);
+    }
     public Cell getCell() {
         return cell;
     }
@@ -59,7 +71,13 @@ public class CellView extends StackPane {
     public void resetStrokeColor() {
         circle.setStroke(Color.BROWN); // or your default color
     }
-
+    public void applyGlow(Color color){
+    	DropShadow glow = new DropShadow();
+    	glow.setColor(color);
+    	glow.setWidth(25);
+    	glow.setHeight(25);
+    	this.setEffect(glow);
+    }
 
 	
 //	public Circle setupTrackCell(int index) {

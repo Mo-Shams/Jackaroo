@@ -1,11 +1,18 @@
 package view.CardsView;
 
 import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -94,6 +101,64 @@ public final class CardView extends StackPane {
         glow.setHeight(GLOW_HEIGHT);
         this.setEffect(glow);
     }
+    
+    public void sendToFirePit(FirePitView firePit) {
+        // Step 1: Get center of FirePit in scene coordinates
+        Bounds firePitBounds = firePit.localToScene(firePit.getBoundsInLocal());
+        double firePitCenterX = firePitBounds.getMinX() + firePitBounds.getWidth() / 2;
+        double firePitCenterY = firePitBounds.getMinY() + firePitBounds.getHeight() / 2;
+
+        // Step 2: Convert FirePit scene coordinates to this card’s parent coordinates
+        Point2D firePitInParent = this.getParent().sceneToLocal(firePitCenterX, firePitCenterY);
+
+        // Step 3: Get the current center of the card in its parent's coordinates
+        Bounds cardBounds = this.getBoundsInParent();
+        double cardCenterX = cardBounds.getMinX() + cardBounds.getWidth() / 2;
+        double cardCenterY = cardBounds.getMinY() + cardBounds.getHeight() / 2;
+
+        // Define max radius (in pixels) for random offset around FirePit center
+        double maxRadius = 30.0;
+
+        // Generate random angle between 0 and 2*PI
+        double angle = Math.random() * 2 * Math.PI;
+
+        // Generate random radius between 0 and maxRadius
+        double radius = Math.random() * maxRadius;
+
+        // Calculate offset X and Y using polar coordinates
+        double randomOffsetX = Math.cos(angle) * radius;
+        double randomOffsetY = Math.sin(angle) * radius;
+
+        // Calculate translation offsets relative to card center
+        double translateX = firePitInParent.getX() + randomOffsetX - cardCenterX;
+        double translateY = firePitInParent.getY() + randomOffsetY - cardCenterY;
+
+        // Create TranslateTransition to move card to random position around FirePit center
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), this);
+        tt.setByX(translateX);
+        tt.setByY(translateY);
+        tt.setInterpolator(Interpolator.EASE_BOTH);
+
+        // Create RotateTransition for random rotation between -30 and +30 degrees
+        RotateTransition rt = new RotateTransition(Duration.seconds(0.5), this);
+        double randomAngle = (Math.random() * 60) - 30; // from -30 to +30 degrees
+        rt.setByAngle(randomAngle);
+        rt.setInterpolator(Interpolator.EASE_BOTH);
+
+        // Play both transitions together
+        ParallelTransition pt = new ParallelTransition(tt, rt);
+        pt.play();
+
+        pt.setOnFinished(e -> {
+            setMouseTransparent(true);
+        });
+    }
+
+
+    
+    
+
+
 
     @Override
     public String toString() {

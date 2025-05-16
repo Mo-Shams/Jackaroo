@@ -16,7 +16,8 @@ public class HandView extends StackPane {
         this.hand = hand;
         handView = new HBox(20);
         handView.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        for (Card card : hand) {
+        for (int i = 0; i < hand.size(); i++) {
+        	Card card = hand.get(i);
             CardView cardView = new CardView(card);
             handView.getChildren().add(cardView);
         }
