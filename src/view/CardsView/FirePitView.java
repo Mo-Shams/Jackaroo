@@ -48,7 +48,6 @@ public class FirePitView extends StackPane {
 		return circle;
 	}
 	
-<<<<<<< Updated upstream
 	public void addToFirePit(CardView cardView) {
 	    // Step 1: Get the card's current position in scene coordinates
 	    Bounds sceneBounds = cardView.localToScene(cardView.getBoundsInLocal());
@@ -74,35 +73,6 @@ public class FirePitView extends StackPane {
 	    cardView.setEffect(null);
 	    cardView.scaleCard(1.2);
 
-=======
-
-	
-	public void addToFirePit(CardView cardView) {
-	    // Step 1: Get the card's current position in scene coordinates
-	    Bounds sceneBounds = cardView.localToScene(cardView.getBoundsInLocal());
-	    double sceneX = sceneBounds.getMinX() + sceneBounds.getWidth()/5;
-	    double sceneY = sceneBounds.getMinY() + sceneBounds.getHeight()/5;
-
-	    // Step 2: Convert scene position to cardLayer's local coordinates
-	    Point2D firePitCoords = cardLayer.sceneToLocal(sceneX, sceneY);
-
-	    // Step 3: Remove from current parent and add to FirePit
-	    ((Pane) cardView.getParent()).getChildren().remove(cardView);
-	    cardLayer.getChildren().add(cardView);
-
-	    // Step 4: Set layout to match final visual position
-	    cardView.setLayoutX(firePitCoords.getX());
-	    cardView.setLayoutY(firePitCoords.getY());
-
-	    // Step 5: Reset any animation translation offsets (important!)
-	    cardView.setTranslateX(0);
-	    cardView.setTranslateY(0);
-	    
-	    
-	    cardView.setEffect(null);
-	    cardView.scaleCard(1.2);
-
->>>>>>> Stashed changes
 	    // Step 6: Keep rotation from animation
 	    // This is preserved automatically unless you used RotateTransition on a different node.
 	}

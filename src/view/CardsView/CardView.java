@@ -162,16 +162,10 @@ public final class CardView extends StackPane {
         pt.play();
 
         pt.setOnFinished(e -> {
-<<<<<<< Updated upstream
-            setMouseTransparent(true);
-            firePit.addToFirePit(this);
-            
-=======
         	setMouseTransparent(true); 
     	   //  handView.removeCard(this.getCard()); 
     	    firePit.addToFirePit(this);
         
->>>>>>> Stashed changes
         });
     }
     
