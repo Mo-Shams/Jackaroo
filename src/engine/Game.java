@@ -2,8 +2,11 @@ package engine;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
+import java.util.List;
+
 
 import model.Colour;
 import model.card.Card;
@@ -40,9 +43,21 @@ public class Game implements GameManager {
         this.players = new ArrayList<>(); 
         players.add(new Player(playerName, colourOrder.get(0)));
         
-        for (int i = 1; i < 4; i++) {
-        	players.add(new CPU("CPU " + i, colourOrder.get(i), board));
-        }
+        List<String> cpuNamePool = Arrays.asList(
+                "Adham", "Seif", "Ziad", "Alice",
+                "Bob", "Tourist", "Mostafa Saad", "ElHafoozliq",
+                "Youssef", "Mohammed", "Jianqly", "Osama"
+            );
+            // 5) Shuffle and pick the first three:
+            Collections.shuffle(cpuNamePool);
+            List<String> chosenCpuNames = cpuNamePool.subList(0, 3);
+
+            // 6) Create your three CPU players with those names and distinct colours:
+            for (int i = 0; i < 3; i++) {
+                String cpuName   = chosenCpuNames.get(i);
+                Colour cpuColour = colourOrder.get(i + 1);
+                players.add(new CPU(cpuName, cpuColour, board));
+            }
         
         for (Player player : players) {
         	ArrayList<Card> player_cards = Deck.drawCards();
@@ -211,6 +226,7 @@ public class Game implements GameManager {
 		return players.get((currentPlayerIndex + 1) % 4).getColour();
 	}
 	
+
 	public void runGame(){
 		Scanner sc = new Scanner(System.in);
 		while(checkWin() == null){
@@ -288,5 +304,8 @@ public class Game implements GameManager {
 		} catch (IOException e) {
 			System.out.println("game loading failed");
 		}
+	}
+	public Player getCurrentPlayer() {
+		return players.get(currentPlayerIndex);
 	}
 }

@@ -14,7 +14,7 @@ public class FirePitView extends StackPane {
 	private final Circle circle;
 	private final Pane cardLayer;
 
-	public FirePitView(){
+	public FirePitView(StackPane overlay){
 		new ArrayList<>();
 		circle = createGlowingCircle(150, Color.DEEPSKYBLUE);
 		cardLayer = new Pane();

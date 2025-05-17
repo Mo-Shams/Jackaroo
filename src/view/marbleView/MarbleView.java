@@ -1,7 +1,9 @@
 package view.marbleView;
 
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import model.player.Marble;
 import view.ImageCache;
 
@@ -53,5 +55,18 @@ public final class MarbleView extends StackPane {
                 "colour=" + marble.getColour() +
                 ", selected=" + selected +
                 '}';
+    }
+    
+    public void applyGlow(Color color) {
+        DropShadow glow = new DropShadow();
+        glow.setColor(color);
+        glow.setWidth(10);
+        glow.setHeight(10);
+        this.setEffect(glow);
+    }
+    
+    public void scaleMarble (double scaleFactor) {
+    	this.setScaleX(scaleFactor);
+    	this.setScaleY(scaleFactor);
     }
 }
