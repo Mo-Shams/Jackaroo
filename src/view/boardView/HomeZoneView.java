@@ -11,108 +11,106 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import view.marbleView.MarbleView;
-import model.Colour;
 import model.player.Marble;
 
-public class HomeZoneView {
-	private static final double SIDE_LENGTh = 100;
-	private static final double GAP = 5;
-	private ArrayList<Marble> marbles;
-	private ArrayList<MarbleView> marbleViews;
-	private final ArrayList<CellView> cellViews;
-	private final Rectangle homeZone;
-	private final StackPane container;
-	private GridPane cellGrid;
-	
-	
-	public HomeZoneView(ArrayList<Marble> marbles){
-		Color color = convertToFxColor(marbles.get(0).getColour());
-		this.marbles = marbles;
-		this.marbleViews = new ArrayList<>();
-		this.cellViews = new ArrayList<>();
-		
-		for(Marble marble : marbles){
-			MarbleView marbleView = new MarbleView(marble);
-			marbleViews.add(marbleView);
-		}
-		for(int i = 0; i < 4; i++){
-			cellViews.add(new CellView(new Cell(CellType.NORMAL)));
-		}
-		for (CellView cellView : cellViews) {
-		    cellView.setStrokeColor(color);  // Set the stroke color of the cells
-		}
+public class HomeZoneView extends StackPane {
+    private static final double SIDE_LENGTH = 100;
+    private static final double GAP = 5;
 
-		homeZone = createSquare(SIDE_LENGTh, SIDE_LENGTh, color);
-		
-		cellGrid = new GridPane();
-		cellGrid.setHgap(GAP);
-		cellGrid.setVgap(GAP);
-		cellGrid.setAlignment(Pos.CENTER);
+    private ArrayList<Marble> marbles;
+    private ArrayList<MarbleView> marbleViews;
+    private final ArrayList<CellView> cellViews;
+    private final Rectangle homeZone;
+    private final GridPane cellGrid;
 
-		// Add cells to 2x2 Grid
-		cellGrid.add(cellViews.get(0), 0, 0); // top-left
-		cellGrid.add(cellViews.get(1), 1, 0); // top-right
-		cellGrid.add(cellViews.get(2), 0, 1); // bottom-left
-		cellGrid.add(cellViews.get(3), 1, 1); // bottom-right
-		
-		for (int i = 0; i < marbleViews.size() && i < cellViews.size(); i++) {
-		    cellViews.get(i).setMarble(marbleViews.get(i));
-		}
+    public HomeZoneView(ArrayList<Marble> marbles) {
+        this.marbles = (marbles != null)?  marbles : new ArrayList<>();
+        this.marbleViews = new ArrayList<>();
+        this.cellViews = new ArrayList<>();
 
-		container = new StackPane();
-		container.getChildren().addAll(homeZone, cellGrid);
-	}
-	
-	private Rectangle createSquare(double width, double height, Color color) {
-	    Rectangle square = new Rectangle(width, height);
-	    square.setFill(Color.TRANSPARENT);
-	    square.setStroke(color);
-	    square.setArcWidth(20); // Rounded corners
-	    square.setArcHeight(20);
-	    square.setStrokeWidth(3);
+        Color color = Color.GRAY;
+        if (!this.marbles.isEmpty()) {
+            color = Color.valueOf(this.marbles.get(0).getColour().toString());
+        }
 
-	    // Glowing effect
-	    DropShadow glow = new DropShadow();
-	    glow.setColor(color);
-	    glow.setRadius(10);
-	    glow.setSpread(0.5);
-	    square.setEffect(glow);
+        for (Marble marble : this.marbles) {
+            MarbleView marbleView = new MarbleView(marble);
+            marbleViews.add(marbleView);
+        }
 
-	    return square;
-	}
-	public ArrayList<Marble> getMarbles() {
-		return marbles;
-	}
+        for (int i = 0; i < 4; i++) {
+            cellViews.add(new CellView(new Cell(CellType.NORMAL), color));
+        }
 
-	public void setMarbles(ArrayList<Marble> marbles) {
-		this.marbles = marbles;
-	}
+        homeZone = createSquare(SIDE_LENGTH, SIDE_LENGTH, color);
 
-	public ArrayList<MarbleView> getMarbleViews() {
-		return marbleViews;
-	}
+        cellGrid = new GridPane();
+        cellGrid.setHgap(GAP);
+        cellGrid.setVgap(GAP);
+        cellGrid.setAlignment(Pos.CENTER);
 
-	public void setMarbleViews(ArrayList<MarbleView> marbleViews) {
-		this.marbleViews = marbleViews;
-	}
+        // Add cells to 2x2 Grid
+        cellGrid.add(cellViews.get(0), 0, 0);
+        cellGrid.add(cellViews.get(1), 1, 0);
+        cellGrid.add(cellViews.get(2), 0, 1);
+        cellGrid.add(cellViews.get(3), 1, 1);
 
-	public StackPane getContainer() {
-		return container;
-	}
-	public static Color convertToFxColor(Colour colour) {
-	    switch (colour) {
-	        case RED:
-	            return Color.RED;
-	        case BLUE:
-	            return Color.BLUE;
-	        case GREEN:
-	            return Color.GREEN;
-	        case YELLOW:
-	            return Color.YELLOW;
-	        // Add more colors if necessary
-	        default:
-	            return Color.TRANSPARENT; // Fallback if no match
-	    }
-	}
+        // Assign marbles to cells in order
+        for (int i = 0; i < marbleViews.size() && i < cellViews.size(); i++) {
+            cellViews.get(i).setMarbleView(marbleViews.get(i));
+        }
 
+        getChildren().addAll(homeZone, cellGrid);
+    }
+
+    private Rectangle createSquare(double width, double height, Color color) {
+        Rectangle square = new Rectangle(width, height);
+        square.setFill(Color.TRANSPARENT);
+        square.setStroke(color);
+        square.setArcWidth(20);
+        square.setArcHeight(20);
+        square.setStrokeWidth(3);
+
+        DropShadow glow = new DropShadow();
+        glow.setColor(color);
+        glow.setRadius(10);
+        glow.setSpread(0.5);
+        square.setEffect(glow);
+
+        return square;
+    }
+
+    public ArrayList<Marble> getMarbles() {
+        return marbles;
+    }
+
+    public ArrayList<MarbleView> getMarbleViews() {
+        return marbleViews;
+    }
+
+
+    // Remove the first marble from home zone and return its MarbleView, or null if empty
+    public MarbleView removeFirstMarble() {
+        if (marbleViews.isEmpty()) {
+            return null;
+        }
+
+        MarbleView removed = marbleViews.remove(0);
+        return removed;
+    }
+
+    // Add a marble to the first available empty cell; returns true if added successfully
+    public boolean addMarbleView(MarbleView marbleView) {
+        if (marbleViews.size() >= cellViews.size()) {
+            // No empty cell available
+            return false;
+        }
+        marbleViews.add(marbleView);
+        return true;
+    }
+
+    // Get current number of marbles in the home zone
+    public int getMarbleCount() {
+        return marbleViews.size();
+    }
 }

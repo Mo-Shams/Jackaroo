@@ -3,14 +3,12 @@ package scene;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -31,10 +29,8 @@ import model.player.Player;
 import view.CardsView.CardView;
 import view.CardsView.FirePitView;
 import view.CardsView.HandView;
-import view.boardView.CellView;
 import view.boardView.HomeZoneView;
 import view.boardView.TrackView;
-import view.marbleView.MarbleView;
 import controller.GameController;
 import engine.Game;
 import engine.board.Cell;
@@ -42,11 +38,8 @@ import engine.board.SafeZone;
 
 public class GameScene {
 	private final Game game;
-	private final String playerName;
-	
 	public GameScene(String playerName) throws IOException {
-		game = new Game(playerName);
-		this.playerName = playerName; 
+		game = new Game(playerName); 
 	}
 
 	public Scene createGameScene(Stage stage) {
@@ -61,8 +54,9 @@ public class GameScene {
 		Scene scene = new Scene(root, width, height);
 
 		// Background
-		Rectangle background = generateBackground(width, height + 70, Color.SKYBLUE, Color.LIGHTGREEN, Color.YELLOWGREEN);
-		
+
+		Rectangle background = generateBackground(width, height +70, Color.SKYBLUE, Color.LIGHTGREEN, Color.YELLOWGREEN);
+
 		root.getChildren().add(0, background);
 		
 		// Player Profile Pane
@@ -170,14 +164,11 @@ public class GameScene {
 	private HBox renderSingleHand(Player player, Scene scene, GameController controller, FirePitView firePitView, double width, double height) {
 		boolean isPlayer = player.getColour() == game.getPlayers().get(0).getColour();
 		HandView handView = new HandView(player.getHand(), player.getColour(), isPlayer);
-		HBox handBox = handView.getHandView();
+		HBox handBox = handView.getHandBox();
 
 		for (Node node : handBox.getChildren()) {
 			CardView cardView = (CardView) node;
-			if(isPlayer){
-				controller.addCardClickHandler(cardView, handView, firePitView);
-				controller.addCardHoverEffect(cardView);
-			}
+			controller.addCardClickHandler(cardView, handView, firePitView);
 		}
 		return handBox;
 	}
@@ -195,25 +186,25 @@ public class GameScene {
 	        // Position HomeZone based on player index (4 corners)
 	        switch (i) {
 	            case 0:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.BOTTOM_CENTER);
+	                StackPane.setAlignment(homeZoneView, Pos.BOTTOM_CENTER);
 	                break;
 	            case 1:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.CENTER_LEFT);
+	                StackPane.setAlignment(homeZoneView, Pos.CENTER_LEFT);
 	                break;
 	            case 2:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.TOP_CENTER);
+	                StackPane.setAlignment(homeZoneView, Pos.TOP_CENTER);
 	                break;
 	            case 3:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.CENTER_RIGHT);
+	                StackPane.setAlignment(homeZoneView, Pos.CENTER_RIGHT);
 	                break;
 	        }
 
 	        // Set size for HomeZoneView (adjust as needed)
-	        homeZoneView.getContainer().setMaxWidth(width * 0.6);
-	        homeZoneView.getContainer().setMaxHeight(height * 0.4);
+	        homeZoneView.setMaxWidth(width * 0.6);
+	        homeZoneView.setMaxHeight(height * 0.4);
 	        //homeZoneView.getContainer().setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 	        //Add the HomeZoneView container to the root
-	        root.getChildren().add(homeZoneView.getContainer());
+	        root.getChildren().add(homeZoneView);
 	    }
 	}
 	

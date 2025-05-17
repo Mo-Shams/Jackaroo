@@ -2,22 +2,15 @@ package view.CardsView;
 
 import java.util.ArrayList;
 
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.RotateTransition;
-import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
 
 public class FirePitView extends StackPane {
 	private final Circle circle;
@@ -25,14 +18,22 @@ public class FirePitView extends StackPane {
 	private final StackPane overlayLayer;
 	public Pane cardLayer;
 
-	public FirePitView(StackPane overlayLayer){
-		this.overlayLayer = overlayLayer;
+	public FirePitView(StackPane overlay){
 		firePit = new ArrayList<>();
+		this.overlayLayer = overlay;
 		circle = createGlowingCircle(150, Color.DEEPSKYBLUE);
 		cardLayer = new Pane();
 		getChildren().addAll(circle, cardLayer);  // order matters! circle first, cards on top
 		setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 	}
+	
+	public void addCardToFirePit(CardView cardView, double x, double y, double rotation) {
+        cardLayer.getChildren().add(cardView);
+        // Set the card position relative to cardLayer (coordinates inside firepit)
+        cardView.setLayoutX(x);
+        cardView.setLayoutY(y);
+        cardView.setRotate(rotation);
+    }
 	
 	private Circle createGlowingCircle(double redius, Color color){
 		Circle circle = new Circle(redius);

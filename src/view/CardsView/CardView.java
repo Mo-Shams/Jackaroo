@@ -33,10 +33,10 @@ public final class CardView extends StackPane {
     private boolean flipped;
 
     
-    public CardView(Card card, boolean showFrontInitially, Colour colour) {
+    public CardView(Card card, boolean isPlayer, Colour colour) {
         this.card = card;
         this.selected = false;
-        this.flipped = !showFrontInitially;
+        this.flipped = !isPlayer;
 
         String imagePath = "/resources/card_images/" + generateImageName(card);
         imageView = new ImageView(ImageCache.getImage(imagePath));
@@ -50,17 +50,19 @@ public final class CardView extends StackPane {
         backImageView.setPreserveRatio(true);
         backImageView.setSmooth(true);
         backImageView.setFitHeight(140);
-        if (showFrontInitially) {
+        if (isPlayer) {
             imageView.setVisible(true);
             backImageView.setVisible(false);
         } else {
             imageView.setVisible(false);
             backImageView.setVisible(true);
         }
-
+        
         getChildren().addAll(imageView, backImageView);
         this.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         Tooltip.install(this, new Tooltip(card.toString()));
+        setMouseTransparent(!isPlayer);
+        addHoverEffect();
     }
 
     private String generateImageName(Card card) {
@@ -95,6 +97,19 @@ public final class CardView extends StackPane {
     public Card getCard() {
         return card;
     }
+    
+    public void updateSelectionAnimation(boolean select){
+    	if(!select){
+    		setSelected(false);
+    		setEffect(null);
+    		scaleCard(1);
+    	}
+    	else{
+    		setSelected(true);
+    		applyGlow(Color.DODGERBLUE);
+    		scaleCard(1.1);
+    	}
+    }
 
     public void scaleCard(double scale) {
         ScaleTransition st = new ScaleTransition(Duration.millis(SCALE_ANIMATION_DURATION_MS), this);
@@ -104,7 +119,7 @@ public final class CardView extends StackPane {
         st.play();
     }
 
-    public void applyGlow(Color color) {
+    private void applyGlow(Color color) {
         DropShadow glow = new DropShadow();
         glow.setColor(color);
         glow.setWidth(GLOW_WIDTH);
@@ -222,11 +237,24 @@ public final class CardView extends StackPane {
         rt1.play();
         flipped = false;
     }
-
-
-
     
-    
+    public void addHoverEffect() {
+        setPickOnBounds(false);
+
+        setOnMouseEntered(event -> {
+            if (!isSelected()) {
+                applyGlow(Color.YELLOW);
+                scaleCard(1.1);
+            }
+        });
+
+        setOnMouseExited(event -> {
+            if (!isSelected()) {
+                setEffect(null);
+                scaleCard(1.0);
+            } 
+        });
+    }
 
 
 

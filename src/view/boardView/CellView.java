@@ -15,32 +15,34 @@ import engine.board.CellType;
 
 public class CellView extends StackPane {
 	private static final double DEFAULT_RADIUS = 12;
+	private static final Color DEFAULT_COLOR = Color.DARKSLATEBLUE;
     private final Cell cell;
     private final Circle circle;
     private MarbleView marbleView;
-
-    public CellView(Cell cell) {
-        this.cell = cell;
-
-        // Create the visual circular base
-        circle = new Circle(DEFAULT_RADIUS);
-        circle.setFill(Color.LIGHTGRAY);
-        circle.setStroke(Color.DARKRED);
-        circle.setStrokeWidth(2);
-        getChildren().add(circle);
+    
+    
+    public CellView(Cell cell){
+    	this(cell, DEFAULT_COLOR);
     }
-    public CellView(Cell cell, Color color) {
-        this.cell = cell;
 
-        // Create the visual circular base
-        circle = new Circle(DEFAULT_RADIUS);
-        circle.setFill(Color.LIGHTGRAY);
-        circle.setStroke(color);
-        circle.setStrokeWidth(2);
-        if(cell.getCellType() == CellType.SAFE)
-        	applyGlow(color);
+    public CellView(Cell cell, Color strokeColor) {
+        this.cell = cell;
+        circle = createCircle(strokeColor);
         getChildren().add(circle);
+
+        if (cell.getCellType() == CellType.SAFE) {
+            applyGlow(strokeColor);
+        }
     }
+
+    private Circle createCircle(Color strokeColor) {
+        Circle circle = new Circle(DEFAULT_RADIUS);
+        circle.setFill(Color.LIGHTGRAY);
+        circle.setStroke(strokeColor);
+        circle.setStrokeWidth(2);
+        return circle;
+    }
+    
     public Cell getCell() {
         return cell;
     }
@@ -54,7 +56,7 @@ public class CellView extends StackPane {
     }
 
     // Add or update the marble in the cell
-    public void setMarble(MarbleView marbleView) {
+    public void setMarbleView(MarbleView marbleView) {
         this.marbleView = marbleView;
         if (!getChildren().contains(marbleView)) {
             getChildren().add(marbleView);
@@ -62,28 +64,22 @@ public class CellView extends StackPane {
     }
 
     // Clear the marble (e.g. when moving it elsewhere)
-    public void removeMarble() {
+    public void removeMarbleView() {
         if (marbleView != null) {
             getChildren().remove(marbleView);
             marbleView = null;
         }
     }
     
-    public void setStrokeColor(Color color) {
-    	circle.setStroke(color);
-    }
-
-    public void resetStrokeColor() {
-        circle.setStroke(Color.BROWN); // or your default color
-    }
     public void applyGlow(Color color){
+    	if(color == null) return;
     	DropShadow glow = new DropShadow();
     	glow.setColor(color);
     	glow.setWidth(25);
     	glow.setHeight(25);
-    	this.setEffect(glow);
+    	circle.setEffect(glow);
     }
-    
+
     public void moveMarbleTo(CellView target) {
         // Retrieve the marble from this (source) cell.
         MarbleView marble = this.getMarbleView();
@@ -127,60 +123,13 @@ public class CellView extends StackPane {
             marble.setTranslateY(0);
             
             // Remove marble from the current cell (this) and add it to the target CellView.
-            this.removeMarble();
-            target.setMarble(marble);
+            this.removeMarbleView();
+            target.setMarbleView(marble);
         });
         
         // Start the animation.
         transition.play();
     }
 
-	
-//	public Circle setupTrackCell(int index) {
-//		double radius = 10;
-//		double gap = 2;
-//		double diameter = radius * 2;
-//		int numPerSide = 26;
-//
-//	    double squareSize = numPerSide * diameter + numPerSide * gap;
-//	    double startX = (1400 - squareSize) / 2;
-//	    double startY = (900 - squareSize) / 2;
-//
-//	    double x = 0;
-//	    double y = 0;
-//
-//	    if (index < 25) {
-//	        x = startX;
-//	        y = startY + squareSize - diameter - index * (diameter + gap);
-//	    } else if (index < 50) {
-//	        x = startX + (index - 25) * (diameter + gap);
-//	        y = startY;
-//	    } else if (index < 75) {
-//	        x = startX + squareSize - diameter;
-//	        y = startY + (index - 50) * (diameter + gap);
-//	    } else {
-//	        x = startX + squareSize - diameter - (index - 75) * (diameter + gap);
-//	        y = startY + squareSize - diameter;
-//	    }
-//	    
-//	    Circle circle = new Circle(x, y, radius, getCellColour(index));
-//	    return circle;
-//	}
-//	
-//	public Color getCellColour (int i){
-//		Marble marble = null ;
-//		// GameScene.getGame().getBoard().getTrack().get(i).getMarble(); 
-//		if (marble != null){
-//			if (marble.getColour() == Colour.RED) return Color.RED ;
-//			if (marble.getColour() == Colour.GREEN) return Color.GREEN ;
-//			if (marble.getColour() == Colour.YELLOW) return Color.YELLOW ;
-//			if (marble.getColour() == Colour.BLUE) return Color.BLUE ;
-//		}
-//		return Color.BLACK ;	
-//	}
-//	
-//	public Circle getCell(){
-//		return this.cell ;
-//	}
 
 }

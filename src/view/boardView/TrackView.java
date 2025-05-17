@@ -99,7 +99,7 @@ public class TrackView extends GridPane {
                 if (cell.getMarble() != null) {
                     Marble marble = cell.getMarble(); // get the model's marble
                     MarbleView marbleView = new MarbleView(marble);
-                    cellView.setMarble(marbleView);
+                    cellView.setMarbleView(marbleView);
                 }
                 if((DIRECTIONS[d][0] == 0 || DIRECTIONS[d][1] == 0))
                 	GridPane.setMargin(cellView, new Insets(P, P, P, P));
@@ -120,7 +120,7 @@ public class TrackView extends GridPane {
                 y += DIRECTIONS[d][1];
             }
         }
-        cellToViewMap.get(track.get(0)).setMarble(new MarbleView(new Marble(Colour.BLUE)));
+        cellToViewMap.get(track.get(0)).setMarbleView(new MarbleView(new Marble(Colour.BLUE)));
         cellToViewMap.get(track.get(0)).moveMarbleTo(cellToViewMap.get(track.get(35)));
     }
     

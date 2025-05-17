@@ -3,23 +3,22 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.animation.SequentialTransition;
-import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.card.Card;
+import model.player.Marble;
+import view.CardsView.CardView;
+import view.CardsView.FirePitView;
+import view.CardsView.HandView;
 import view.boardView.CellView;
 import view.boardView.HomeZoneView;
 import view.boardView.TrackView;
 import view.marbleView.MarbleView;
-import view.CardsView.CardView;
-import view.CardsView.FirePitView;
-import view.CardsView.HandView;
 import engine.Game;
-import model.card.Card;
-import model.player.Marble;
 import exception.GameException;
-import exception.InvalidCardException;import exception.InvalidMarbleException;
+import exception.InvalidCardException;
+import exception.InvalidMarbleException;
 
 
 public class GameController extends Controller {
@@ -60,10 +59,6 @@ public class GameController extends Controller {
         if (game.canPlayTurn()) {
         	playBtn.setOnMouseClicked(evt -> {
            	 	try {
-           	 		if (game.getCurrentPlayer().getSelectedCard() == null) {
-           	 			System.out.println("You haven't chosen a card yet");
-           	 			return;
-           	 		}
            	 		game.playPlayerTurn();
                 } catch (GameException e) {
                 	System.err.println(e.getMessage());
@@ -121,69 +116,29 @@ public class GameController extends Controller {
             if (!cardView.isSelected()) {
                 try {
                 	game.deselectAll();
+                	handView.clearSelection();
                     game.selectCard(card);
-                    CardView otherSelected = handView.OtherselectedCard(cardView);
-                    if (otherSelected != null) {
-                        otherSelected.setEffect(null);
-                        otherSelected.scaleCard(1.0);
-                        otherSelected.setSelected(false);
-                    }
+                    cardView.updateSelectionAnimation(true);
+                    selectedCardView = cardView;
 
-                    cardView.setSelected(true); 
-                    cardView.applyGlow(Color.DODGERBLUE); 
-                    cardView.scaleCard(1.1);// selection happens first
-                    
-                    this.selectedCardView = cardView;
                 } catch (InvalidCardException e) {
                     System.out.println(e.getMessage());
                 }
             } else {
             	game.deselectAll();
-                cardView.setEffect(null);
-                cardView.scaleCard(1.0);
-                cardView.setSelected(false);
+                cardView.updateSelectionAnimation(false);
+                selectedCardView = null;
             }
         });
     }
-    
-    
-    
-    public void addCardHoverEffect(CardView cardView) {
-        cardView.setPickOnBounds(false);
 
-        cardView.setOnMouseEntered(event -> {
-            if (!cardView.isSelected()) {
-                cardView.applyGlow(Color.YELLOW);
-                cardView.scaleCard(1.1);
-            }
-        });
-
-        cardView.setOnMouseExited(event -> {
-            if (!cardView.isSelected()) {
-                cardView.setEffect(null);
-                cardView.scaleCard(1.0);
-            } 
-        });
-    }
     
+     
     private void clearSelectionUI() {
-        // clear card
-        if (selectedCardView != null) {
-            selectedCardView.setEffect(null);
-            selectedCardView.scaleCard(1.0);
-            selectedCardView.setSelected(false);
-            selectedCardView = null;
-        }
-
-        // clear marbles
-        for (MarbleView mv : selectedMarbles) {
-            mv.setEffect(null);
-            mv.setScaleX(1.0); 
-            mv.setScaleY(1.0);
-        }
-        selectedMarbles.clear();
-
-        // also tell the model
         game.deselectAll();
+        if(selectedCardView == null) return;
+        selectedCardView.updateSelectionAnimation(false);
+        if(selectedMarbles == null) return;
+        selectedMarbles.clear();
     }   
 }

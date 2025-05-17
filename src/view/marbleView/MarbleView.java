@@ -8,7 +8,7 @@ import model.player.Marble;
 import view.ImageCache;
 
 public final class MarbleView extends StackPane {
-    private static final double DEFAULT_MARBLE_HEIGHT = 40;
+    private static final double DEFAULT_MARBLE_SIZE = 40;
 
     private final Marble marble;
     private final ImageView imageView;
@@ -23,7 +23,7 @@ public final class MarbleView extends StackPane {
         imageView = new ImageView(ImageCache.getImage(imagePath));
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
-        imageView.setFitHeight(DEFAULT_MARBLE_HEIGHT);
+        imageView.setFitHeight(DEFAULT_MARBLE_SIZE);
 
         getChildren().add(imageView);
     }
@@ -42,20 +42,12 @@ public final class MarbleView extends StackPane {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        updateSelectionStyle();
     }
 
     public void setMarbleSize(double height) {
         imageView.setFitHeight(height);
     }
 
-    private void updateSelectionStyle() {
-        if (selected) {
-            setStyle("-fx-border-color: gold; -fx-border-width: 2;");
-        } else {
-            setStyle(null);
-        }
-    }
 
     @Override
     public String toString() {
