@@ -3,6 +3,7 @@ package engine;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 
 import model.Colour;
 import model.card.Card;
@@ -210,4 +211,82 @@ public class Game implements GameManager {
 		return players.get((currentPlayerIndex + 1) % 4).getColour();
 	}
 	
+	public void runGame(){
+		Scanner sc = new Scanner(System.in);
+		while(checkWin() == null){
+			if(canPlayTurn()){
+				if(currentPlayerIndex == 0){ //the player is the one to play
+					ArrayList<Card> playerHand = players.get(0).getHand();
+					System.out.print("You have: ");
+					for(Card card : playerHand){
+						System.out.print(card.getName() + " ");
+					}
+					System.out.println();
+					while(true){
+						try {
+							System.out.print("Choose a card by typing its index: ");
+							// some mechanism of the input like setOnMouseClicked
+							Card inputCard = players.get(0).getHand().get(sc.nextInt());
+							System.out.println();
+							// all the cards outside the player hand must be unclickable
+							selectCard(inputCard);
+							break;
+							//animations for selecting a card
+						} catch (InvalidCardException | IndexOutOfBoundsException e) {
+							System.out.println(e.getMessage());
+						}
+					}
+					System.out.print("Do you want to play or Choose a marble first? (type 0 or 1): ");
+					while(true){
+						//some mechanism of hitting play like a button that can be hitten any time
+						//it'll be in the loop for now just for playing on the terminal
+						int wantToPlay = sc.nextInt();
+						System.out.println();
+						if(wantToPlay == 0){
+							try {
+								playPlayerTurn();
+								
+							} catch (GameException e) {
+								System.out.println(e.getMessage());
+							}
+							break;
+						}
+						try {
+							// some mechanism of choosing a marble from the actionable marbles
+							Marble inputMarble = board.getActionableMarbles().get(sc.nextInt());
+							// all the marbles that are neither on the track nor the safeZone must be unclickable
+							selectMarble(inputMarble);
+						} catch (InvalidMarbleException | IndexOutOfBoundsException e) {
+							System.out.println(e.getMessage());
+						}
+						System.out.print("Do you want to play now or Choose another marble? (type 0 or 1): ");
+					}
+				}
+				else{
+					try {
+						Player cpu = players.get(currentPlayerIndex);
+						cpu.play();
+						System.out.println("CPU " + currentPlayerIndex + " played: " + cpu.getSelectedCard().getName());
+					} catch (GameException e) {
+						System.out.println(e.getMessage());
+					}
+				}
+			}
+			endPlayerTurn();
+		}
+	}
+	
+	public static void main(String[] args){
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Enter Your Name: ");
+		String playerName = sc.nextLine();
+		try {
+			Game game = new Game(playerName);
+			System.out.println("Game started!");
+			System.out.println("Welcome " + playerName);
+			game.runGame();
+		} catch (IOException e) {
+			System.out.println("game loading failed");
+		}
+	}
 }

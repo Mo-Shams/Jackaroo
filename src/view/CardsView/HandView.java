@@ -10,61 +10,50 @@ import model.Colour;
 import model.card.Card;
 
 public class HandView extends StackPane {
-    private final HBox handView;
+    private final HBox handBox;
     private final ArrayList<Card> hand;
 
-    public HandView(ArrayList<Card> hand, Colour colour, boolean showFrontInitially) {
+    public HandView(ArrayList<Card> hand, Colour colour, boolean isPlayer) {
         this.hand = hand;
-        handView = new HBox(20);
+        handBox = new HBox(20);
         for (int i = 0; i < hand.size(); i++) {
         	Card card = hand.get(i);
-            CardView cardView = new CardView(card, showFrontInitially, colour);
-            handView.getChildren().add(cardView);
+            CardView cardView = new CardView(card, isPlayer, colour);
+            handBox.getChildren().add(cardView);
         }
-        handView.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        getChildren().add(handView);
+        handBox.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        getChildren().add(handBox);
     }
 
-    public HBox getHandView() {
-        return handView;
+    public HBox getHandBox() {
+        return handBox;
     }
 
     public ArrayList<Card> getHand() {
         return hand;
     }
 
-    public CardView OtherselectedCard(CardView cardView) {
-        for (Node node : handView.getChildren()) {
-            CardView current = (CardView) node;
-            if (current != cardView && current.isSelected()) {
-                return current;
-            }
-        }
-        return null;
-    }
-
+    //deselect all current selected card;
     public void clearSelection() {
-        for (Node node : handView.getChildren()) {
+        for (Node node : handBox.getChildren()) {
             CardView cardView = (CardView) node;
-            cardView.setEffect(null);
-            cardView.scaleCard(1.0);
-            cardView.setSelected(false);
+            cardView.updateSelectionAnimation(false);
         }
     }
-
-    public void addCard(Card card, Colour colour, boolean showFrontInitially) {
-        CardView cardView = new CardView(card, showFrontInitially, colour);
-        hand.add(card);
-        handView.getChildren().add(cardView);
+    
+    
+    //adding and removing methods
+    public void addCard(Card card, Colour colour, boolean isPlayer) {
+        CardView cardView = new CardView(card, isPlayer, colour);
+        handBox.getChildren().add(cardView);
     }
 
-    public void removeCard(Card card) {
-        for (int i = 0; i < hand.size(); i++) {
-            if (hand.get(i).equals(card)) {
-                hand.remove(i);
-                handView.getChildren().remove(i);
-                break;
-            }
+    public void removeCard(CardView cardView) {
+        for(Node node : handBox.getChildren()){
+        	CardView current = (CardView) node;
+        	if(current == cardView){
+        		handBox.getChildren().remove(current);
+        	}
         }
     }
 }

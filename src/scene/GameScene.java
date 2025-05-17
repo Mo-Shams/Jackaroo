@@ -55,7 +55,7 @@ public class GameScene {
 
 		// Background
 		Rectangle background = generateBackground(width, height +70, Color.SKYBLUE, Color.LIGHTGREEN, Color.YELLOWGREEN);
-		FirePitView firePitView = new FirePitView(root);
+		FirePitView firePitView = new FirePitView();
 		
 		
 		root.getChildren().add(0, background);
@@ -131,14 +131,11 @@ public class GameScene {
 	private HBox renderSingleHand(Player player, Scene scene, GameController controller, FirePitView firePitView, double width, double height) {
 		boolean isPlayer = player.getColour() == game.getPlayers().get(0).getColour();
 		HandView handView = new HandView(player.getHand(), player.getColour(), isPlayer);
-		HBox handBox = handView.getHandView();
+		HBox handBox = handView.getHandBox();
 
 		for (Node node : handBox.getChildren()) {
 			CardView cardView = (CardView) node;
-			if(isPlayer){
-				controller.addCardClickHandler(cardView, handView, firePitView);
-				controller.addCardHoverEffect(cardView);
-			}
+			controller.addCardClickHandler(cardView, handView, firePitView);
 		}
 		return handBox;
 	}
@@ -154,25 +151,25 @@ public class GameScene {
 	        // Position HomeZone based on player index (4 corners)
 	        switch (i) {
 	            case 0:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.BOTTOM_CENTER);
+	                StackPane.setAlignment(homeZoneView, Pos.BOTTOM_CENTER);
 	                break;
 	            case 1:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.CENTER_LEFT);
+	                StackPane.setAlignment(homeZoneView, Pos.CENTER_LEFT);
 	                break;
 	            case 2:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.TOP_CENTER);
+	                StackPane.setAlignment(homeZoneView, Pos.TOP_CENTER);
 	                break;
 	            case 3:
-	                StackPane.setAlignment(homeZoneView.getContainer(), Pos.CENTER_RIGHT);
+	                StackPane.setAlignment(homeZoneView, Pos.CENTER_RIGHT);
 	                break;
 	        }
 
 	        // Set size for HomeZoneView (adjust as needed)
-	        homeZoneView.getContainer().setMaxWidth(width * 0.6);
-	        homeZoneView.getContainer().setMaxHeight(height * 0.4);
+	        homeZoneView.setMaxWidth(width * 0.6);
+	        homeZoneView.setMaxHeight(height * 0.4);
 	        //homeZoneView.getContainer().setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 	        //Add the HomeZoneView container to the root
-	        root.getChildren().add(1, homeZoneView.getContainer());
+	        root.getChildren().add(1, homeZoneView);
 	    }
 	}
 	

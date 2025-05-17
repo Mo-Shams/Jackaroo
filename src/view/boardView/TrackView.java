@@ -98,7 +98,7 @@ public class TrackView extends GridPane {
                 if (cell.getMarble() != null) {
                     Marble marble = cell.getMarble(); // get the model's marble
                     MarbleView marbleView = new MarbleView(marble);
-                    cellView.setMarble(marbleView);
+                    cellView.setMarbleView(marbleView);
                 }
                 if((DIRECTIONS[d][0] == 0 || DIRECTIONS[d][1] == 0))
                 	GridPane.setMargin(cellView, new Insets(P, P, P, P));
