@@ -30,7 +30,24 @@ public class WelcomeScene{
 	    Button play = makeImageButton("/resources/icon_images/play.png");
 	    Button about = makeImageButton("/resources/icon_images/about.png");
 	    Button settings = makeImageButton("/resources/icon_images/settings.png");
-	    controller.setGameSceneOnButtonClick(play);
+
+	    play.setOnAction(evt -> {
+	        String playerName = inputField.getText().trim();
+	        if (playerName.isEmpty()) {
+	            // you could show an alert here instead of defaulting
+	            playerName = "Player";
+	        }
+	        try {
+	            Scene gameScene = new GameScene(playerName).createGameScene(stage);
+	            stage.setScene(gameScene);
+	            stage.setFullScreen(true);
+	            stage.setResizable(false);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
+
+	    
 	    // 2) Put them in a VBox (only one instance!)
 	    VBox vbox = new VBox(10, text, inputField, play, about, settings);
 	    vbox.setAlignment(Pos.CENTER);

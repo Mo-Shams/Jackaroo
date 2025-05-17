@@ -120,5 +120,10 @@ public class TrackView extends GridPane {
             }
         }
     }
+    
+    public Map<Cell, CellView> getCellViewMap() {
+        return cellToViewMap;
+    }
+
 }
 
