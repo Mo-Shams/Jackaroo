@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
+import model.Colour;
 import model.player.Marble;
 import view.marbleView.MarbleView;
 import engine.board.Cell;
@@ -119,6 +120,8 @@ public class TrackView extends GridPane {
                 y += DIRECTIONS[d][1];
             }
         }
+        cellToViewMap.get(track.get(0)).setMarble(new MarbleView(new Marble(Colour.BLUE)));
+        cellToViewMap.get(track.get(0)).moveMarbleTo(cellToViewMap.get(track.get(35)));
     }
     
     public Map<Cell, CellView> getCellViewMap() {
