@@ -109,7 +109,8 @@ public class GameController extends Controller {
             Card card = cardView.getCard();
             if (event.getClickCount() == 2) {
                 // Double click detected
-            	cardView.sendToFirePit(firePitView);
+            	cardView.sendToFirePit(firePitView, handView);
+            	
 //            	firePitView.sendCardToFirePit(cardView, handView);// Or any other action
             }
             if (!cardView.isSelected()) {
