@@ -10,6 +10,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -111,7 +112,7 @@ public final class CardView extends StackPane {
         this.setEffect(glow);
     }
     
-    public void sendToFirePit(FirePitView firePit) {
+    public void sendToFirePit(FirePitView firePit, HandView handView) {
         // Step 1: Get center of FirePit in scene coordinates
         Bounds firePitBounds = firePit.localToScene(firePit.getBoundsInLocal());
         double firePitCenterX = firePitBounds.getMinX() + firePitBounds.getWidth() / 2;
@@ -147,6 +148,7 @@ public final class CardView extends StackPane {
         tt.setByX(translateX);
         tt.setByY(translateY);
         tt.setInterpolator(Interpolator.EASE_BOTH);
+        
 
         // Create RotateTransition for random rotation between -30 and +30 degrees
         RotateTransition rt = new RotateTransition(Duration.seconds(0.5), this);
@@ -156,11 +158,20 @@ public final class CardView extends StackPane {
 
         // Play both transitions together
         ParallelTransition pt = new ParallelTransition(tt, rt);
+        
         pt.play();
 
         pt.setOnFinished(e -> {
+<<<<<<< Updated upstream
             setMouseTransparent(true);
+            firePit.addToFirePit(this);
             
+=======
+        	setMouseTransparent(true); 
+    	   //  handView.removeCard(this.getCard()); 
+    	    firePit.addToFirePit(this);
+        
+>>>>>>> Stashed changes
         });
     }
     
