@@ -85,7 +85,7 @@ public class Player {
 	//methods that validates and selects the given card and marble
 	public void selectCard(Card card) throws InvalidCardException {
 		for(Card currentCard : hand){
-			if(currentCard.equals(card)){
+			if(currentCard == card){
 				selectedCard = currentCard;
 				return;
 			}

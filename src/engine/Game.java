@@ -86,7 +86,7 @@ public class Game implements GameManager {
 	public void deselectAll(){
 		players.get(currentPlayerIndex).deselectAll();
 	}
-	public void diselectMarble(Marble marble){
+	public void deselectMarble(Marble marble){
 		players.get(currentPlayerIndex).getSelectedMarbles().remove(marble);
 	}
 	public void playPlayerTurn() throws GameException{
@@ -218,5 +218,15 @@ public class Game implements GameManager {
 	}
 	public Player getNextPlayer(){
 		return players.get((currentPlayerIndex+1)%4);
+	}
+
+
+
+
+
+
+
+	public int getCurrentPlayerIndex() {
+		return currentPlayerIndex;
 	}
 }

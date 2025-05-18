@@ -3,12 +3,19 @@ package view;
 import java.util.ArrayList;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import model.player.Marble;
 import model.player.Player;
 import engine.Game;
 import engine.board.Board;
+import engine.board.Cell;
+import engine.board.SafeZone;
+import view.boardView.CellView;
 import view.boardView.HomeZoneView;
+import view.boardView.MarbleView;
+import view.boardView.SafeZoneView;
 import view.boardView.TrackView;
 import view.playersView.FirePitView;
 import view.playersView.HandView;
@@ -16,15 +23,19 @@ import view.playersView.PlayerProfile;
 
 public class GameView extends StackPane{
 	private final TrackView trackView;
-	private final ArrayList<HomeZoneView> homeZones; 
+	private final ArrayList<HomeZoneView> homeZoneViews; 
 	private final FirePitView firePitView;
 	private final ArrayList<HandView> handViews;
 	private final ArrayList<PlayerProfile> playerProfiles;
+	private final Button playButton;
 	private final Game game;
 	
 	public GameView(Game game, double width, double height){
 		this.game = game;
-		
+		playButton = new Button("Play");
+		playButton.setPrefHeight(60);
+		playButton.setPrefWidth(200);
+		playButton.setStyle("-fx-text-fill: black;");
 		//setting the players profiles
 		ArrayList<Player> players = game.getPlayers();
 		Board board = game.getBoard();
@@ -47,7 +58,7 @@ public class GameView extends StackPane{
 		//setting the boardView that includes the trackView and the HomeZoneView
 		Pane boardView = new Pane();
 		trackView = new TrackView (board.getTrack(), board.getSafeZones());
-		homeZones = new ArrayList<>();
+		homeZoneViews = new ArrayList<>();
 		int index = 0 ; 
 		double paneWidth = width*0.4;
 		double paneHeight = height*0.68;
@@ -60,7 +71,7 @@ public class GameView extends StackPane{
 	    boardView.getChildren().add(trackView);
 		for (Player player : players){
 			HomeZoneView homeZoneView = new HomeZoneView(player.getMarbles());
-			homeZones.add(homeZoneView);
+			homeZoneViews.add(homeZoneView);
 			switch (index){
 				case 0 : homeZoneView.setLayoutX(paneWidth/2 - 40);homeZoneView.setLayoutY(paneHeight - 80); break;
 				case 1 : homeZoneView.setLayoutX(0);homeZoneView.setLayoutY(paneHeight/2 - 40); break;
@@ -99,6 +110,8 @@ public class GameView extends StackPane{
 			i++;
 		}
 		
+		this.getChildren().add(playButton);
+		StackPane.setAlignment(playButton, Pos.BOTTOM_RIGHT);
 		//setting the firePit
 		firePitView = new FirePitView(game.getFirePit(), 1920, 1080);
 		
@@ -107,8 +120,51 @@ public class GameView extends StackPane{
 		this.setMaxSize(width * 0.8, height);
 	}
 	
-	public void fieldMarble(int playerIndex){
-		
+	public void updateBoardView(){
+		for(CellView cellView : trackView.getCellViews()){
+			Marble marble = cellView.getCell().getMarble();
+			if(marble == null)
+				cellView.removeMarbleView();
+			else
+				cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+		}
+		for(SafeZoneView safeZoneView : trackView.getSafeZoneViews()){
+			for(CellView cellView : safeZoneView.getCellViews()){
+				Marble marble = cellView.getCell().getMarble();
+				if(marble == null)
+					cellView.removeMarbleView();
+				else
+					cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+			}
+		}
+		for(HomeZoneView homeZoneView : homeZoneViews){
+			for(CellView cellView : homeZoneView.getCellViews()){
+				Marble marble = cellView.getCell().getMarble();
+				if(marble == null)
+					cellView.removeMarbleView();
+				else
+					cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+			}
+		}
+	}
+	
+	
+	public void updatePlayerProfiles(){
+		for(PlayerProfile playerProfile : playerProfiles){
+			if(playerProfile.getColour() == game.getActivePlayerColour()){
+				playerProfile.setActive(true);
+				continue;
+			}
+			else if(playerProfile.getColour() == game.getNextPlayerColour()){
+				playerProfile.setNextActive(true);
+				continue;
+			}
+			else{
+				playerProfile.setActive(false);
+				playerProfile.setNextActive(false);
+			}
+			
+		}
 	}
 
 	public Game getGame() {
@@ -119,9 +175,7 @@ public class GameView extends StackPane{
 		return trackView;
 	}
 
-	public ArrayList<HomeZoneView> getHomeZones() {
-		return homeZones;
-	}
+	
 
 	public FirePitView getFirePitView() {
 		return firePitView;
@@ -133,6 +187,14 @@ public class GameView extends StackPane{
 
 	public ArrayList<PlayerProfile> getPlayerProfiles() {
 		return playerProfiles;
+	}
+
+	public Button getPlayButton() {
+		return playButton;
+	}
+
+	public ArrayList<HomeZoneView> getHomeZoneViews() {
+		return homeZoneViews;
 	}
 	
 }

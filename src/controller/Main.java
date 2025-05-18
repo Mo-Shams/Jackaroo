@@ -21,6 +21,6 @@ public class Main extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Jackaroo");
 		primaryStage.show();
-		controller.runGame();
+		controller.run();
 	}
 }
