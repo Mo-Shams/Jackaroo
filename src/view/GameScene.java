@@ -1,5 +1,7 @@
 package view;
 
+import java.util.concurrent.CompletableFuture;
+
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,10 +9,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 import engine.Game;
@@ -26,7 +32,7 @@ public class GameScene {
 		super();
 		this.game = game ;	
 		root = new StackPane();
-		root.setPadding(new Insets(30));
+		// root.setPadding(new Insets(30));
 		root.setStyle("-fx-background-color: lightgreen;");
 		gameView = new GameView(game, WIDTH, HEIGHT);
 		root.getChildren().add(gameView);
@@ -84,6 +90,69 @@ public class GameScene {
 	    fade.setToValue(1);
 	    fade.play();
 	}
+	
+	public CompletableFuture<Integer> SplitDistanceView() {
+        CompletableFuture<Integer> selectedNumberFuture = new CompletableFuture<>();
+
+        // Overlay background
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7);");
+        overlay.setPrefSize(2000, 1200);
+
+        VBox container = new VBox(20);
+        container.setAlignment(Pos.CENTER);
+        container.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        // Central message
+        Label message = new Label("Select split distance for 7");
+        message.setTextFill(Color.WHITE);
+        message.setFont(Font.font(24));
+
+        // Button row
+        HBox buttonBox = new HBox(15);
+        buttonBox.setAlignment(Pos.CENTER);
+        DropShadow shadow = new DropShadow();
+        shadow.setColor(Color.GOLD);
+        shadow.setRadius(10);
+        
+        for (int i = 1; i <= 7; i++) {
+            Button btn = new Button(String.valueOf(i));
+            btn.setPrefSize(60, 60);
+            btn.setFont(Font.font(18));
+            btn.setStyle(
+                "-fx-background-radius: 12;" +
+                "-fx-background-color: linear-gradient(to top, #006400, #00FF00);" +
+                "-fx-text-fill: white;"
+            );
+            btn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            	btn.setEffect(shadow);
+            });
+            btn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            	btn.setEffect(null);
+            });
+            
+            final int number = i;
+            btn.setOnAction(e -> {
+                selectedNumberFuture.complete(number);   
+                root.getChildren().remove(overlay);
+                
+                
+                //some call back for what happens after the player choice 
+                // DoTheAnimation 
+            });
+
+            buttonBox.getChildren().add(btn);
+        }
+
+        container.getChildren().addAll(message, buttonBox);
+        // VBox.setMargin(buttonBox, new Insets(0, 0, 350, 0));
+        overlay.getChildren().add(container);
+
+        StackPane.setAlignment(container, Pos.CENTER);
+
+        root.getChildren().add(overlay);
+
+        return selectedNumberFuture;
+    }
 
 	
 	public Scene CreateScene(){

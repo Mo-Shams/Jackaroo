@@ -71,6 +71,7 @@ public class GameController {
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
+					gameScene.SplitDistanceView();
 					try {
 						game.selectCard(cardView.getCard());
 						cardView.setSelected(true);
@@ -153,7 +154,7 @@ public class GameController {
 						cardView.sendToFirePit(firePitView, 0).play();
 						game.endPlayerTurn();
 						gameView.updatePlayerProfiles();
-						run();
+						// run();
 					}
 					game.deselectAll();
 					handView.clearSelection();
