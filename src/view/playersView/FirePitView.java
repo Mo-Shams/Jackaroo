@@ -15,6 +15,8 @@ import model.card.Card;
 public class FirePitView extends Pane {
 	private final ArrayList<Card> firePit;
 	private final Circle circle;
+	
+	public static FirePitView FIREPITVIEW ;
 
 	public FirePitView(ArrayList<Card> firePit, double width, double height){
 		super();
@@ -24,6 +26,7 @@ public class FirePitView extends Pane {
 		circle.setLayoutY((height-720)/2);
 		getChildren().add(circle);  // order matters! circle first, cards on top
 		setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+		FIREPITVIEW = this ;
 	}
 	
 	public void addCardToFirePit(CardView cardView, double x, double y, double rotation) {

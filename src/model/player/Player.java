@@ -110,6 +110,10 @@ public class Player {
 		selectedCard = null;
 		selectedMarbles.clear();
 	}
+	public void deselectCard(){
+		selectedCard = null;
+	}
+	
 	
 	
 	

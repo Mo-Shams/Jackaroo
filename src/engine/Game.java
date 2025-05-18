@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import view.playersView.CardView;
+import view.playersView.FirePitView;
 import model.Colour;
 import model.card.Card;
 import model.card.Deck;
@@ -85,6 +87,9 @@ public class Game implements GameManager {
 	}
 	public void deselectAll(){
 		players.get(currentPlayerIndex).deselectAll();
+	}
+	public void deselectCard(){
+		players.get(currentPlayerIndex).deselectCard();
 	}
 	public void deselectMarble(Marble marble){
 		players.get(currentPlayerIndex).getSelectedMarbles().remove(marble);
@@ -187,10 +192,15 @@ public class Game implements GameManager {
 			if(player.getColour() == colour)
 				colourPlayer = player;
 		}
+		
 		if(colourPlayer.getHand().isEmpty())
 			throw new CannotDiscardException("The player has no cards to be discarded");
 		int randomIndex = (int)(Math.random() * colourPlayer.getHand().size());
-		firePit.add(colourPlayer.getHand().remove(randomIndex));
+		Card card = colourPlayer.getHand().remove(randomIndex) ;
+		CardView cardView = CardView.cardToViewMap.get(card);
+		cardView.sendToFirePit(FirePitView.FIREPITVIEW, currentPlayerIndex);
+		
+		firePit.add(card);
 	}
 	@Override
 	public void discardCard() throws CannotDiscardException {

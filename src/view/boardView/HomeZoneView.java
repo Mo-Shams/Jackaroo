@@ -90,6 +90,17 @@ public class HomeZoneView extends StackPane {
         }	
     }
     
+    public void updateHomeZoneView() {
+    	for(CellView cellView: cellViews) cellView.removeMarbleView();
+    	int count = 3;
+    	for(Marble marble: marbles){
+    		MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);
+    		cellViews.get(count).setMarbleView(marbleView);
+    		marbleView.setOnMouseClicked(null);
+    		marbleView.setSelected(false);
+    		count--;
+    	}
+	}
     
     // ----------------------- Getters & Setters ----------------------
     

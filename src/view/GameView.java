@@ -2,10 +2,19 @@ package view;
 
 import java.util.ArrayList;
 
+import javafx.animation.FadeTransition;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import model.player.Marble;
 import model.player.Player;
 import engine.Game;
@@ -32,10 +41,14 @@ public class GameView extends StackPane{
 	
 	public GameView(Game game, double width, double height){
 		this.game = game;
-		playButton = new Button("Play");
-		playButton.setPrefHeight(60);
-		playButton.setPrefWidth(200);
-		playButton.setStyle("-fx-text-fill: black;");
+		playButton = createGameButton("Play");
+		playButton.setPrefSize(width * 0.1, height * 0.08);
+		Pane ButtonContainer = new Pane();
+		playButton.setLayoutX(0);
+		playButton.setLayoutY(0);
+		ButtonContainer.setMaxSize(width * 0.25, height * 0.08);
+		ButtonContainer.getChildren().add(playButton);
+		
 		//setting the players profiles
 		ArrayList<Player> players = game.getPlayers();
 		Board board = game.getBoard();
@@ -110,8 +123,8 @@ public class GameView extends StackPane{
 			i++;
 		}
 		
-		this.getChildren().add(playButton);
-		StackPane.setAlignment(playButton, Pos.BOTTOM_RIGHT);
+		this.getChildren().add(ButtonContainer);
+		StackPane.setAlignment(ButtonContainer, Pos.BOTTOM_RIGHT);
 		//setting the firePit
 		firePitView = new FirePitView(game.getFirePit(), 1920, 1080);
 		
@@ -123,31 +136,18 @@ public class GameView extends StackPane{
 	public void updateBoardView(){
 		for(CellView cellView : trackView.getCellViews()){
 			Marble marble = cellView.getCell().getMarble();
-			if(marble == null)
-				cellView.removeMarbleView();
-			else
-				cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+			if(marble != null)	cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
 		}
 		for(SafeZoneView safeZoneView : trackView.getSafeZoneViews()){
 			for(CellView cellView : safeZoneView.getCellViews()){
 				Marble marble = cellView.getCell().getMarble();
-				if(marble == null)
-					cellView.removeMarbleView();
-				else
-					cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+				if(marble != null) cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
 			}
 		}
-		for(HomeZoneView homeZoneView : homeZoneViews){
-			for(CellView cellView : homeZoneView.getCellViews()){
-				Marble marble = cellView.getCell().getMarble();
-				if(marble == null)
-					cellView.removeMarbleView();
-				else
-					cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
-			}
+		for(HomeZoneView homeZoneView: homeZoneViews){
+			homeZoneView.updateHomeZoneView();
 		}
 	}
-	
 	
 	public void updatePlayerProfiles(){
 		for(PlayerProfile playerProfile : playerProfiles){
@@ -166,6 +166,51 @@ public class GameView extends StackPane{
 			
 		}
 	}
+	
+	private Button createGameButton(String text) {
+        Button button = new Button(text);
+
+        button.setStyle(
+                "-fx-background-color: linear-gradient(#d6b97b, #a1763f);" +
+                "-fx-background-radius: 15;" +
+                "-fx-border-color: gold;" +
+                "-fx-border-width: 3;" +
+                "-fx-border-radius: 15;" +
+                "-fx-text-fill: #3b2f2f;" +
+                "-fx-font-size: 22px;" +
+                "-fx-font-family: 'Verdana';" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 10 20 10 20;"
+        );
+
+        DropShadow shadow = new DropShadow();
+        shadow.setColor(Color.GOLD);
+        shadow.setRadius(10);
+
+        button.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            button.setEffect(shadow);
+            button.setScaleX(1.05);
+            button.setScaleY(1.05);
+        });
+
+        button.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            button.setEffect(null);
+            button.setScaleX(1.0);
+            button.setScaleY(1.0);
+        });
+
+        button.setOnMousePressed(e -> {
+            button.setScaleX(0.95);
+            button.setScaleY(0.95);
+        });
+
+        button.setOnMouseReleased(e -> {
+            button.setScaleX(1.05);
+            button.setScaleY(1.05);
+        });
+
+        return button;
+    }
 
 	public Game getGame() {
 		return game;
@@ -174,6 +219,8 @@ public class GameView extends StackPane{
 	public TrackView getTrackView() {
 		return trackView;
 	}
+	
+	
 
 	
 

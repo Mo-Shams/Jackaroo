@@ -57,8 +57,6 @@ public final class CardView extends StackPane {
         backImageView.setFitHeight(HEIGHT);
         
         
-        
-
         imageView.setVisible(false);
         backImageView.setVisible(true);
         cardToViewMap.put(card, this);
@@ -106,8 +104,8 @@ public final class CardView extends StackPane {
         this.setEffect(glow);
     }
     
-    public void sendToFirePit(FirePitView firePit, HandView handView, int playerIndex) {
-    	setSelected(false);
+    public ParallelTransition sendToFirePit(FirePitView firePit, int playerIndex) {
+    	setEffect(null);
         // Step 1: Get center of FirePit in scene coordinates
         Bounds firePitBounds = firePit.localToScene(firePit.getBoundsInLocal());
         double firePitCenterX = firePitBounds.getMinX() + firePitBounds.getWidth() / 2;
@@ -156,24 +154,25 @@ public final class CardView extends StackPane {
         ParallelTransition pt = new ParallelTransition(tt, rt);
         // Play both transitions together
         
-        
-        if(playerIndex > 0){
-        	SequentialTransition rtZ = (SequentialTransition)flip(300, true);
-        	rtZ.setOnFinished(e ->{
-        		
-        		pt.play();
-        	});
-        	rtZ.play();
-        }
-        else{
-        	pt.play();
-        }
         pt.setOnFinished(e -> {
         	setMouseTransparent(true); 
         	firePit.addToFirePit(this, playerIndex, randomAngle);
         	
         });
+        return pt ; 
+      
     }
+    
+    public SequentialTransition sendToFirePitCpu(FirePitView firePit, HandView handView, int playerIndex){
+    	SequentialTransition sq = (SequentialTransition)flip(300, true);
+    	sq.setOnFinished(e ->{
+    		sendToFirePit(firePit, playerIndex).play();
+    	});
+    	return sq ;
+    	
+    }
+    
+    
     
     public Animation flip(double duration, boolean fullRotation) {
     	RotateTransition rt1 = new RotateTransition(Duration.millis(duration), this);

@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.scene.control.Button;
-import model.card.Card;
+import javafx.util.Duration;
 import model.player.Marble;
 import model.player.Player;
 import view.GameScene;
@@ -35,71 +37,120 @@ public class GameController {
 		return gameScene;
 	}
 	
-	public void playerCanSelectCard(boolean canChoose){
+	// -------------------------------------- Event handlers ----------------------------------
+	
+
+//	public void canSelectCard(boolean canSelect){
+//		for(CardView cardView : playerHand.getCardViews()){
+//			if(canSelect){
+//				cardView.setOnMouseClicked(e ->{
+//					game.deselectAll();
+//					if(!cardView.isSelected()){
+//						playerHand.clearSelection();
+//						try {
+//							game.selectCard(cardView.getCard());
+//							cardView.setSelected(true);
+//						} catch (InvalidCardException e1) {
+//							gameScene.showExceptionPopup(e1.getMessage());
+//						}
+//					}
+//					else{
+//						cardView.setSelected(false);
+//					}
+//				});
+//			}
+//			else
+//				cardView.setOnMouseClicked(null);
+//		}
+//	}
+	
+	public void addEventHandlers(){
 		HandView playerHand = gameView.getHandViews().get(0);
 		for(CardView cardView : playerHand.getCardViews()){
-			if(canChoose){
-				cardView.setOnMouseClicked(e ->{
-					game.deselectAll();
-					if(!cardView.isSelected()){
-						playerHand.clearSelection();
-						try {
-							game.selectCard(cardView.getCard());
-							cardView.setSelected(!cardView.isSelected());
-						} catch (InvalidCardException e1) {
-							System.err.println(e1.getMessage());
-						}
+			cardView.setOnMouseClicked(e ->{
+				game.deselectCard();
+				if(!cardView.isSelected()){
+					playerHand.clearSelection();
+					try {
+						game.selectCard(cardView.getCard());
+						cardView.setSelected(true);
+					} catch (InvalidCardException e1) {
+						gameScene.showExceptionPopup(e1.getMessage());
 					}
-					else{
-						cardView.setSelected(false);
-					}
-				});
-			}
-			else
-				cardView.setOnMouseClicked(null);
+				}
+				else cardView.setSelected(false);
+				
+			});
 		}
-	}
-	
-	public void playerCanSelectMarble(boolean canSelect){
+		
 		ArrayList<Marble> actionableMarbles = game.getBoard().getActionableMarbles();
 		for(Marble marble : actionableMarbles){
 			MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);
-			if(canSelect){
-				marbleView.setOnMouseClicked(e ->{
-					if(!marbleView.isSelected()){
-						try {
-							game.selectMarble(marble);
-							marbleView.setSelected(!marbleView.isSelected());
-						} catch (Exception e1) {
-							System.err.println(e1.getMessage());
-						}
+			marbleView.setOnMouseClicked(e ->{
+				if(!marbleView.isSelected()){
+					try {
+						game.selectMarble(marble);
+						marbleView.setSelected(true);
+					} catch (Exception e1) {
+						gameScene.showExceptionPopup(e1.getMessage());
 					}
-					else{
-						game.deselectMarble(marble);
-						marbleView.setSelected(!marbleView.isSelected());
-					}
-				});
-			}
-			else
-				marbleView.setOnMouseClicked(null);
+				}
+				else{
+					game.deselectMarble(marble);
+					marbleView.setSelected(false);
+				}
+			});
 		}
+		
 	}
 	
-	public void wantToPlay(boolean canPlay){
+	
+//	public void canSelectMarble(boolean canSelect){
+//		ArrayList<Marble> actionableMarbles = game.getBoard().getActionableMarbles();
+//		for(Marble marble : actionableMarbles){
+//			MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);
+//			if(canSelect){
+//				marbleView.setOnMouseClicked(e ->{
+//					
+//					if(!marbleView.isSelected()){
+//						try {
+//							game.selectMarble(marble);
+//							marbleView.setSelected(true);
+//						} catch (Exception e1) {
+//							gameScene.showExceptionPopup(e1.getMessage());
+//						}
+//					}
+//					else{
+//						game.deselectMarble(marble);
+//						marbleView.setSelected(false);
+//					}
+//				});
+//			}
+//			else
+//				marbleView.setOnMouseClicked(null);
+//		}
+//	}
+	
+		
+	
+	
+	public void canPlayTurn(boolean canPlay){
 		Button playButton = gameView.getPlayButton();
 		if(canPlay){
 			playButton.setOnMouseClicked(evt ->{
 				HandView handView = gameView.getHandViews().get(0);
 				FirePitView firePitView = gameView.getFirePitView();
 				CardView cardView = CardView.cardToViewMap.get(game.getPlayers().get(0).getSelectedCard());
+
 				try {
 					game.playPlayerTurn();
-					playView(0);
+					doTheAnimation(0);
 				} 
 				catch (GameException e) {
-					System.err.println(e.getMessage());
+					gameScene.showExceptionPopup(e.getMessage());
+					System.out.println(cardView);
 					if(cardView != null){
-						cardView.sendToFirePit(firePitView, handView, 0);
+						cardView.sendToFirePit(firePitView, 0).play();
 						game.endPlayerTurn();
 						gameView.updatePlayerProfiles();
 						run();
@@ -115,41 +166,56 @@ public class GameController {
 		
 	}
 	
+	// ------------------------- the main Game Animation WorkFlow --------------------------
 	
-	public void playView(int playerIndex){
+	
+	public void doTheAnimation(int playerIndex){
 		HandView handView = gameView.getHandViews().get(playerIndex);
 		CardView cardView = CardView.cardToViewMap.get(game.getPlayers().get(playerIndex).getSelectedCard());
 		FirePitView firePitView = gameView.getFirePitView();
-		cardView.sendToFirePit(firePitView, handView, playerIndex);
+		SequentialTransition st = new SequentialTransition();
+		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
+		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, handView, playerIndex));
+		
+		st.getChildren().add(new PauseTransition(Duration.seconds(2))); // 0.5 second pause)
 		game.endPlayerTurn();
 		gameView.updateBoardView();
 		gameView.updatePlayerProfiles();
-		run();
+		st.setOnFinished(e -> {
+			run();
+		});
+		st.play();
 	}
 	
+	
+	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
+	
 	public void run(){
+		
+		addEventHandlers();
 		if(game.checkWin() != null) return;
 		Player player = game.getPlayers().get(0);
 		Player currentPlayer = game.getCurrentPlayer();
 		if(game.canPlayTurn()){
 			if(currentPlayer == player){
-				playerCanSelectCard(true);
-				playerCanSelectMarble(true);
-				wantToPlay(true);
+//				canSelectCard(true);
+//				canSelectMarble(true);
+				canPlayTurn(true);
 			}
 			else{
-				playerCanSelectCard(false);
-				playerCanSelectMarble(false);
-				wantToPlay(false);
+//				canSelectCard(false);
+//				canSelectMarble(false);
+				canPlayTurn(false);
 				try {
 					game.playPlayerTurn();
 				} catch (GameException e) {
-					System.err.println(e.getMessage());
+					gameScene.showExceptionPopup(e.getMessage());
 				}
-				playView(game.getCurrentPlayerIndex());
+				doTheAnimation(game.getCurrentPlayerIndex());
 			}
 		}
 		else{
+			// doTheAnimation(game.getCurrentPlayerIndex());
 			game.endPlayerTurn();
 			gameView.updatePlayerProfiles();
 			run();
@@ -158,52 +224,6 @@ public class GameController {
 	
 	
 	
-	public void runGame(){
-		Scanner sc = new Scanner(System.in);
-		Player player = game.getPlayers().get(0);
-		while(game.checkWin() == null){
-			Player currentPlayer = game.getCurrentPlayer();
-			if(game.canPlayTurn()){
-				if(currentPlayer == player){
-					playerCanSelectCard(true);
-					//should be replaced by the mechanism of playing like a button to click
-					System.out.print("Do you want to play or Choose a marble first? (type 0 or 1): ");
-					while(true){
-						//some mechanism of hitting play like a button that can be hitten any time
-						//it'll be in the loop for now just for playing on the terminal
-						int wantToPlay = sc.nextInt();
-						System.out.println();
-						if(wantToPlay == 0){
-							try {
-								game.playPlayerTurn();
-							} catch (GameException e) {
-								System.out.println(e.getMessage());
-							}
-							break;
-						}
-						try {
-							// some mechanism of choosing a marble from the actionable marbles
-							Marble inputMarble = game.getBoard().getActionableMarbles().get(sc.nextInt());
-							// all the marbles that are neither on the track nor the safeZone must be unclickable
-							game.selectMarble(inputMarble);
-						} catch (InvalidMarbleException | IndexOutOfBoundsException e) {
-							System.out.println(e.getMessage());
-						}
-						System.out.print("Do you want to play now or Choose another marble? (type 0 or 1): ");
-					}
-				}
-				else{
-					try {
-						currentPlayer.play();;
-						System.out.println("CPU " + game.getPlayers().indexOf(currentPlayer) + " played: " + currentPlayer.getSelectedCard().getName());
-					} catch (GameException e) {
-						System.out.println(e.getMessage());
-					}
-				}
-			}
-			game.endPlayerTurn();
-		}
-	}
 	public GameView getGameView() {
 		return gameView;
 	}

@@ -17,7 +17,7 @@ public class Main extends Application {
 		primaryStage.setResizable(false);// Disable window resizing
 		GameController controller = new GameController("Muhammad");
 		Scene scene = controller.getGameScene().CreateScene();
-		controller.playerCanSelectCard(true);
+		// controller.canSelectCard(true);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Jackaroo");
 		primaryStage.show();

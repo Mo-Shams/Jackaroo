@@ -36,8 +36,8 @@ public class MarbleView extends ImageView {
 	public void setSelected(boolean selected){
 		this.selected = selected ;
 		if (selected){
-			applyGlow(Color.valueOf(marble.getColour().toString()));
-			scaleMarble(1.1);
+			applyGlow(Color.YELLOW);
+			scaleMarble(1.3);
 		}else {
 			setEffect(null);
 			scaleMarble(1.0);
@@ -47,8 +47,8 @@ public class MarbleView extends ImageView {
 	private void applyGlow(Color color) {
         DropShadow glow = new DropShadow();
         glow.setColor(color);
-        glow.setWidth(10);
-        glow.setHeight(10);
+        glow.setWidth(30);
+        glow.setHeight(30);
         this.setEffect(glow);
     }
 	
