@@ -15,6 +15,8 @@ public class Burner extends Wild {
 	}
 
 	public boolean validateMarbleColours (ArrayList<Marble> marbles) {
+		if(marbles.isEmpty())
+			return false;
 		return marbles.get(0).getColour() != gameManager.getActivePlayerColour();
 	}
 

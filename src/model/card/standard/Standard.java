@@ -30,7 +30,5 @@ public class Standard extends Card {
 	public void act(ArrayList<Marble> marbles) throws ActionException, InvalidMarbleException {
 		boardManager.moveBy(marbles.get(0), rank, false);
 	}
-	
-	
 
 }

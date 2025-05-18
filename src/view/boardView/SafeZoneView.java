@@ -18,6 +18,12 @@ public class SafeZoneView{
 			cellViews.add(cellView);
 		}
 	}
+	
+	public void sendToSafe(CellView cellView, int index){
+		cellView.moveMarbleTo(cellViews.get(index));
+	}
+	
+	
 	public SafeZone getSafeZone() {
 		return safeZone;
 	}

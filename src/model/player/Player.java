@@ -49,11 +49,11 @@ public class Player {
 	public ArrayList<Marble> getMarbles() {
 		return marbles;
 	}
-
+	
 	public Card getSelectedCard() {
 		return selectedCard;
 	}
-
+	
 	
 	
 	
@@ -93,7 +93,7 @@ public class Player {
 		throw new InvalidCardException("You don't have this card");
 	}
 	public void selectMarble(Marble marble) throws InvalidMarbleException{
-		if(selectedMarbles.contains(marble)) return;
+		if(!selectedMarbles.isEmpty() && selectedMarbles.contains(marble)) return;
 		if(selectedMarbles.size() >= 2)
 			throw new InvalidMarbleException("You can't choose more than 2 marbles");
 		selectedMarbles.add(marble);
@@ -125,6 +125,11 @@ public class Player {
 		if(!selectedCard.validateMarbleColours(selectedMarbles))
 			throw new InvalidMarbleException(selectedCard.getName() + " cannot act on the selected marbles' colours");
 		selectedCard.act(selectedMarbles);
+	}
+
+
+	public ArrayList<Marble> getSelectedMarbles() {
+		return selectedMarbles;
 	}
 	
 }

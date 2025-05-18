@@ -10,39 +10,32 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import view.marbleView.MarbleView;
+import view.boardView.MarbleView;
 import model.player.Marble;
 
 public class HomeZoneView extends StackPane {
-    private static final double SIDE_LENGTH = 100;
+    private static final double SIDE_LENGTH = 80;
     private static final double GAP = 5;
 
     private ArrayList<Marble> marbles;
-    private ArrayList<MarbleView> marbleViews;
     private final ArrayList<CellView> cellViews;
-    private final Rectangle homeZone;
+    private final Rectangle homeSquare;
     private final GridPane cellGrid;
 
     public HomeZoneView(ArrayList<Marble> marbles) {
-        this.marbles = (marbles != null)?  marbles : new ArrayList<>();
-        this.marbleViews = new ArrayList<>();
+        this.marbles =  marbles ;
         this.cellViews = new ArrayList<>();
 
-        Color color = Color.GRAY;
-        if (!this.marbles.isEmpty()) {
-            color = Color.valueOf(this.marbles.get(0).getColour().toString());
+        Color color = Color.valueOf(this.marbles.get(0).getColour().toString());
+
+
+        for (int i = 0; i < marbles.size(); i++) {  // changed from 4 
+        	CellView cellView = new CellView(new Cell(CellType.NORMAL), color);
+        	cellView.setMarbleView(new MarbleView(marbles.get(i)));
+            cellViews.add(cellView);
         }
 
-        for (Marble marble : this.marbles) {
-            MarbleView marbleView = new MarbleView(marble);
-            marbleViews.add(marbleView);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            cellViews.add(new CellView(new Cell(CellType.NORMAL), color));
-        }
-
-        homeZone = createSquare(SIDE_LENGTH, SIDE_LENGTH, color);
+        homeSquare = createSquare(SIDE_LENGTH, SIDE_LENGTH, color);
 
         cellGrid = new GridPane();
         cellGrid.setHgap(GAP);
@@ -55,12 +48,10 @@ public class HomeZoneView extends StackPane {
         cellGrid.add(cellViews.get(2), 0, 1);
         cellGrid.add(cellViews.get(3), 1, 1);
 
-        // Assign marbles to cells in order
-        for (int i = 0; i < marbleViews.size() && i < cellViews.size(); i++) {
-            cellViews.get(i).setMarbleView(marbleViews.get(i));
-        }
-
-        getChildren().addAll(homeZone, cellGrid);
+        getChildren().addAll(homeSquare, cellGrid);
+        this.setMaxSize(100, 100);
+        //this.setStyle("-fx-background-color: yellow;");
+        
     }
 
     private Rectangle createSquare(double width, double height, Color color) {
@@ -70,47 +61,43 @@ public class HomeZoneView extends StackPane {
         square.setArcWidth(20);
         square.setArcHeight(20);
         square.setStrokeWidth(3);
+        
 
         DropShadow glow = new DropShadow();
         glow.setColor(color);
-        glow.setRadius(10);
+        glow.setRadius(5);
         glow.setSpread(0.5);
         square.setEffect(glow);
 
         return square;
     }
 
+    // Add a marble to the first available empty cell; returns true if added successfully
+    public void sendToHome(CellView cellView) {
+         for (CellView cell : cellViews){
+         	if (cell.getMarbleView() == null) {
+         		cellView.moveMarbleTo(cell);
+         	}
+         }
+    }
+    
+    public void fieldMarble(CellView baseCell){	
+        for (CellView cell : cellViews){
+        	if (cell.getMarbleView() != null) {
+        		cell.moveMarbleTo(baseCell);
+        		break ;
+        	}
+        }	
+    }
+    
+    
+    // ----------------------- Getters & Setters ----------------------
+    
     public ArrayList<Marble> getMarbles() {
         return marbles;
     }
 
-    public ArrayList<MarbleView> getMarbleViews() {
-        return marbleViews;
-    }
-
-
-    // Remove the first marble from home zone and return its MarbleView, or null if empty
-    public MarbleView removeFirstMarble() {
-        if (marbleViews.isEmpty()) {
-            return null;
-        }
-
-        MarbleView removed = marbleViews.remove(0);
-        return removed;
-    }
-
-    // Add a marble to the first available empty cell; returns true if added successfully
-    public boolean addMarbleView(MarbleView marbleView) {
-        if (marbleViews.size() >= cellViews.size()) {
-            // No empty cell available
-            return false;
-        }
-        marbleViews.add(marbleView);
-        return true;
-    }
-
-    // Get current number of marbles in the home zone
-    public int getMarbleCount() {
-        return marbleViews.size();
+    public ArrayList<CellView> getCellViews() {
+        return this.cellViews;
     }
 }

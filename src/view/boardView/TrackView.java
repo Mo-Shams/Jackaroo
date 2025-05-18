@@ -1,66 +1,63 @@
 package view.boardView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
-import model.Colour;
 import model.player.Marble;
-import view.marbleView.MarbleView;
 import engine.board.Cell;
 import engine.board.CellType;
 import engine.board.SafeZone;
 
 public class TrackView extends GridPane {
 	private static final int P = 4;
-	private static final int linearDistance = 1;
-	private static final int diagonalDistance = 1;
+	private static final int DISTANCE = 1;
+	private static final double CELL_SPACING = 0.1;
 	private static final int[][] DIRECTIONS = {
-        {0, -linearDistance},    // 1 - up
-        {-diagonalDistance, -diagonalDistance},  // 2 - diagonal up-left
-        {-linearDistance, 0},    // 3 - left
-        {0, -linearDistance},    // 4 - up
-        {linearDistance, 0},     // 5 - right
-        {diagonalDistance, -diagonalDistance},   // 6 - diagonal up-right
-        {0, -linearDistance},    // 7 - up
-        {linearDistance, 0},     // 8 - right
-        {0, linearDistance},     // 9 - down
-        {diagonalDistance, diagonalDistance},    // 10 - diagonal down-right
-        {linearDistance, 0},     // 11 - right
-        {0, linearDistance},     // 12 - down
-        {-linearDistance, 0},    // 13 - left
-        {-diagonalDistance, diagonalDistance},   // 14 - diagonal down-left
-        {0, linearDistance},     // 15 - down
-        {-linearDistance, 0}     // 16 - left
+        {0, -DISTANCE},    // 1 - up
+        {-DISTANCE, -DISTANCE},  // 2 - diagonal up-left
+        {-DISTANCE, 0},    // 3 - left
+        {0, -DISTANCE},    // 4 - up
+        {DISTANCE, 0},     // 5 - right
+        {DISTANCE, -DISTANCE},   // 6 - diagonal up-right
+        {0, -DISTANCE},    // 7 - up
+        {DISTANCE, 0},     // 8 - right
+        {0, DISTANCE},     // 9 - down
+        {DISTANCE, DISTANCE},    // 10 - diagonal down-right
+        {DISTANCE, 0},     // 11 - right
+        {0, DISTANCE},     // 12 - down
+        {-DISTANCE, 0},    // 13 - left
+        {-DISTANCE, DISTANCE},   // 14 - diagonal down-left
+        {0, DISTANCE},     // 15 - down
+        {-DISTANCE, 0}     // 16 - left
     };
 	private static final int[] CELLS_IN_DIRECTION = {
         8, 8, 8, 5, 8, 8, 8, 5,
         8, 8, 8, 5, 8, 8, 8, 5
     };
 	
-	private static final double CELL_SPACING = 0.1;
 	
-	private final Map<Cell, CellView> cellToViewMap = new HashMap<>();
     private final ArrayList<Cell> track;
-   
+    private final ArrayList<SafeZoneView> safeZoneViews ;
+    private final ArrayList<CellView> cellViews ;
+
 
     public TrackView(ArrayList<Cell> track, ArrayList<SafeZone> safeZones) {
         this.track = track;
         setHgap(CELL_SPACING);
         setVgap(CELL_SPACING);
-        ArrayList<SafeZoneView> safeZoneViews = new ArrayList<>();
+        cellViews = new ArrayList<>();
+        safeZoneViews = new ArrayList<>();
         for(SafeZone safeZone : safeZones){
         	SafeZoneView safeZoneView = new SafeZoneView(safeZone);
         	safeZoneViews.add(safeZoneView);
         }
         renderTrack(safeZoneViews);
+        //this.setStyle("-fx-background-color: yellow");
     }
 
     private void renderTrack(ArrayList<SafeZoneView> safeZoneViews) {
-        ArrayList<Cell> cells = track;
-        int x = 90, y = 90;
+        int x = 50, y = 50;
         int cellIndex = 0;
         int j = 0;
         for (int d = 0; d < 16; d++) {
@@ -68,9 +65,9 @@ public class TrackView extends GridPane {
 
             for (int i = 0; i < len; i++) {
                 if (i == len-1) continue;
-                if (cellIndex >= cells.size()) return;
+                if (cellIndex >= track.size()) return;
 
-                Cell cell = cells.get(cellIndex++);
+                Cell cell = track.get(cellIndex++);
                 CellView cellView;
                 if(j < safeZoneViews.size() && cell.getCellType() == CellType.BASE){
                 	cellView = new CellView(cell, safeZoneViews.get(j++).getColor());
@@ -94,7 +91,7 @@ public class TrackView extends GridPane {
                 else{
                 	cellView = new CellView(cell);
                 }
-                cellToViewMap.put(cell, cellView);
+                cellViews.add(cellView);
                 // If there's a marble on this cell, add a MarbleView
                 if (cell.getMarble() != null) {
                     Marble marble = cell.getMarble(); // get the model's marble
@@ -120,13 +117,20 @@ public class TrackView extends GridPane {
                 y += DIRECTIONS[d][1];
             }
         }
-        cellToViewMap.get(track.get(0)).setMarbleView(new MarbleView(new Marble(Colour.BLUE)));
-        cellToViewMap.get(track.get(0)).moveMarbleTo(cellToViewMap.get(track.get(35)));
+   
     }
-    
-    public Map<Cell, CellView> getCellViewMap() {
-        return cellToViewMap;
-    }
+  
+
+	public ArrayList<Cell> getTrack() {
+		return track;
+	}
+
+	public ArrayList<SafeZoneView> getSafeZoneViews() {
+		return safeZoneViews;
+	}
+
+	public ArrayList<CellView> getCellViews() {
+		return cellViews;
+	}
 
 }
-

@@ -1,144 +1,109 @@
 package controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
-import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import model.card.Card;
 import model.player.Marble;
-import view.CardsView.CardView;
-import view.CardsView.FirePitView;
-import view.CardsView.HandView;
-import view.boardView.CellView;
-import view.boardView.HomeZoneView;
-import view.boardView.TrackView;
-import view.marbleView.MarbleView;
+import model.player.Player;
+import view.GameScene;
+import view.playersView.CardView;
+import view.playersView.FirePitView;
+import view.playersView.HandView;
 import engine.Game;
 import exception.GameException;
 import exception.InvalidCardException;
 import exception.InvalidMarbleException;
 
-
-public class GameController extends Controller {
-    private final Game game;
-    private TrackView trackView;
-    private ArrayList<CellView> cells;
-    private FirePitView firePitView;
-    
-    // for the player turn 
-    private CardView selectedCardView;
-    private final List<MarbleView> selectedMarbles = new ArrayList<>();
-    
-    public GameController(Game game, Stage stage) {
-        super(stage);
-        this.game = game;
-    }
-    
-    public void setTrackView(TrackView trackView) {
-        this.trackView = trackView;
-        this.cells = new ArrayList<>(trackView.getCellViewMap().values());  // Ensure this returns a map with valid keys
-    }
-    
-    public void addHomeZoneMarbleHandler(HomeZoneView homeZoneView) {
-        // Listen for clicks on any marble in the home zone
-        homeZoneView.getMarbleViews().forEach(marbleView -> {
-            marbleView.setOnMouseClicked(evt -> {
-                /*try {
-                	game.fieldMarble();
-                	trackView.animateMarbleToCell(marbleView, trackView.getBaseCellForMarble(marbleView));
-                } catch (Exception e) {
-                	System.err.println(e.getMessage());
-                }*/
-            });
-        });
-    } 
-    
-    public void addControlButtons (Button playBtn, Button deselectBtn) {
-        if (game.canPlayTurn()) {
-        	playBtn.setOnMouseClicked(evt -> {
-           	 	try {
-           	 		game.playPlayerTurn();
-                } catch (GameException e) {
-                	System.err.println(e.getMessage());
-                }
-           });
-        	deselectBtn.setOnMouseClicked(evt -> {
-                // Clear backend and UI selection
-                game.deselectAll();
-                clearSelectionUI();
-            });
-        }
-    }
-    
-    public void addHoverEffect(HomeZoneView homeZone){
-    	 homeZone.getMarbleViews().forEach(marbleView -> {
-             marbleView.setOnMouseEntered(evt -> {
-                 // Animate this marble from home into base on the track
-                 marbleView.applyGlow(Color.PURPLE);
-             });
-             marbleView.setOnMouseExited(evt ->{
-            	 marbleView.setEffect(null);
-             });
-         });
-    }
-    
-    public void addMarbleClickHandler (MarbleView mv) {
-    	mv.setOnMouseClicked(evt -> {
-    		Marble model = mv.getMarble(); 
-    		if (!selectedMarbles.contains(mv)) {
-    			try {
-    				game.selectMarble(model);
-    				selectedMarbles.add(mv);
-    				
-    				mv.applyGlow(Color.DEEPSKYBLUE);
-    				mv.scaleMarble(1.2);
-    			} catch (InvalidMarbleException e) {
-    				System.err.println(e.getMessage());
-    			}
-    		} else {
-    			game.deselectAll(); 
-    			clearSelectionUI();
-    		}
-    	});
-    }
-
-    public void addCardClickHandler(CardView cardView, HandView handView, FirePitView firePitView) {
-        cardView.setOnMouseClicked(event -> {
-            Card card = cardView.getCard();
-            if (event.getClickCount() == 2) {
-                // Double click detected
-            	cardView.sendToFirePit(firePitView, handView);
-            	
-//            	firePitView.sendCardToFirePit(cardView, handView);// Or any other action
-            }
-            if (!cardView.isSelected()) {
-                try {
-                	game.deselectAll();
-                	handView.clearSelection();
-                    game.selectCard(card);
-                    cardView.updateSelectionAnimation(true);
-                    selectedCardView = cardView;
-
-                } catch (InvalidCardException e) {
-                    System.out.println(e.getMessage());
-                }
-            } else {
-            	game.deselectAll();
-                cardView.updateSelectionAnimation(false);
-                selectedCardView = null;
-            }
-        });
-    }
-
-    
-     
-    private void clearSelectionUI() {
-        game.deselectAll();
-        if(selectedCardView == null) return;
-        selectedCardView.updateSelectionAnimation(false);
-        if(selectedMarbles == null) return;
-        selectedMarbles.clear();
-    }   
+public class GameController {
+	private final Game game ; 
+	private final GameScene gameScene ; 
+	public GameController(String name) throws IOException {
+		game = new Game(name);
+		gameScene = new GameScene(game);
+	}
+	public Game getGame() {
+		return game;
+	}
+	public GameScene getGameScene() {
+		return gameScene;
+	}
+	
+	public void playerCanSelectCard(boolean canChoose){
+		HandView playerHand = gameScene.getGameView().getHandViews().get(0);
+		for(CardView cardView : playerHand.getCardViews()){
+			if(canChoose){
+				cardView.setOnMouseClicked(e ->{
+					game.deselectAll();
+					if(!cardView.isSelected()){
+						playerHand.clearSelection();
+						try {
+							game.selectCard(cardView.getCard());
+						} catch (InvalidCardException e1) {
+							System.err.println(e1.getMessage());
+						}
+					}
+					cardView.setSelected(!cardView.isSelected());
+				});
+			}
+			else
+				cardView.setOnMouseClicked(null);
+		}
+	}
+	
+	public void playCard(int playerIndex){
+		HandView handView = gameScene.getGameView().getHandViews().get(playerIndex);
+		CardView cardView = CardView.cardToViewMap.get(game.getPlayers().get(playerIndex).getSelectedCard());
+		FirePitView firePitView = gameScene.getGameView().getFirePitView();
+		cardView.sendToFirePit(firePitView, handView, playerIndex);
+	}
+	
+	public void runGame(){
+		Scanner sc = new Scanner(System.in);
+		Player player = game.getPlayers().get(0);
+		while(game.checkWin() == null){
+			Player currentPlayer = game.getCurrentPlayer();
+			if(game.canPlayTurn()){
+				if(currentPlayer == player){
+					playerCanSelectCard(true);
+					//should be replaced by the mechanism of playing like a button to click
+					System.out.print("Do you want to play or Choose a marble first? (type 0 or 1): ");
+					while(true){
+						//some mechanism of hitting play like a button that can be hitten any time
+						//it'll be in the loop for now just for playing on the terminal
+						int wantToPlay = sc.nextInt();
+						System.out.println();
+						if(wantToPlay == 0){
+							try {
+								game.playPlayerTurn();
+								playCard(0);
+							} catch (GameException e) {
+								System.out.println(e.getMessage());
+							}
+							break;
+						}
+						try {
+							// some mechanism of choosing a marble from the actionable marbles
+							Marble inputMarble = game.getBoard().getActionableMarbles().get(sc.nextInt());
+							// all the marbles that are neither on the track nor the safeZone must be unclickable
+							game.selectMarble(inputMarble);
+						} catch (InvalidMarbleException | IndexOutOfBoundsException e) {
+							System.out.println(e.getMessage());
+						}
+						System.out.print("Do you want to play now or Choose another marble? (type 0 or 1): ");
+					}
+				}
+				else{
+					try {
+						currentPlayer.play();;
+						System.out.println("CPU " + game.getPlayers().indexOf(currentPlayer) + " played: " + currentPlayer.getSelectedCard().getName());
+					} catch (GameException e) {
+						System.out.println(e.getMessage());
+					}
+				}
+			}
+			game.endPlayerTurn();
+		}
+	}
 }

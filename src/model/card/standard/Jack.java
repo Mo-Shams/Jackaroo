@@ -24,11 +24,12 @@ public class Jack extends Standard{
 		if (marbles.size() == 2) {
 			Marble m1 = marbles.get(0); Marble m2 = marbles.get(1);
 			// i considered both situations, first is mine second is not and first is not mine and second is
-			return ((m1.getColour() == playerColour) ^ (m2.getColour() == playerColour));
+			return (m1.getColour() != m2.getColour()) && (m1.getColour() == playerColour || m2.getColour() == playerColour);
 			// no swap
 		} else if (marbles.size() == 1) {
 			// same colour as mine
-			return super.validateMarbleColours(marbles);
+			Colour marble_colour = marbles.get(0).getColour();
+			return marble_colour == playerColour;
 		}
 		return false;
 	}

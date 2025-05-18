@@ -13,10 +13,11 @@ public class ImageCache {
         return imageMap.computeIfAbsent(path, p -> {
             InputStream stream = ImageCache.class.getResourceAsStream(p);
             if (stream == null) {
-                throw new IllegalArgumentException("Image not found: " + p);
+            	stream = ImageCache.class.getResourceAsStream("/resources/player_images/default.png");
+            	if(stream == null)
+            		throw new IllegalArgumentException("Image not found: " + p);
             }
             return new Image(stream);
         });
     }
 }
-

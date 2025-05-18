@@ -57,8 +57,5 @@ abstract public class Card {
 
 	public abstract void act (ArrayList<Marble> marbles) throws ActionException,
 			InvalidMarbleException;
-	
-	public String toString(){
-		return description;
-	}
+
 }
