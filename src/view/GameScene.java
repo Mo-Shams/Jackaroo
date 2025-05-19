@@ -1,7 +1,10 @@
 package view;
 
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+import model.player.Marble;
+import model.player.Player;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -20,6 +25,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 import engine.Game;
+import exception.CannotFieldException;
+import exception.IllegalDestroyException;
 
 public class GameScene {
 	private final StackPane root;
@@ -36,6 +43,10 @@ public class GameScene {
 		root.setStyle("-fx-background-color: lightgreen;");
 		gameView = new GameView(game, WIDTH, HEIGHT);
 		root.getChildren().add(gameView);
+	}
+	public Scene CreateScene(){
+		Scene scene = new Scene(root, WIDTH, HEIGHT);
+		return scene ;
 	}
 	
 	public void showExceptionPopup( String message) {
@@ -153,12 +164,9 @@ public class GameScene {
 
         return selectedNumberFuture;
     }
-
 	
-	public Scene CreateScene(){
-		Scene scene = new Scene(root, WIDTH, HEIGHT);
-		return scene ;
-	}
+
+	//------------------------------------- Getters -------------------------------------------------
 	public Game getGame() {
 		return game;
 	}

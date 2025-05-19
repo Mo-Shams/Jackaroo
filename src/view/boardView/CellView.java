@@ -3,7 +3,9 @@ package view.boardView;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.geometry.Pos;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -12,7 +14,7 @@ import engine.board.Cell;
 import engine.board.CellType;
 
 public class CellView extends StackPane {
-	private static final double DEFAULT_RADIUS = 11;
+	private static final double DEFAULT_RADIUS = 12;
 	private static final Color DEFAULT_COLOR = Color.DARKSLATEBLUE;
 	private static final Color FILLING_COLOR = Color.LIGHTGRAY;
 
@@ -33,12 +35,12 @@ public class CellView extends StackPane {
         this.cell = cell;
         circle = createCircle(strokeColor);
         this.getChildren().add(circle);
+        StackPane.setAlignment(circle, Pos.CENTER);
 
         if (cell.getCellType() == CellType.SAFE) 
             applyGlow(strokeColor);
-        
+        this.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         cellToViewMap.put(cell,this);
-        
     }
 
     private Circle createCircle(Color strokeColor) {
@@ -59,6 +61,7 @@ public class CellView extends StackPane {
         this.marbleView = marbleView;                   // this might be wrong 
         if (!getChildren().contains(marbleView)) {
             getChildren().add(marbleView);
+            StackPane.setAlignment(marbleView, Pos.CENTER);
         }
     }
 

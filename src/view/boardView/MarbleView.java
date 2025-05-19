@@ -8,7 +8,9 @@ import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import model.player.Marble;
 
@@ -16,7 +18,7 @@ public class MarbleView extends ImageView {
 	private final Marble marble ; 
 	private boolean selected ; 
 
-	private static final double DEFAULT_MARBLE_SIZE = 30 ;
+	private static final double DEFAULT_MARBLE_SIZE = 30;
 	private static final double SCALE_ANIMATION_DURATION_MS = 200; 
 	
 	
@@ -29,7 +31,7 @@ public class MarbleView extends ImageView {
         this.setPreserveRatio(true);
         this.setSmooth(true);
         this.setFitHeight(DEFAULT_MARBLE_SIZE);
-        
+        this.setClip(new Circle(90));
 		MarbleToViewMap.put(marble,this);
 	}
 	

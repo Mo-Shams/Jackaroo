@@ -3,7 +3,10 @@ package view.boardView;
 import java.util.ArrayList;
 
 import javafx.geometry.Insets;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import model.player.Marble;
 import engine.board.Cell;
 import engine.board.CellType;
@@ -12,7 +15,7 @@ import engine.board.SafeZone;
 public class TrackView extends GridPane {
 	private static final int P = 4;
 	private static final int DISTANCE = 1;
-	private static final double CELL_SPACING = 0.1;
+	private static final double CELL_SPACING = 1;
 	private static final int[][] DIRECTIONS = {
         {0, -DISTANCE},    // 1 - up
         {-DISTANCE, -DISTANCE},  // 2 - diagonal up-left
@@ -60,6 +63,18 @@ public class TrackView extends GridPane {
         int x = 50, y = 50;
         int cellIndex = 0;
         int j = 0;
+        double lineaarSize = 30;
+        double diagonalSize = 15;
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPrefWidth(lineaarSize);   // preferred width
+        col1.setMinWidth(lineaarSize);    // minimum width
+        col1.setMaxWidth(lineaarSize);    // maximum width (no resizing)
+
+        RowConstraints row1 = new RowConstraints();
+        row1.setPrefHeight(lineaarSize);
+        row1.setMinHeight(lineaarSize);
+        row1.setMaxHeight(lineaarSize);
+        
         for (int d = 0; d < 16; d++) {
             int len = CELLS_IN_DIRECTION[d];
 
@@ -98,20 +113,21 @@ public class TrackView extends GridPane {
                     MarbleView marbleView = new MarbleView(marble);
                     cellView.setMarbleView(marbleView);
                 }
-                if((DIRECTIONS[d][0] == 0 || DIRECTIONS[d][1] == 0))
-                	GridPane.setMargin(cellView, new Insets(P, P, P, P));
                 
-                switch(cellIndex - 1){
-                case 7 : GridPane.setMargin(cellView, new Insets(0, P, P, 0)); break;
-                case 14: GridPane.setMargin(cellView, new Insets(P, 0, 0, P)); break;
-                case 32: GridPane.setMargin(cellView, new Insets(0, 0, P, P)); break;
-                case 39: GridPane.setMargin(cellView, new Insets(P, P, 0, 0)); break;
-                case 57: GridPane.setMargin(cellView, new Insets(P, 0, 0, P)); break;
-                case 64: GridPane.setMargin(cellView, new Insets(0, P, P, 0)); break;
-                case 82: GridPane.setMargin(cellView, new Insets(P, P, 0, 0)); break;
-                case 89: GridPane.setMargin(cellView, new Insets(0, 0, P, P)); break;
-                }
-
+//                	GridPane.setMargin(cellView, new Insets(P, P, P, P));
+//                
+//                switch(cellIndex - 1){
+//                case 7 : GridPane.setMargin(cellView, new Insets(0, P, P, 0)); break;
+//                case 14: GridPane.setMargin(cellView, new Insets(P, 0, 0, P)); break;
+//                case 32: GridPane.setMargin(cellView, new Insets(0, 0, P, P)); break;
+//                case 39: GridPane.setMargin(cellView, new Insets(P, P, 0, 0)); break;
+//                case 57: GridPane.setMargin(cellView, new Insets(P, 0, 0, P)); break;
+//                case 64: GridPane.setMargin(cellView, new Insets(0, P, P, 0)); break;
+//                case 82: GridPane.setMargin(cellView, new Insets(P, P, 0, 0)); break;
+//                case 89: GridPane.setMargin(cellView, new Insets(0, 0, P, P)); break;
+//                }
+                this.getColumnConstraints().add(col1);
+            	this.getRowConstraints().add(row1);
                 add(cellView, x, y);
                 x += DIRECTIONS[d][0];
                 y += DIRECTIONS[d][1];

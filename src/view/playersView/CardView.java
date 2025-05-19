@@ -163,7 +163,7 @@ public final class CardView extends StackPane {
       
     }
     
-    public SequentialTransition sendToFirePitCpu(FirePitView firePit, HandView handView, int playerIndex){
+    public SequentialTransition sendToFirePitCpu(FirePitView firePit, int playerIndex){
     	SequentialTransition sq = (SequentialTransition)flip(300, true);
     	sq.setOnFinished(e ->{
     		sendToFirePit(firePit, playerIndex).play();

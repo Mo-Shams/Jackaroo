@@ -41,7 +41,7 @@ public class HomeZoneView extends StackPane {
         cellGrid.setHgap(GAP);
         cellGrid.setVgap(GAP);
         cellGrid.setAlignment(Pos.CENTER);
-
+        
         // Add cells to 2x2 Grid
         cellGrid.add(cellViews.get(0), 0, 0);
         cellGrid.add(cellViews.get(1), 1, 0);

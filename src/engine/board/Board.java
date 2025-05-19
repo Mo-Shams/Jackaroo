@@ -327,9 +327,7 @@ public class Board implements BoardManager {
         int index = getBasePosition(marble.getColour());
 		Cell baseCell = track.get(index);
 		validateFielding(baseCell);
-
 		if(baseCell.getMarble() != null) destroyMarble(baseCell.getMarble()); 
-		
 		baseCell.setMarble(marble);
         
         // should i remove it from the players marbles?

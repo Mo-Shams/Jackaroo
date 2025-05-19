@@ -2,11 +2,13 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import model.player.Marble;
 import model.player.Player;
@@ -17,9 +19,10 @@ import view.playersView.CardView;
 import view.playersView.FirePitView;
 import view.playersView.HandView;
 import engine.Game;
+import exception.CannotFieldException;
 import exception.GameException;
+import exception.IllegalDestroyException;
 import exception.InvalidCardException;
-import exception.InvalidMarbleException;
 
 public class GameController {
 	private final Game game ; 
@@ -29,6 +32,7 @@ public class GameController {
 		game = new Game(name);
 		gameScene = new GameScene(game);
 		gameView = gameScene.getGameView();
+		addShortCuts();
 	}
 	public Game getGame() {
 		return game;
@@ -63,6 +67,30 @@ public class GameController {
 //				cardView.setOnMouseClicked(null);
 //		}
 //	}
+	public void addShortCuts(){
+		((StackPane)gameView).setOnKeyPressed((KeyEvent e1) ->{
+			try{
+				if(e1.getCode() == KeyCode.S){
+					game.fieldMarble(0);
+				}
+				else if(e1.getCode() == KeyCode.A){
+					game.fieldMarble(1);
+				}
+				else if(e1.getCode() == KeyCode.W){
+					game.fieldMarble(2);
+				}
+				else if(e1.getCode() == KeyCode.D){
+					game.fieldMarble(3);
+				}
+				gameView.updateBoardView();
+				addEventHandlers();
+			}
+			catch(IllegalDestroyException | CannotFieldException e){
+				gameScene.showExceptionPopup(e.getMessage());
+			}
+		});
+	}
+	
 	
 	public void addEventHandlers(){
 		HandView playerHand = gameView.getHandViews().get(0);
@@ -71,7 +99,7 @@ public class GameController {
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
-					gameScene.SplitDistanceView();
+					//gameScene.SplitDistanceView();
 					try {
 						game.selectCard(cardView.getCard());
 						cardView.setSelected(true);
@@ -176,14 +204,17 @@ public class GameController {
 		FirePitView firePitView = gameView.getFirePitView();
 		SequentialTransition st = new SequentialTransition();
 		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
-		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, handView, playerIndex));
+		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
 		
-		st.getChildren().add(new PauseTransition(Duration.seconds(2))); // 0.5 second pause)
+		PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 0.5 second pause
 		game.endPlayerTurn();
-		gameView.updateBoardView();
 		gameView.updatePlayerProfiles();
-		st.setOnFinished(e -> {
+		pt.setOnFinished(e ->{
 			run();
+		});
+		st.setOnFinished(e -> {
+			gameView.updateBoardView();
+			pt.play();
 		});
 		st.play();
 	}
@@ -192,7 +223,6 @@ public class GameController {
 	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
 	
 	public void run(){
-		
 		addEventHandlers();
 		if(game.checkWin() != null) return;
 		Player player = game.getPlayers().get(0);

@@ -2,25 +2,18 @@ package view;
 
 import java.util.ArrayList;
 
-import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import model.player.Marble;
 import model.player.Player;
-import engine.Game;
-import engine.board.Board;
-import engine.board.Cell;
-import engine.board.SafeZone;
 import view.boardView.CellView;
 import view.boardView.HomeZoneView;
 import view.boardView.MarbleView;
@@ -29,6 +22,9 @@ import view.boardView.TrackView;
 import view.playersView.FirePitView;
 import view.playersView.HandView;
 import view.playersView.PlayerProfile;
+import engine.Game;
+import engine.board.Board;
+
 
 public class GameView extends StackPane{
 	private final TrackView trackView;
@@ -46,7 +42,7 @@ public class GameView extends StackPane{
 		Pane ButtonContainer = new Pane();
 		playButton.setLayoutX(0);
 		playButton.setLayoutY(0);
-		this.setPadding(new Insets(30));
+		this.setPadding(new Insets(-10));
 
 
 		ButtonContainer.setMaxSize(width * 0.25, height * 0.08);
@@ -76,13 +72,13 @@ public class GameView extends StackPane{
 		trackView = new TrackView (board.getTrack(), board.getSafeZones());
 		homeZoneViews = new ArrayList<>();
 		int index = 0 ; 
-		double paneWidth = width*0.4;
-		double paneHeight = height*0.65;
+		double paneWidth = width*0.45;
+		double paneHeight = height*0.7;
 		
 		
 		trackView.setRotate(-45);
-	    trackView.setLayoutX(-90);
-	    trackView.setLayoutY(-130);
+	    trackView.setLayoutX(-830);
+	    trackView.setLayoutY(-800);
 		
 	    boardView.getChildren().add(trackView);
 		for (Player player : players){
@@ -137,18 +133,19 @@ public class GameView extends StackPane{
 	}
 	
 	public void updateBoardView(){
+		System.out.println("reached!!");
+		for(HomeZoneView homeZoneView: homeZoneViews){
+			homeZoneView.updateHomeZoneView();
+		}
 		for(CellView cellView : trackView.getCellViews()){
 			Marble marble = cellView.getCell().getMarble();
-			if(marble != null)	cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+			if(marble != null)cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
 		}
 		for(SafeZoneView safeZoneView : trackView.getSafeZoneViews()){
 			for(CellView cellView : safeZoneView.getCellViews()){
 				Marble marble = cellView.getCell().getMarble();
 				if(marble != null) cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
 			}
-		}
-		for(HomeZoneView homeZoneView: homeZoneViews){
-			homeZoneView.updateHomeZoneView();
 		}
 	}
 	
@@ -170,6 +167,9 @@ public class GameView extends StackPane{
 		}
 	}
 	
+	
+	
+	
 	private Button createGameButton(String text) {
         Button button = new Button(text);
 
@@ -180,7 +180,7 @@ public class GameView extends StackPane{
                 "-fx-border-width: 3;" +
                 "-fx-border-radius: 15;" +
                 "-fx-text-fill: #3b2f2f;" +
-                "-fx-font-size: 22px;" +
+                "-fx-font-size: 20px;" +
                 "-fx-font-family: 'Verdana';" +
                 "-fx-font-weight: bold;" +
                 "-fx-padding: 10 20 10 20;"
@@ -214,7 +214,10 @@ public class GameView extends StackPane{
 
         return button;
     }
+	
 
+	
+	//----------------------------------------------------- Getters -----------------------------------------
 	public Game getGame() {
 		return game;
 	}
@@ -223,10 +226,6 @@ public class GameView extends StackPane{
 		return trackView;
 	}
 	
-	
-
-	
-
 	public FirePitView getFirePitView() {
 		return firePitView;
 	}

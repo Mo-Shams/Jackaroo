@@ -230,7 +230,14 @@ public class Game implements GameManager {
 		return players.get((currentPlayerIndex+1)%4);
 	}
 
-
+	public void fieldMarble(int index) throws CannotFieldException, IllegalDestroyException{
+		Marble marble = players.get(index).getOneMarble();
+		if(marble == null)
+			throw new CannotFieldException("You don't have any marbles in your home zone");
+		
+		board.sendToBase(marble);
+		players.get(index).getMarbles().remove(marble);
+	}
 
 
 
