@@ -357,6 +357,8 @@ public class GameController{
 		EndScreenScene endScene = new EndScreenScene(winners);
 		Scene scene = endScene.createScene();
 		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
+		primaryStage.setFullScreen(true);
 	}
 	
 	

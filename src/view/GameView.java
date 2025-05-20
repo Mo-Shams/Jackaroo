@@ -44,7 +44,7 @@ public class GameView extends StackPane{
 		Pane ButtonContainer = new Pane();
 		playButton.setLayoutX(0);
 		playButton.setLayoutY(0);
-		this.setPadding(new Insets(10));
+		this.setPadding(new Insets(-10));
 
 
 		ButtonContainer.setMaxSize(width * 0.25, height * 0.08);
@@ -80,7 +80,7 @@ public class GameView extends StackPane{
 		
 		trackView.setRotate(-45);
 	    trackView.setLayoutX(-830);
-	    trackView.setLayoutY(-780);
+	    trackView.setLayoutY(-800);
 		
 	    boardView.getChildren().add(trackView);
 		for (Player player : players){
