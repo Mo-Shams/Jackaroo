@@ -115,6 +115,7 @@ public class GameController {
 		ArrayList<Marble> actionableMarbles = game.getBoard().getActionableMarbles();
 		for(Marble marble : actionableMarbles){
 			MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);
+			marbleView.addHoverEffect();
 			marbleView.setOnMouseClicked(e ->{
 				if(!marbleView.isSelected()){
 					try {
@@ -160,7 +161,21 @@ public class GameController {
 //		}
 //	}
 	
-		
+	public void clearPlayerSelections(){
+		Player player = game.getPlayers().get(0);
+		CardView.cardToViewMap.get(player.getSelectedCard()).setSelected(false);
+		for(Marble marble : player.getSelectedMarbles()){
+			MarbleView.MarbleToViewMap.get(marble).setSelected(false);
+		}
+	}
+	public void drawAllHands(){
+		ArrayList<Player> players = game.getPlayers();
+		int i = 0;
+		for(HandView handView : gameView.getHandViews()){
+			handView.drawCardViews(players.get(i).getHand());
+			i++;
+		}
+	}
 	
 	
 	public void canPlayTurn(boolean canPlay){
@@ -179,9 +194,7 @@ public class GameController {
 					gameScene.showExceptionPopup(e.getMessage());
 					System.out.println(cardView);
 					if(cardView != null){
-						cardView.sendToFirePit(firePitView, 0).play();
-						game.endPlayerTurn();
-						gameView.updatePlayerProfiles();
+						doTheAnimation(0);
 						// run();
 					}
 					game.deselectAll();
@@ -207,12 +220,15 @@ public class GameController {
 		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
 		
 		PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 0.5 second pause
-		game.endPlayerTurn();
-		gameView.updatePlayerProfiles();
+		
 		pt.setOnFinished(e ->{
+			game.endPlayerTurn();
+			gameView.updatePlayerProfiles();
 			run();
 		});
 		st.setOnFinished(e -> {
+			if(playerIndex == 0)
+				clearPlayerSelections();
 			gameView.updateBoardView();
 			pt.play();
 		});
@@ -223,12 +239,16 @@ public class GameController {
 	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
 	
 	public void run(){
-		addEventHandlers();
 		if(game.checkWin() != null) return;
 		Player player = game.getPlayers().get(0);
 		Player currentPlayer = game.getCurrentPlayer();
 		if(game.canPlayTurn()){
 			if(currentPlayer == player){
+				if(game.getTurn() == 0){
+					drawAllHands();
+					gameView.getFirePitView().getChildren().removeAll();
+				}
+				addEventHandlers();
 //				canSelectCard(true);
 //				canSelectMarble(true);
 				canPlayTurn(true);

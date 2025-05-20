@@ -38,12 +38,26 @@ public class MarbleView extends ImageView {
 	public void setSelected(boolean selected){
 		this.selected = selected ;
 		if (selected){
-			applyGlow(Color.YELLOW);
+			applyGlow(Color.DODGERBLUE);
 			scaleMarble(1.3);
 		}else {
 			setEffect(null);
 			scaleMarble(1.0);
 		}
+	}
+	public void addHoverEffect(){
+		this.setOnMouseEntered(e ->{
+			if(!isSelected()){
+				applyGlow(Color.GOLD);
+				scaleMarble(1.3);
+			}
+		});
+		this.setOnMouseExited(e ->{
+			if(!isSelected()){
+				setEffect(null);
+				scaleMarble(1.0);
+			}
+		});
 	}
 	
 	private void applyGlow(Color color) {

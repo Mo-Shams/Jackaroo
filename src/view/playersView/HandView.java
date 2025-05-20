@@ -21,13 +21,14 @@ public class HandView extends HBox {
     	super(20);
     	this.colour = colour;
     	player = isPlayer;
-        drawCardViews(hand);
+        //drawCardViews(hand);
         this.setMaxSize(460.0, 140.0);
         this.setAlignment(Pos.CENTER);
         //this.setStyle("-fx-background-color: yellow;");
     }
     
     public void drawCardViews(ArrayList<Card> hand){
+    	this.getChildren().clear();
     	this.hand = hand;
         cardViews = new ArrayList<>();
     	for (int i = 0; i < hand.size(); i++) {

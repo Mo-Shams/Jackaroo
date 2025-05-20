@@ -42,7 +42,6 @@ public final class CardView extends StackPane {
         this.card = card;
         this.selected = false;
         this.flipped = false;
-
         String imagePath = "/resources/card_images/" + generateImageName(card);
         imageView = new ImageView(ImageCache.getImage(imagePath));
         imageView.setPreserveRatio(true);

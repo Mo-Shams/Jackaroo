@@ -64,7 +64,7 @@ public class FirePitView extends Pane {
 	    // Step 3: Remove from current parent and add to FirePit
 	    ((Pane) cardView.getParent()).getChildren().remove(cardView);
 	    this.getChildren().add(cardView);
-	    cardView.scaleCard(1.2);
+	    cardView.scaleCard(1.3);
 	    // Step 4: Set layout to match final visual position
 	    cardView.setLayoutX(firePitCoords.getX());
 	    cardView.setLayoutY(firePitCoords.getY());
@@ -77,7 +77,7 @@ public class FirePitView extends Pane {
         case 2: cardView.setRotate(randomAngle + 180); break;
         case 3: cardView.setRotate(randomAngle - 90); break;
         }
-	    cardView.scaleCard(1.1);
+	    cardView.scaleCard(1.2);
 	    // Step 6: Keep rotation from animation
 	    // This is preserved automatically unless you used RotateTransition on a different node.
 	}

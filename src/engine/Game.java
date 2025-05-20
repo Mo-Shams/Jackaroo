@@ -246,4 +246,14 @@ public class Game implements GameManager {
 	public int getCurrentPlayerIndex() {
 		return currentPlayerIndex;
 	}
+
+
+
+
+
+
+
+	public int getTurn() {
+		return turn;
+	}
 }
