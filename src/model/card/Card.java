@@ -47,6 +47,17 @@ abstract public class Card {
 		return marbles.size() == 1;
 	}
 
+	@Override
+	public String toString() {
+		return "Name : " + name + "\nDescription : " + description ;
+	}
+
+
+
+
+
+
+
 	public boolean validateMarbleColours(ArrayList<Marble> marbles) {
 		boolean flag = true;
 		for(Marble marble : marbles)

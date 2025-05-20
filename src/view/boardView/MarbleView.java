@@ -18,7 +18,7 @@ public class MarbleView extends ImageView {
 	private final Marble marble ; 
 	private boolean selected ; 
 
-	private static final double DEFAULT_MARBLE_SIZE = 30;
+	private static final double DEFAULT_MARBLE_SIZE = 32;
 	private static final double SCALE_ANIMATION_DURATION_MS = 200; 
 	
 	

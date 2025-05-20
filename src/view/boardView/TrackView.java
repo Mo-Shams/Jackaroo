@@ -2,6 +2,7 @@ package view.boardView;
 
 import java.util.ArrayList;
 
+import javafx.animation.SequentialTransition;
 import javafx.geometry.Insets;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -135,6 +136,19 @@ public class TrackView extends GridPane {
         }
    
     }
+    
+//    public SequentialTransition animeateMoving (CellView start, CellView end) {
+//    	int initial = cellViews.indexOf(start);
+//    	int finalp = cellViews.indexOf(end);
+//    	SequentialTransition sq = new SequentialTransition();
+//    	for (int i = initial ; i < finalp ; i++){
+//    		sq.getChildren().add(cellViews.get(i%100).moveMarbleTo(cellViews.get((i+1)%100)));
+//    		System.out.println("Added");
+//    	}
+//    	return sq ;
+//
+//    	
+//    }
   
 
 	public ArrayList<Cell> getTrack() {

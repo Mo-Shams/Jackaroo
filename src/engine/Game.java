@@ -131,8 +131,8 @@ public class Game implements GameManager {
 	public void endPlayerTurn(){
 		Player currentPlayer = players.get(currentPlayerIndex);
 		currentPlayer.getHand().remove(currentPlayer.getSelectedCard()); // adding the null to the cardsPool
-//		if(currentPlayer.getHand().remove(currentPlayer.getSelectedCard()))
-		firePit.add(currentPlayer.getSelectedCard());
+		if(currentPlayer.getHand().remove(currentPlayer.getSelectedCard()))
+			firePit.add(currentPlayer.getSelectedCard());
 		deselectAll();
 		currentPlayerIndex++;
 		if(currentPlayerIndex == 4){
@@ -197,9 +197,6 @@ public class Game implements GameManager {
 			throw new CannotDiscardException("The player has no cards to be discarded");
 		int randomIndex = (int)(Math.random() * colourPlayer.getHand().size());
 		Card card = colourPlayer.getHand().remove(randomIndex) ;
-		CardView cardView = CardView.cardToViewMap.get(card);
-		cardView.sendToFirePit(FirePitView.FIREPITVIEW, currentPlayerIndex);
-		
 		firePit.add(card);
 	}
 	@Override

@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import model.card.Card;
 import model.player.Marble;
 import model.player.Player;
 import view.boardView.CellView;
@@ -19,6 +20,7 @@ import view.boardView.HomeZoneView;
 import view.boardView.MarbleView;
 import view.boardView.SafeZoneView;
 import view.boardView.TrackView;
+import view.playersView.CardView;
 import view.playersView.FirePitView;
 import view.playersView.HandView;
 import view.playersView.PlayerProfile;
@@ -42,7 +44,7 @@ public class GameView extends StackPane{
 		Pane ButtonContainer = new Pane();
 		playButton.setLayoutX(0);
 		playButton.setLayoutY(0);
-		this.setPadding(new Insets(-10));
+		this.setPadding(new Insets(10));
 
 
 		ButtonContainer.setMaxSize(width * 0.25, height * 0.08);
@@ -78,7 +80,7 @@ public class GameView extends StackPane{
 		
 		trackView.setRotate(-45);
 	    trackView.setLayoutX(-830);
-	    trackView.setLayoutY(-800);
+	    trackView.setLayoutY(-780);
 		
 	    boardView.getChildren().add(trackView);
 		for (Player player : players){
@@ -133,18 +135,23 @@ public class GameView extends StackPane{
 	}
 	
 	public void updateBoardView(){
-		System.out.println("reached!!");
 		for(HomeZoneView homeZoneView: homeZoneViews){
 			homeZoneView.updateHomeZoneView();
 		}
 		for(CellView cellView : trackView.getCellViews()){
 			Marble marble = cellView.getCell().getMarble();
 			if(marble != null)cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+			
+//			MarbleView marbleView = cellView.getMarbleView();
+//			if (marbleView != null) marbleView.setSelected(false);
 		}
 		for(SafeZoneView safeZoneView : trackView.getSafeZoneViews()){
 			for(CellView cellView : safeZoneView.getCellViews()){
 				Marble marble = cellView.getCell().getMarble();
 				if(marble != null) cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+				
+//				MarbleView marbleView = cellView.getMarbleView();
+//				if (marbleView != null) marbleView.setSelected(false);
 			}
 		}
 	}
@@ -215,6 +222,23 @@ public class GameView extends StackPane{
         return button;
     }
 	
+	public void checkDiscard(){
+		if(game.getFirePit().size() != firePitView.getChildren().size()){
+			Card card = game.getFirePit().get(game.getFirePit().size()-1);
+			CardView cardView = CardView.cardToViewMap.get(card);
+			if(handViews.get(0).getCardViews().size() != game.getPlayers().get(0).getHand().size()){
+				cardView.dimCard();
+				cardView.sendToFirePit(firePitView, 0).play();
+			}else{
+				for(int i=1; i<4; i++){
+					if(handViews.get(i).getCardViews().size() != game.getPlayers().get(i).getHand().size()){
+						cardView.dimCard();
+						cardView.sendToFirePitCpu(firePitView, i).play();;
+					}
+				}
+			}
+		}
+	}
 
 	
 	//----------------------------------------------------- Getters -----------------------------------------

@@ -2,37 +2,63 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Colour;
+import model.card.Card;
+import model.card.standard.Seven;
 import model.player.Marble;
 import model.player.Player;
+import scene.EndScreenScene;
 import view.GameScene;
 import view.GameView;
 import view.boardView.MarbleView;
 import view.playersView.CardView;
 import view.playersView.FirePitView;
 import view.playersView.HandView;
+import view.playersView.PlayerProfile;
 import engine.Game;
 import exception.CannotFieldException;
 import exception.GameException;
 import exception.IllegalDestroyException;
 import exception.InvalidCardException;
+import exception.SplitOutOfRangeException;
 
-public class GameController {
+
+public class GameController{
 	private final Game game ; 
 	private final GameScene gameScene ; 
 	private final GameView gameView;
-	public GameController(String name) throws IOException {
+	
+	private final Stage primaryStage ; 
+	
+	public GameController(String name, Stage primaryStage) throws IOException {
+		this.primaryStage = primaryStage ;
 		game = new Game(name);
 		gameScene = new GameScene(game);
 		gameView = gameScene.getGameView();
+		run();
 		addShortCuts();
+		addEventHandlers();
 	}
 	public Game getGame() {
 		return game;
@@ -44,29 +70,6 @@ public class GameController {
 	// -------------------------------------- Event handlers ----------------------------------
 	
 
-//	public void canSelectCard(boolean canSelect){
-//		for(CardView cardView : playerHand.getCardViews()){
-//			if(canSelect){
-//				cardView.setOnMouseClicked(e ->{
-//					game.deselectAll();
-//					if(!cardView.isSelected()){
-//						playerHand.clearSelection();
-//						try {
-//							game.selectCard(cardView.getCard());
-//							cardView.setSelected(true);
-//						} catch (InvalidCardException e1) {
-//							gameScene.showExceptionPopup(e1.getMessage());
-//						}
-//					}
-//					else{
-//						cardView.setSelected(false);
-//					}
-//				});
-//			}
-//			else
-//				cardView.setOnMouseClicked(null);
-//		}
-//	}
 	public void addShortCuts(){
 		((StackPane)gameView).setOnKeyPressed((KeyEvent e1) ->{
 			try{
@@ -86,7 +89,7 @@ public class GameController {
 				addEventHandlers();
 			}
 			catch(IllegalDestroyException | CannotFieldException e){
-				gameScene.showExceptionPopup(e.getMessage());
+				GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 			}
 		});
 	}
@@ -99,12 +102,11 @@ public class GameController {
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
-					//gameScene.SplitDistanceView();
 					try {
 						game.selectCard(cardView.getCard());
 						cardView.setSelected(true);
 					} catch (InvalidCardException e1) {
-						gameScene.showExceptionPopup(e1.getMessage());
+						GameScene.showExceptionPopup(e1.getMessage(), gameScene.getRoot());
 					}
 				}
 				else cardView.setSelected(false);
@@ -122,7 +124,7 @@ public class GameController {
 						game.selectMarble(marble);
 						marbleView.setSelected(true);
 					} catch (Exception e1) {
-						gameScene.showExceptionPopup(e1.getMessage());
+						GameScene.showExceptionPopup(e1.getMessage(), gameScene.getRoot());
 					}
 				}
 				else{
@@ -133,33 +135,6 @@ public class GameController {
 		}
 		
 	}
-	
-	
-//	public void canSelectMarble(boolean canSelect){
-//		ArrayList<Marble> actionableMarbles = game.getBoard().getActionableMarbles();
-//		for(Marble marble : actionableMarbles){
-//			MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);
-//			if(canSelect){
-//				marbleView.setOnMouseClicked(e ->{
-//					
-//					if(!marbleView.isSelected()){
-//						try {
-//							game.selectMarble(marble);
-//							marbleView.setSelected(true);
-//						} catch (Exception e1) {
-//							gameScene.showExceptionPopup(e1.getMessage());
-//						}
-//					}
-//					else{
-//						game.deselectMarble(marble);
-//						marbleView.setSelected(false);
-//					}
-//				});
-//			}
-//			else
-//				marbleView.setOnMouseClicked(null);
-//		}
-//	}
 	
 	public void clearPlayerSelections(){
 		Player player = game.getPlayers().get(0);
@@ -184,21 +159,27 @@ public class GameController {
 			playButton.setOnMouseClicked(evt ->{
 				HandView handView = gameView.getHandViews().get(0);
 				FirePitView firePitView = gameView.getFirePitView();
+				Card selectedCard = game.getPlayers().get(0).getSelectedCard(); 
 				CardView cardView = CardView.cardToViewMap.get(game.getPlayers().get(0).getSelectedCard());
+				if (selectedCard instanceof Seven && game.getPlayers().get(0).getSelectedMarbles().size() == 2) {
+					SplitDistanceView();
+					return ;
+				}
 
 				try {
 					game.playPlayerTurn();
 					doTheAnimation(0);
 				} 
 				catch (GameException e) {
-					gameScene.showExceptionPopup(e.getMessage());
-					System.out.println(cardView);
+					GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 					if(cardView != null){
-						doTheAnimation(0);
-						// run();
+						cardView.dimCard();
+						cardView.sendToFirePit(firePitView, 0).play();
+						game.endPlayerTurn();
+						gameView.updatePlayerProfiles();
 					}
 					game.deselectAll();
-					handView.clearSelection();
+					handView.clearSelection();				
 					run();
 				}
 			});
@@ -208,18 +189,109 @@ public class GameController {
 		
 	}
 	
+	public void continueAfter7 () {
+		HandView handView = gameView.getHandViews().get(0);
+		FirePitView firePitView = gameView.getFirePitView();
+		CardView cardView = CardView.cardToViewMap.get(game.getPlayers().get(0).getSelectedCard());
+		try {
+			game.playPlayerTurn();
+			doTheAnimation(0);
+		} 
+		catch (GameException e) {
+			GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
+			if(cardView != null){
+				cardView.dimCard();
+				cardView.sendToFirePit(firePitView, 0).play();
+				game.endPlayerTurn();
+				gameView.updatePlayerProfiles();
+			}
+			game.deselectAll();
+			handView.clearSelection();				
+			run();
+		}
+	}
+	
+	public void SplitDistanceView() {
+        CompletableFuture<Integer> selectedNumberFuture = new CompletableFuture<>();
+
+        // Overlay background
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7);");
+        overlay.setPrefSize(2000, 1200);
+
+        VBox container = new VBox(20);
+        container.setAlignment(Pos.CENTER);
+        container.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        // Central message
+        Label message = new Label("Select split distance for 7");
+        message.setTextFill(Color.WHITE);
+        message.setFont(Font.font(24));
+
+        // Button row
+        HBox buttonBox = new HBox(15);
+        buttonBox.setAlignment(Pos.CENTER);
+        DropShadow shadow = new DropShadow();
+        shadow.setColor(Color.GOLD);
+        shadow.setRadius(10);
+        
+        for (int i = 1; i <= 6; i++) {
+            Button btn = new Button(String.valueOf(i));
+            btn.setPrefSize(60, 60);
+            btn.setFont(Font.font(18));
+            btn.setStyle(
+                "-fx-background-radius: 12;" +
+                "-fx-background-color: linear-gradient(to top, #006400, #00FF00);" +
+                "-fx-text-fill: white;"
+            );
+            btn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            	btn.setEffect(shadow);
+            });
+            btn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            	btn.setEffect(null);
+            });
+            
+            final int number = i;
+            btn.setOnAction(e -> {
+                selectedNumberFuture.complete(number);   
+                gameScene.getRoot().getChildren().remove(overlay);
+                
+                
+               try {
+				game.editSplitDistance(number);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				GameScene.showExceptionPopup(e1.getMessage(), gameScene.getRoot());
+			}
+                
+               continueAfter7();
+            });
+
+            buttonBox.getChildren().add(btn);
+        }
+
+        container.getChildren().addAll(message, buttonBox);
+        // VBox.setMargin(buttonBox, new Insets(0, 0, 350, 0));
+        overlay.getChildren().add(container);
+
+        StackPane.setAlignment(container, Pos.CENTER);
+
+        gameScene.getRoot().getChildren().add(overlay);
+
+    }
+	
 	// ------------------------- the main Game Animation WorkFlow --------------------------
 	
 	
 	public void doTheAnimation(int playerIndex){
-		HandView handView = gameView.getHandViews().get(playerIndex);
-		CardView cardView = CardView.cardToViewMap.get(game.getPlayers().get(playerIndex).getSelectedCard());
+		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
+		CardView cardView = CardView.cardToViewMap.get(selectedCard);
 		FirePitView firePitView = gameView.getFirePitView();
 		SequentialTransition st = new SequentialTransition();
 		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
 		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
+				PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
 		
-		PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 0.5 second pause
+	
 		
 		pt.setOnFinished(e ->{
 			game.endPlayerTurn();
@@ -229,7 +301,8 @@ public class GameController {
 		st.setOnFinished(e -> {
 			if(playerIndex == 0)
 				clearPlayerSelections();
-			gameView.updateBoardView();
+				gameView.updateBoardView();
+			// gameView.checkDiscard();
 			pt.play();
 		});
 		st.play();
@@ -239,38 +312,51 @@ public class GameController {
 	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
 	
 	public void run(){
-		if(game.checkWin() != null) return;
-		Player player = game.getPlayers().get(0);
+		if(game.checkWin() != null) end();
+		
+		Player realPlayer = game.getPlayers().get(0);
 		Player currentPlayer = game.getCurrentPlayer();
 		if(game.canPlayTurn()){
-			if(currentPlayer == player){
+			if(currentPlayer == realPlayer){
 				if(game.getTurn() == 0){
 					drawAllHands();
 					gameView.getFirePitView().getChildren().removeAll();
 				}
 				addEventHandlers();
-//				canSelectCard(true);
-//				canSelectMarble(true);
 				canPlayTurn(true);
 			}
 			else{
-//				canSelectCard(false);
-//				canSelectMarble(false);
 				canPlayTurn(false);
 				try {
 					game.playPlayerTurn();
+					doTheAnimation(game.getCurrentPlayerIndex());
 				} catch (GameException e) {
-					gameScene.showExceptionPopup(e.getMessage());
+					GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 				}
-				doTheAnimation(game.getCurrentPlayerIndex());
 			}
 		}
 		else{
-			// doTheAnimation(game.getCurrentPlayerIndex());
+			
 			game.endPlayerTurn();
 			gameView.updatePlayerProfiles();
 			run();
 		}
+	}
+	
+	public void end () {
+		Colour colour = game.checkWin();
+		ArrayList<PlayerProfile> players = gameView.getPlayerProfiles();
+		ArrayList<PlayerProfile> winners = new  ArrayList<PlayerProfile>();
+				
+		for (PlayerProfile player : players)
+			if (player.getColour() == colour) winners.add(player);
+		for (PlayerProfile player : players)
+			if (player.getColour() != colour) winners.add(player);
+
+		
+		EndScreenScene endScene = new EndScreenScene(winners);
+		Scene scene = endScene.createScene();
+		primaryStage.setScene(scene);
 	}
 	
 	

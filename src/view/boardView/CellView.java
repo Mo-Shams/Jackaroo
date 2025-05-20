@@ -3,13 +3,14 @@ package view.boardView;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import view.boardView.MarbleView;
+import javafx.util.Duration;
 import engine.board.Cell;
 import engine.board.CellType;
 
@@ -51,10 +52,65 @@ public class CellView extends StackPane {
         return circle;
     }
     
-    public void moveMarbleTo(CellView target) {
-        if (marbleView != null) target.setMarbleView(marbleView);
-   	 	this.removeMarbleView();
-   }
+    public PauseTransition moveMarbleTo(CellView target) {
+    	
+        PauseTransition pause = new PauseTransition(Duration.millis(300));
+        pause.setOnFinished(e -> {
+            if (marbleView != null) {
+                target.setMarbleView(marbleView);
+                this.removeMarbleView();
+                System.out.println("hello");
+            }
+        });
+        return pause;
+    }
+    
+//    public ParallelTransition animateMoving(CellView target) {
+//    	
+//    	MarbleView marbleview = this.getMarbleView();
+//    	
+//    	Point2D p1 = this.getCircle().localToScene(this.getCircle().getCenterX(), this.getCircle().getCenterY());
+//    	Point2D p2 = target.getCircle().localToScene(target.getCircle().getCenterX(), target.getCircle().getCenterY());
+//    	
+//    	Parent parent = marbleView.getParent();
+//    	
+//    	Point2D start = parent.sceneToLocal(p1);
+//    	Point2D end = parent.sceneToLocal(p2);
+//    	
+//    	double dx = end.getX() - start.getX();
+//    	double dy = end.getY() - start.getY();
+//    	
+//
+//    	
+//        // Translate Transition (movement)
+//        TranslateTransition translate = new TranslateTransition(Duration.millis(800), marbleview);
+//        translate.setByX(dx);
+//        translate.setByY(dy);
+//        translate.setInterpolator(Interpolator.EASE_BOTH);
+//
+//        // Scale Transition (scaling effect)
+//        ScaleTransition scale = new ScaleTransition(Duration.millis(400), marbleview);
+//        scale.setFromX(1.0);
+//        scale.setFromY(1.0);
+//        scale.setToX(1.3); // Slightly larger
+//        scale.setToY(1.3);
+//        scale.setAutoReverse(true);
+//        scale.setCycleCount(2); // Go up then back down
+//
+//        // Combine both animations
+//        ParallelTransition parallel = new ParallelTransition(translate, scale);
+//        parallel.setOnFinished(e -> {
+//            // Reset position after translation so layout stays correct
+//        	marbleview.setTranslateX(0);
+//        	marbleview.setTranslateY(0);
+//        	
+//        	this.moveMarbleTo(target);
+//        
+//        });
+//
+//        return parallel ;
+//
+//   }
     
     // Add or update the marble in the cell
     public void setMarbleView(MarbleView marbleView) {
@@ -82,10 +138,8 @@ public class CellView extends StackPane {
     	circle.setEffect(glow);
     }
     
-    // helper method gets the coordinates of this cell for the scene 
-    // method animates moving to other cell 
     
-    
+   
     
     // ----------------------- Getters & Setters -----------------------------------------
     

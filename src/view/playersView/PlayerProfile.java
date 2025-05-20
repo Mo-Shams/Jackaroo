@@ -51,19 +51,31 @@ public class PlayerProfile extends StackPane{
 		this.nextActive = nextActive;
 		if(nextActive)
 			applyGlow(Color.VIOLET);
-		else
-			circle.setEffect(null);
+		else if (!active) circle.setEffect(null);
 	}
 	
 	private void applyGlow(Color color) {
         DropShadow glow = new DropShadow();
         glow.setColor(color);
         glow.setSpread(0.4);
-        //glow.setRadius(50);
+        // glow.setRadius(50);
         glow.setWidth(60);
         glow.setHeight(40);
         circle.setEffect(glow);
     }
+	
+	public void setProfileImage(boolean isWinner) {
+		String basePath = isWinner ? "winners" : "losers";
+		String path ;
+		if (name.getText().equals("CPU 1") || name.getText().equals("CPU 2") || name.getText().equals("CPU 3")) 
+			path = "/resources/EndScreenProfiles/" + basePath + "/" + name.getText() + ".png";
+		else path = "/resources/EndScreenProfiles/" + basePath + "/default.png";
+	    Image image = ImageCache.getImage(path);
+	    if (image != null) {
+	    	circle.setFill(new ImagePattern(image));
+	    }
+	}
+	
 
 	public Colour getColour() {
 		return colour;

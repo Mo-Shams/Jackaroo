@@ -89,6 +89,7 @@ public class HomeZoneView extends StackPane {
         	}
         }	
     }
+   
     
     public void updateHomeZoneView() {
     	for(CellView cellView: cellViews) cellView.removeMarbleView();
@@ -99,6 +100,7 @@ public class HomeZoneView extends StackPane {
     		marbleView.setOnMouseClicked(null);
     		marbleView.setSelected(false);
     		count--;
+    		
     	}
 	}
     

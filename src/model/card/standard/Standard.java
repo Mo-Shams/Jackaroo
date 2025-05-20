@@ -31,4 +31,9 @@ public class Standard extends Card {
 		boardManager.moveBy(marbles.get(0), rank, false);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " \nRank : " + rank + ", Suit : " + suit;
+	}
+
 }

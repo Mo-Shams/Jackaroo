@@ -12,6 +12,7 @@ import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
@@ -65,6 +66,7 @@ public final class CardView extends StackPane {
     }
 
     private String generateImageName(Card card) {
+    	
         StringBuilder imageName = new StringBuilder(card.getName());
         if (card instanceof Standard) {
         	Standard standard = (Standard) card;
@@ -102,6 +104,13 @@ public final class CardView extends StackPane {
         glow.setHeight(GLOW_HEIGHT);
         this.setEffect(glow);
     }
+    
+    public void dimCard() {
+    	 ColorAdjust dimEffect = new ColorAdjust();
+         dimEffect.setBrightness((float)-0.5); // Negative = darker
+         imageView.setEffect(dimEffect);
+    }
+
     
     public ParallelTransition sendToFirePit(FirePitView firePit, int playerIndex) {
     	setEffect(null);

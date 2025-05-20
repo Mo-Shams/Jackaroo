@@ -81,6 +81,8 @@ public class FirePitView extends Pane {
 	    // Step 6: Keep rotation from animation
 	    // This is preserved automatically unless you used RotateTransition on a different node.
 	}
+	
+	
 
 
 	
