@@ -1,4 +1,4 @@
-package view;
+ package view;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import model.player.Marble;
 import model.player.Player;
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -102,6 +103,47 @@ public class GameScene {
 	    fade.play();
 	}
 	
+	public void showSeeingTrappedEffect() {
+        // Dim background with a semi-transparent black rectangle
+        Rectangle dim = new Rectangle();
+        dim.widthProperty().bind(root.widthProperty());
+        dim.heightProperty().bind(root.heightProperty());
+        dim.setFill(Color.rgb(0, 0, 0, 0.6)); // 60% transparent black
+        
+        Rectangle messageBox = new Rectangle(WIDTH * 0.3 , HEIGHT * 0.2);
+        messageBox.setStroke(Color.RED);
+        messageBox.setStrokeWidth(5);
+        messageBox.setArcWidth(50);
+        messageBox.setArcHeight(50);
+        messageBox.setFill(Color.TRANSPARENT);
+        // Create the glowing red message
+        Label message = new Label("⚠  Trapped  ⚠");
+        message.setStyle("-fx-font-size: 50px; -fx-text-fill: red; -fx-font-weight: bold;");
+        
+        // Glow effect
+        DropShadow glow1 = new DropShadow();
+        glow1.setColor(Color.YELLOW);
+        glow1.setRadius(25);
+        glow1.setSpread(0.5);
+        messageBox.setEffect(glow1);
+        DropShadow glow2 = new DropShadow();
+        glow2.setColor(Color.RED);
+        glow2.setRadius(25);
+        glow2.setSpread(0.1);
+        message.setEffect(glow2);
+
+        // Group dim and message in a temporary overlay
+        StackPane overlay = new StackPane(dim, messageBox, message);
+        overlay.setAlignment(Pos.CENTER);
+
+        // Add overlay on top of root
+        root.getChildren().add(overlay);
+
+        // Wait for 1 second then remove overlay
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(e -> root.getChildren().remove(overlay));
+        pause.play();
+    }
 	
 	
 

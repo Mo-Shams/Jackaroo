@@ -100,6 +100,7 @@ public class GameController{
 		HandView playerHand = gameView.getHandViews().get(0);
 		for(CardView cardView : playerHand.getCardViews()){
 			cardView.setOnMouseClicked(e ->{
+				gameScene.showSeeingTrappedEffect();
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
@@ -139,7 +140,9 @@ public class GameController{
 	
 	public void clearPlayerSelections(){
 		Player player = game.getPlayers().get(0);
-		CardView.cardToViewMap.get(player.getSelectedCard()).setSelected(false);
+		CardView cardView = CardView.cardToViewMap.get(player.getSelectedCard());
+		cardView.setSelected(false);
+		cardView.scaleCard(1.15);
 		for(Marble marble : player.getSelectedMarbles()){
 			MarbleView.MarbleToViewMap.get(marble).setSelected(false);
 		}
