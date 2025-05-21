@@ -125,6 +125,11 @@ public class GameController{
 			});
 		}
 		
+		for(MarbleView marbleView: MarbleView.MarbleToViewMap.values()){
+			marbleView.setSelected(false);
+			marbleView.removeHoverEffect();
+		}
+		
 		ArrayList<Marble> actionableMarbles = game.getBoard().getActionableMarbles();
 		for(Marble marble : actionableMarbles){
 			MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);

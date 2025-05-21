@@ -75,6 +75,11 @@ public class MarbleView extends ImageView {
         st.setInterpolator(Interpolator.EASE_BOTH); // Smoother animation
         st.play();
     }
+	
+	public void removeHoverEffect(){
+		this.setOnMouseEntered(null);
+		this.setOnMouseExited(null);
+	}
 
 	public boolean isSelected() {
 		return selected;
