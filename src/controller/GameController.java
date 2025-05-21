@@ -295,33 +295,6 @@ public class GameController{
 	
 	// ------------------------- the main Game Animation WorkFlow --------------------------
 	
-	
-//	public void doTheAnimation(int playerIndex){
-//		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
-//		CardView cardView = CardView.cardToViewMap.get(selectedCard);
-//		FirePitView firePitView = gameView.getFirePitView();
-//		SequentialTransition st = new SequentialTransition();
-//		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
-//		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
-//				PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
-//		
-//	
-//		
-//		pt.setOnFinished(e ->{
-//			game.endPlayerTurn();
-//			gameView.updatePlayerProfiles();
-//			run();
-//		});
-//		st.setOnFinished(e -> {
-//			if(playerIndex == 0)
-//				clearPlayerSelections();
-//				gameView.updateBoardView();
-//			// gameView.checkDiscard();
-//			pt.play();
-//		});
-//		st.play();
-//	}
-	
 	public void doTheAnimation(int playerIndex){
 		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
 		ArrayList<Marble> selectedMarbles = game.getPlayers().get(playerIndex).getSelectedMarbles();
@@ -361,13 +334,13 @@ public class GameController{
 			});
 			st.setOnFinished(e -> {
 				// ----
-				if (getAction(selectedCard,selectedMarbles) > 0){
+				int steps = getAction(selectedCard,selectedMarbles);
+				
+				if (steps > 0){
 					MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
 					CellView start = (CellView) marbleView.getParent();
 					int i = gameView.getTrackView().getCellViews().indexOf(start);
-					int steps = getAction(selectedCard,selectedMarbles);
-					CellView target = gameView.getTrackView().getCellViews().get(i + steps);
-					if(playerIndex == 0) clearPlayerSelections();
+					CellView target = gameView.getTrackView().getCellViews().get((i + steps)%100);
 					start.moveMarbleTo(target);
 					PauseTransition timer = new PauseTransition(Duration.millis(CellView.getMarbleSpeed()*steps+200));
 					timer.setOnFinished(ev -> {
@@ -376,16 +349,30 @@ public class GameController{
 							gameScene.showSeeingTrappedEffect();
 							target.setWasTrap(false);
 						}
-						
-						pt.play();
 					});
 					timer.play();
-				}else {
-					gameView.updateBoardView();
-					if(playerIndex == 0) clearPlayerSelections();
-					pt.play();
+				} else if (steps == -4){
+					MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
+					CellView start = (CellView) marbleView.getParent();
+					int i = gameView.getTrackView().getCellViews().indexOf(start);
+					CellView target = gameView.getTrackView().getCellViews().get((i + steps + 100)%100);
+					start.moveBackword(4);
+					PauseTransition timer = new PauseTransition(Duration.millis(CellView.getMarbleSpeed()*Math.abs(steps)+200));
+					timer.setOnFinished(ev -> {
+						gameView.updateBoardView();
+						if (target.isWasTrap()) {
+							gameScene.showSeeingTrappedEffect();
+							target.setWasTrap(false);
+						}
+					});
+					timer.play();
 				}
-				
+				else {
+					gameView.updateBoardView();
+				}
+				pt.play();
+				if(playerIndex == 0) clearPlayerSelections();
+
 				
 			});
 			st.play();
@@ -423,10 +410,10 @@ public class GameController{
 				return -100 ;
 			case 2 : 
 				if (card instanceof Jack) return -3 ; // swap action ;
-				if (card instanceof Seven) return -4 ; // dual move action 
+				if (card instanceof Seven) return -5 ; // dual move action 
 				return -100 ;
 			default : 
-				if (card instanceof Four) return -5 ; // backword Move action 
+				if (card instanceof Four) return -4 ; // backword Move action 
 				if (card instanceof Saver) return -6 ; // Saver Action 
 				if (card instanceof Burner) return -7 ; // burn Action 
 				

@@ -58,7 +58,7 @@ public class CellView extends StackPane {
     private Circle createCircle(Color strokeColor) {
         Circle circle = new Circle(DEFAULT_RADIUS);
         circle.setFill(FILLING_COLOR);
-        if (cell.isTrap()) circle.setFill(Color.BLACK);// debuging 
+        // if (cell.isTrap()) circle.setFill(Color.BLACK);// debuging 
         circle.setStroke(strokeColor);
         circle.setStrokeWidth(2);
         return circle;
@@ -73,15 +73,27 @@ public class CellView extends StackPane {
 		if (this.getCell().getCellType() == CellType.ENTRY && target.getCell().getCellType() == CellType.SAFE){
 			return ;
 		}
-			
 		PauseTransition pause = new PauseTransition(Duration.millis(MARBLE_SPEED));
-		
 		pause.setOnFinished(e -> {
 			next.setMarbleView(this.marbleView);
 			next.moveMarbleTo(target);
 		});
 		pause.play();
     }
+    
+    public void moveBackword(int i) {
+ 		if (i == 0) {
+ 			if (this.getCell().getMarble() == null) wasTrap = true ;
+ 			this.setMarbleView(marbleView);
+ 			return ;
+ 		}
+ 		PauseTransition pause = new PauseTransition(Duration.millis(MARBLE_SPEED));
+ 		pause.setOnFinished(e -> {
+ 			prev.setMarbleView(this.marbleView);
+ 			prev.moveBackword(i-1);
+ 		});
+ 		pause.play();
+     }
     
     // Add or update the marble in the cell
     public void setMarbleView(MarbleView marbleView) {
