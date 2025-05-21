@@ -138,10 +138,10 @@ public class GameView extends StackPane{
 		for(HomeZoneView homeZoneView: homeZoneViews){
 			homeZoneView.updateHomeZoneView();
 		}
-//		for(CellView cellView : trackView.getCellViews()){
-//			Marble marble = cellView.getCell().getMarble();
-//			if(marble != null)cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
-//		}
+		for(CellView cellView : trackView.getCellViews()){
+			Marble marble = cellView.getCell().getMarble();
+			if(marble != null)cellView.setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+		}
 //			
 //			MarbleView marbleView = cellView.getMarbleView();
 //			if (marbleView != null) marbleView.setSelected(false);

@@ -86,15 +86,9 @@ public class GameController{
 			try{
 				if(e1.getCode() == KeyCode.S){
 					game.fieldMarble(0);
-					Marble marble = game.getBoard().getTrack().get(0).getMarble();
-					gameView.getTrackView().getCellViews().get(0).setMarbleView(MarbleView.MarbleToViewMap.get(marble));
-					gameView.getTrackView().getCellViews().get(0).moveMarbleTo(gameView.getTrackView().getCellViews().get(99));
-					// gameView.updateBoardView();
 				}
 				else if(e1.getCode() == KeyCode.A){
 					game.fieldMarble(1);
-					gameView.getTrackView().getCellViews().get(30).setMarbleView(gameView.getTrackView().getCellViews().get(25).getMarbleView());
-
 				}
 				else if(e1.getCode() == KeyCode.W){
 					game.fieldMarble(2);
@@ -302,6 +296,32 @@ public class GameController{
 	// ------------------------- the main Game Animation WorkFlow --------------------------
 	
 	
+//	public void doTheAnimation(int playerIndex){
+//		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
+//		CardView cardView = CardView.cardToViewMap.get(selectedCard);
+//		FirePitView firePitView = gameView.getFirePitView();
+//		SequentialTransition st = new SequentialTransition();
+//		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
+//		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
+//				PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
+//		
+//	
+//		
+//		pt.setOnFinished(e ->{
+//			game.endPlayerTurn();
+//			gameView.updatePlayerProfiles();
+//			run();
+//		});
+//		st.setOnFinished(e -> {
+//			if(playerIndex == 0)
+//				clearPlayerSelections();
+//				gameView.updateBoardView();
+//			// gameView.checkDiscard();
+//			pt.play();
+//		});
+//		st.play();
+//	}
+	
 	public void doTheAnimation(int playerIndex){
 		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
 		ArrayList<Marble> selectedMarbles = game.getPlayers().get(playerIndex).getSelectedMarbles();
@@ -312,29 +332,84 @@ public class GameController{
 		
 		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
 		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
-				PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
+		PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
+		SequentialTransition st2 = new SequentialTransition();
+		PauseTransition pt2 = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
 		
-		if (getAction(selectedCard,selectedMarbles) > 0){
-			MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
-			CellView start = (CellView) marbleView.getParent();
-			int i = gameView.getTrackView().getCellViews().indexOf(start);
-			CellView target = gameView.getTrackView().getCellViews().get(i + getAction(selectedCard,selectedMarbles));
-			
+	
+	
+		CardView cardViewDiscardedContainer = null;
+		for(int playerIndex2=0; playerIndex2<4; playerIndex2++){
+			HandView handView = gameView.getHandViews().get(playerIndex2);
+			if(handView.getCardViews().size() == handView.getHand().size()) continue;
+			for(CardView cardViewDiscarded: handView.getCardViews()){
+				if(!handView.getHand().contains(cardViewDiscarded.getCard())) {
+					cardViewDiscardedContainer = cardViewDiscarded;
+					if (playerIndex2 == 0) st2.getChildren().add(cardViewDiscarded.sendToFirePit(firePitView ,playerIndex2));
+					else st2.getChildren().add(cardViewDiscarded.sendToFirePitCpu(firePitView,playerIndex2));
+					break;
+				}
+			}
 		}
-		
-		pt.setOnFinished(e ->{
-			game.endPlayerTurn();
-			gameView.updatePlayerProfiles();
-			run();
-		});
-		st.setOnFinished(e -> {
-			if(playerIndex == 0)
-				clearPlayerSelections();
+		CardView cardViewDiscardedContainer2 = cardViewDiscardedContainer;
+		if(st2.getChildren().size() == 0){
+			pt.setOnFinished(e ->{
+				game.endPlayerTurn();
+				gameView.updatePlayerProfiles();
+				run();
+			
+			});
+			st.setOnFinished(e -> {
+				// ----
+				if (getAction(selectedCard,selectedMarbles) > 0){
+					MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
+					CellView start = (CellView) marbleView.getParent();
+					int i = gameView.getTrackView().getCellViews().indexOf(start);
+					int steps = getAction(selectedCard,selectedMarbles);
+					CellView target = gameView.getTrackView().getCellViews().get(i + steps);
+					if(playerIndex == 0) clearPlayerSelections();
+					start.moveMarbleTo(target);
+					PauseTransition timer = new PauseTransition(Duration.millis(CellView.getMarbleSpeed()*steps+200));
+					timer.setOnFinished(ev -> {
+						gameView.updateBoardView();
+						if (target.isWasTrap()) {
+							gameScene.showSeeingTrappedEffect();
+							target.setWasTrap(false);
+						}
+						
+						pt.play();
+					});
+					timer.play();
+				}else {
+					gameView.updateBoardView();
+					if(playerIndex == 0) clearPlayerSelections();
+					pt.play();
+				}
+				
+				
+			});
+			st.play();
+		}else{
+			pt.setDuration(Duration.seconds(0.5));
+			pt2.setOnFinished(e ->{
+				game.endPlayerTurn();
+				gameView.updatePlayerProfiles();
+				run();
+			});
+			st2.setOnFinished(e -> {
+				if(playerIndex == 0) clearPlayerSelections();
 				gameView.updateBoardView();
-			// gameView.checkDiscard();
-			pt.play();
-		});
-		st.play();
+				pt2.play();
+			});
+			st.setOnFinished(e -> {
+				pt.play();
+			});
+			pt.setOnFinished(e -> {
+				cardViewDiscardedContainer2.dimCard();
+				st2.play();
+			});
+			st.play();
+		}
 	}
 	
 	// moveAction -> 1, backwordAction -> 2, discardAction -> 3, 
@@ -345,9 +420,11 @@ public class GameController{
 			case 0 : 
 				if (card instanceof King || card instanceof Ace) return -1 ; // field action
 				if (card instanceof Queen || card instanceof Ten ) return -2 ; // discard action 
+				return -100 ;
 			case 2 : 
 				if (card instanceof Jack) return -3 ; // swap action ;
 				if (card instanceof Seven) return -4 ; // dual move action 
+				return -100 ;
 			default : 
 				if (card instanceof Four) return -5 ; // backword Move action 
 				if (card instanceof Saver) return -6 ; // Saver Action 

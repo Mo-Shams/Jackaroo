@@ -113,6 +113,7 @@ public final class CardView extends StackPane {
 
     
     public ParallelTransition sendToFirePit(FirePitView firePit, int playerIndex) {
+    	((HandView) this.getParent()).getCardViews().remove(this);
     	setEffect(null);
         // Step 1: Get center of FirePit in scene coordinates
         Bounds firePitBounds = firePit.localToScene(firePit.getBoundsInLocal());

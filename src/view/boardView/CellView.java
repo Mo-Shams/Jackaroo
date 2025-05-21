@@ -18,7 +18,7 @@ public class CellView extends StackPane {
 	private static final double DEFAULT_RADIUS = 12;
 	private static final Color DEFAULT_COLOR = Color.DARKSLATEBLUE;
 	private static final Color FILLING_COLOR = Color.LIGHTGRAY;
-	private static final int MARBLE_SPEED = 20 ;
+	private static final int MARBLE_SPEED = 100 ;
 
 	
     private final Cell cell;
@@ -29,6 +29,8 @@ public class CellView extends StackPane {
     private CellView prev ; 
     private CellView enter ;
     
+    private boolean wasTrap ;
+    
     
 	public static final Map<Cell, CellView> cellToViewMap = new HashMap<>();
 
@@ -37,7 +39,11 @@ public class CellView extends StackPane {
     	this(cell, DEFAULT_COLOR);
     }
 
-    public CellView(Cell cell, Color strokeColor) {
+    public static int getMarbleSpeed() {
+		return MARBLE_SPEED;
+	}
+
+	public CellView(Cell cell, Color strokeColor) {
         this.cell = cell;
         circle = createCircle(strokeColor);
         this.getChildren().add(circle);
@@ -52,6 +58,7 @@ public class CellView extends StackPane {
     private Circle createCircle(Color strokeColor) {
         Circle circle = new Circle(DEFAULT_RADIUS);
         circle.setFill(FILLING_COLOR);
+        if (cell.isTrap()) circle.setFill(Color.BLACK);// debuging 
         circle.setStroke(strokeColor);
         circle.setStrokeWidth(2);
         return circle;
@@ -59,10 +66,14 @@ public class CellView extends StackPane {
     
     public void moveMarbleTo(CellView target) {
 		if (this == target) {
+			if (target.getCell().getMarble() == null) wasTrap = true ;
 			target.setMarbleView(marbleView);
 			return ;
 		}
-		
+		if (this.getCell().getCellType() == CellType.ENTRY && target.getCell().getCellType() == CellType.SAFE){
+			return ;
+		}
+			
 		PauseTransition pause = new PauseTransition(Duration.millis(MARBLE_SPEED));
 		
 		pause.setOnFinished(e -> {
@@ -125,6 +136,14 @@ public class CellView extends StackPane {
 
 	public CellView getPrev() {
 		return prev;
+	}
+
+	public boolean isWasTrap() {
+		return wasTrap;
+	}
+
+	public void setWasTrap(boolean wasTrap) {
+		this.wasTrap = wasTrap;
 	}
 
 	public void setPrev(CellView prev) {

@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import engine.board.BoardManager;
 import exception.GameException;
+import exception.InvalidMarbleException;
 import model.Colour;
 import model.card.Card;
 
@@ -71,6 +72,7 @@ public class CPU extends Player {
                         if(card.validateMarbleColours(toSend)) {
                             try {
                                 getSelectedCard().act(toSend);
+                                setSelectedMarbles(toSend);
                                 return; // Return after successful action.
                             }
                             catch(Exception e) {
@@ -91,6 +93,7 @@ public class CPU extends Player {
                             if(card.validateMarbleColours(toSend)) {
                                 try {
                                     getSelectedCard().act(toSend);
+                                    setSelectedMarbles(toSend);
                                     return; // Return after successful action.
                                 }
                                 catch(Exception e) {
@@ -107,6 +110,10 @@ public class CPU extends Player {
         // If no cards were played, select the first card by default.
         if (cards.size() == initialHandSize)
             this.selectCard(this.getHand().get(0));
+    }
+    public void setSelectedMarbles(ArrayList<Marble> marbles) throws InvalidMarbleException{
+    	for(Marble marble : marbles)
+    		selectMarble(marble);
     }
 
 }
