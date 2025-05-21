@@ -130,7 +130,7 @@ public class Game implements GameManager {
 	//method that ends the current player turn and sets the game ready for the next player
 	public void endPlayerTurn(){
 		Player currentPlayer = players.get(currentPlayerIndex);
-		currentPlayer.getHand().remove(currentPlayer.getSelectedCard()); // adding the null to the cardsPool
+//		currentPlayer.getHand().remove(currentPlayer.getSelectedCard()); // adding the null to the cardsPool
 		if(currentPlayer.getHand().remove(currentPlayer.getSelectedCard()))
 			firePit.add(currentPlayer.getSelectedCard());
 		deselectAll();
@@ -159,7 +159,6 @@ public class Game implements GameManager {
 	
 	//method that checks if the game ended and specifies the winner
 	public Colour checkWin(){
-		if(turn == 1) return Colour.RED;
 		for(int i = 0; i < 4; i++){
 			SafeZone currentSafeZone = board.getSafeZones().get(i);
 			if(currentSafeZone.isFull())

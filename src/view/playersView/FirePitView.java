@@ -15,27 +15,27 @@ import model.card.Card;
 public class FirePitView extends Pane {
 	private final ArrayList<Card> firePit;
 	private final Circle circle;
+	private final ArrayList<CardView> cardViews;
 	
-	public static FirePitView FIREPITVIEW ;
 
 	public FirePitView(ArrayList<Card> firePit, double width, double height){
 		super();
 		this.firePit = firePit;
+		cardViews = new ArrayList<>();
 		circle = createGlowingCircle(150, Color.DEEPSKYBLUE);
 		circle.setLayoutX((width-1620)/2);
 		circle.setLayoutY((height-720)/2);
 		getChildren().add(circle);  // order matters! circle first, cards on top
 		setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-		FIREPITVIEW = this ;
 	}
 	
-	public void addCardToFirePit(CardView cardView, double x, double y, double rotation) {
-        this.getChildren().add(cardView);
-        // Set the card position relative to this (coordinates inside firepit)
-        cardView.setLayoutX(x);
-        cardView.setLayoutY(y);
-        cardView.setRotate(rotation);
-    }
+//	public void addCardToFirePit(CardView cardView, double x, double y, double rotation) {
+//        this.getChildren().add(cardView);
+//        // Set the card position relative to this (coordinates inside firepit)
+//        cardView.setLayoutX(x);
+//        cardView.setLayoutY(y);
+//        cardView.setRotate(rotation);
+//    }
 	
 	private Circle createGlowingCircle(double redius, Color color){
 		Circle circle = new Circle(redius);
@@ -64,6 +64,7 @@ public class FirePitView extends Pane {
 	    // Step 3: Remove from current parent and add to FirePit
 	    ((Pane) cardView.getParent()).getChildren().remove(cardView);
 	    this.getChildren().add(cardView);
+	    cardViews.add(cardView);
 	    cardView.scaleCard(1.3);
 	    // Step 4: Set layout to match final visual position
 	    cardView.setLayoutX(firePitCoords.getX());
@@ -82,9 +83,18 @@ public class FirePitView extends Pane {
 	    // This is preserved automatically unless you used RotateTransition on a different node.
 	}
 	
-	
-
-
+	public void updateFirePitView(){
+		if(firePit.isEmpty())return;
+		for(int i = 0; i < firePit.size() - 1; i++){
+			Card card = firePit.get(i);
+			CardView cardView = CardView.cardToViewMap.get(card);
+			this.getChildren().remove(cardView);
+		}
+		for(int i = 0; i < cardViews.size()-1; i++){
+			CardView cardView  = cardViews.remove(0);
+			this.getChildren().remove(cardView);
+		}
+	}
 	
 	public Circle getCircle() {
 		return circle;
@@ -92,6 +102,10 @@ public class FirePitView extends Pane {
 
 	public ArrayList<Card> getFirePit() {
 		return firePit;
+	}
+
+	public ArrayList<CardView> getCardViews() {
+		return cardViews;
 	}
 	
 	

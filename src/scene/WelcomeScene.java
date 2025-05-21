@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -20,6 +22,8 @@ import controller.GameController;
 
 import java.util.*;
 
+import exception.CannotFieldException;
+import exception.IllegalDestroyException;
 import view.GameScene;
 import view.ImageCache;
 
@@ -47,6 +51,7 @@ public class WelcomeScene {
         Button play = createStyledButton("Play");
         Button about = createStyledButton("About");
         Button settings = createStyledButton("Settings");
+        
 
         play.setOnAction(evt -> {
             String playerName = inputField.getText().trim();
@@ -60,7 +65,7 @@ public class WelcomeScene {
             	Scene gameScene = gameController.getGameScene().CreateScene();
             	primaryStage.setScene(gameScene);
             	primaryStage.setFullScreen(true);
-            	primaryStage.setResizable(false);
+            	
             } catch (Exception e) {
             	GameScene.showExceptionPopup("The game Failed to load" ,(StackPane) backgroundPane);
             }
@@ -83,7 +88,11 @@ public class WelcomeScene {
 
         root.getChildren().addAll(backgroundPane, vbox); // Add background + UI
         Scene scene = new Scene(root, width, height);
-
+        scene.setOnKeyPressed((KeyEvent e1) ->{
+    		if(e1.getCode() == KeyCode.ENTER){
+    			play.fire();
+    		}
+    	});
         inputField.prefWidthProperty().bind(scene.widthProperty().multiply(0.15));
         inputField.prefHeightProperty().bind(scene.heightProperty().multiply(0.05));
 

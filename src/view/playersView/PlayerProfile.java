@@ -42,7 +42,9 @@ public class PlayerProfile extends StackPane{
 	public void setActive(boolean active){
 		this.active = active;
 		if(active)
-			applyGlow(Color.DEEPSKYBLUE);
+			//circle.setStroke(Color.GREEN);
+			 applyGlow(Color.DEEPSKYBLUE);
+		
 		else
 			circle.setEffect(null);
 	}
@@ -50,6 +52,7 @@ public class PlayerProfile extends StackPane{
 	public void setNextActive(boolean nextActive){
 		this.nextActive = nextActive;
 		if(nextActive)
+			//circle.setStroke(Color.VIOLET);
 			applyGlow(Color.VIOLET);
 		else if (!active) circle.setEffect(null);
 	}
@@ -57,10 +60,10 @@ public class PlayerProfile extends StackPane{
 	private void applyGlow(Color color) {
         DropShadow glow = new DropShadow();
         glow.setColor(color);
-        glow.setSpread(0.4);
-        // glow.setRadius(50);
-        glow.setWidth(60);
-        glow.setHeight(40);
+        glow.setSpread(0.5);
+        glow.setRadius(120);
+        //glow.setWidth(60);
+        //glow.setHeight(40);
         circle.setEffect(glow);
     }
 	

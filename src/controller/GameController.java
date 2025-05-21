@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -175,6 +176,7 @@ public class GameController{
 					if(cardView != null){
 						cardView.dimCard();
 						cardView.sendToFirePit(firePitView, 0).play();
+						clearPlayerSelections();
 						game.endPlayerTurn();
 						gameView.updatePlayerProfiles();
 					}
@@ -319,8 +321,10 @@ public class GameController{
 		if(game.canPlayTurn()){
 			if(currentPlayer == realPlayer){
 				if(game.getTurn() == 0){
+					System.out.println(Arrays.toString(gameView.getFirePitView().getChildren().toArray()));
+					gameView.getFirePitView().updateFirePitView();
+					System.out.println(Arrays.toString(gameView.getFirePitView().getChildren().toArray()));
 					drawAllHands();
-					gameView.getFirePitView().getChildren().removeAll();
 				}
 				addEventHandlers();
 				canPlayTurn(true);

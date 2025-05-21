@@ -54,6 +54,7 @@ public class Deck {
 			}
 		}
 		br.close();
+		System.out.println(cardsPool.size());
 	}
 	
 	public static ArrayList<Card> drawCards(){
