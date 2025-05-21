@@ -62,7 +62,7 @@ public class FirePitView extends Pane {
 	    
 
 	    // Step 3: Remove from current parent and add to FirePit
-	    ((HandView) cardView.getParent()).getCardViews().remove(cardView);
+	    
 	    ((Pane) cardView.getParent()).getChildren().remove(cardView);
 	    
 	    this.getChildren().add(cardView);

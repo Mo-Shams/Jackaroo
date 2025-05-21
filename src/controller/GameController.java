@@ -100,7 +100,7 @@ public class GameController{
 		HandView playerHand = gameView.getHandViews().get(0);
 		for(CardView cardView : playerHand.getCardViews()){
 			cardView.setOnMouseClicked(e ->{
-				gameScene.showSeeingTrappedEffect();
+//				gameScene.showSeeingTrappedEffect();
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
@@ -287,6 +287,32 @@ public class GameController{
 	// ------------------------- the main Game Animation WorkFlow --------------------------
 	
 	
+//	public void doTheAnimation(int playerIndex){
+//		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
+//		CardView cardView = CardView.cardToViewMap.get(selectedCard);
+//		FirePitView firePitView = gameView.getFirePitView();
+//		SequentialTransition st = new SequentialTransition();
+//		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
+//		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
+//				PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
+//		
+//	
+//		
+//		pt.setOnFinished(e ->{
+//			game.endPlayerTurn();
+//			gameView.updatePlayerProfiles();
+//			run();
+//		});
+//		st.setOnFinished(e -> {
+//			if(playerIndex == 0)
+//				clearPlayerSelections();
+//				gameView.updateBoardView();
+//			// gameView.checkDiscard();
+//			pt.play();
+//		});
+//		st.play();
+//	}
+	
 	public void doTheAnimation(int playerIndex){
 		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
 		CardView cardView = CardView.cardToViewMap.get(selectedCard);
@@ -294,23 +320,59 @@ public class GameController{
 		SequentialTransition st = new SequentialTransition();
 		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
 		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
-				PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
+		PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
+		SequentialTransition st2 = new SequentialTransition();
+		PauseTransition pt2 = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
 		
-	
-		
-		pt.setOnFinished(e ->{
-			game.endPlayerTurn();
-			gameView.updatePlayerProfiles();
-			run();
-		});
-		st.setOnFinished(e -> {
-			if(playerIndex == 0)
-				clearPlayerSelections();
+		CardView cardViewDiscardedContainer = null;
+		for(int playerIndex2=0; playerIndex2<4; playerIndex2++){
+			HandView handView = gameView.getHandViews().get(playerIndex2);
+			if(handView.getCardViews().size() == handView.getHand().size()) continue;
+			for(CardView cardViewDiscarded: handView.getCardViews()){
+				if(!handView.getHand().contains(cardViewDiscarded.getCard())) {
+					cardViewDiscardedContainer = cardViewDiscarded;
+					if (playerIndex2 == 0) st2.getChildren().add(cardViewDiscarded.sendToFirePit(firePitView ,playerIndex2));
+					else st2.getChildren().add(cardViewDiscarded.sendToFirePitCpu(firePitView,playerIndex2));
+					break;
+				}
+			}
+		}
+		CardView cardViewDiscardedContainer2 = cardViewDiscardedContainer;
+		if(st2.getChildren().size() == 0){
+			System.out.println("????");
+			pt.setOnFinished(e ->{
+				game.endPlayerTurn();
+				gameView.updatePlayerProfiles();
+				run();
+			});
+			st.setOnFinished(e -> {
+				if(playerIndex == 0) clearPlayerSelections();
 				gameView.updateBoardView();
-			// gameView.checkDiscard();
-			pt.play();
-		});
-		st.play();
+				pt.play();
+			});
+			st.play();
+		}else{
+			pt.setDuration(Duration.seconds(0.5));
+			System.out.println("Should be one card!!");
+			pt2.setOnFinished(e ->{
+				game.endPlayerTurn();
+				gameView.updatePlayerProfiles();
+				run();
+			});
+			st2.setOnFinished(e -> {
+				if(playerIndex == 0) clearPlayerSelections();
+				gameView.updateBoardView();
+				pt2.play();
+			});
+			st.setOnFinished(e -> {
+				pt.play();
+			});
+			pt.setOnFinished(e -> {
+				cardViewDiscardedContainer2.dimCard();
+				st2.play();
+			});
+			st.play();
+		}
 	}
 	
 	
