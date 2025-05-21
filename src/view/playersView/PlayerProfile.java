@@ -43,7 +43,7 @@ public class PlayerProfile extends StackPane{
 		this.active = active;
 		if(active)
 			//circle.setStroke(Color.GREEN);
-			 applyGlow(Color.DEEPSKYBLUE);
+			 applyGlow(Color.DARKGREEN);
 		
 		else
 			circle.setEffect(null);

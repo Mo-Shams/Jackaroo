@@ -57,6 +57,7 @@ public class TrackView extends GridPane {
         	safeZoneViews.add(safeZoneView);
         }
         renderTrack(safeZoneViews);
+        linkTheList();
         //this.setStyle("-fx-background-color: yellow");
     }
 
@@ -137,18 +138,12 @@ public class TrackView extends GridPane {
    
     }
     
-//    public SequentialTransition animeateMoving (CellView start, CellView end) {
-//    	int initial = cellViews.indexOf(start);
-//    	int finalp = cellViews.indexOf(end);
-//    	SequentialTransition sq = new SequentialTransition();
-//    	for (int i = initial ; i < finalp ; i++){
-//    		sq.getChildren().add(cellViews.get(i%100).moveMarbleTo(cellViews.get((i+1)%100)));
-//    		System.out.println("Added");
-//    	}
-//    	return sq ;
-//
-//    	
-//    }
+    public void linkTheList(){
+    	for (int i = 0 ; i < cellViews.size(); i++){
+    		cellViews.get(i).setNext(cellViews.get((i+1)%100));
+    		cellViews.get(i).setPrev(cellViews.get((i+99)%100));
+    	}
+    }
   
 
 	public ArrayList<Cell> getTrack() {

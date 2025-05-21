@@ -26,12 +26,22 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Colour;
 import model.card.Card;
+import model.card.standard.Ace;
+import model.card.standard.Four;
+import model.card.standard.Jack;
+import model.card.standard.King;
+import model.card.standard.Queen;
 import model.card.standard.Seven;
+import model.card.standard.Standard;
+import model.card.standard.Ten;
+import model.card.wild.Burner;
+import model.card.wild.Saver;
 import model.player.Marble;
 import model.player.Player;
 import scene.EndScreenScene;
 import view.GameScene;
 import view.GameView;
+import view.boardView.CellView;
 import view.boardView.MarbleView;
 import view.playersView.CardView;
 import view.playersView.FirePitView;
@@ -76,9 +86,15 @@ public class GameController{
 			try{
 				if(e1.getCode() == KeyCode.S){
 					game.fieldMarble(0);
+					Marble marble = game.getBoard().getTrack().get(0).getMarble();
+					gameView.getTrackView().getCellViews().get(0).setMarbleView(MarbleView.MarbleToViewMap.get(marble));
+					gameView.getTrackView().getCellViews().get(0).moveMarbleTo(gameView.getTrackView().getCellViews().get(99));
+					// gameView.updateBoardView();
 				}
 				else if(e1.getCode() == KeyCode.A){
 					game.fieldMarble(1);
+					gameView.getTrackView().getCellViews().get(30).setMarbleView(gameView.getTrackView().getCellViews().get(25).getMarbleView());
+
 				}
 				else if(e1.getCode() == KeyCode.W){
 					game.fieldMarble(2);
@@ -100,7 +116,6 @@ public class GameController{
 		HandView playerHand = gameView.getHandViews().get(0);
 		for(CardView cardView : playerHand.getCardViews()){
 			cardView.setOnMouseClicked(e ->{
-				gameScene.showSeeingTrappedEffect();
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
@@ -289,14 +304,23 @@ public class GameController{
 	
 	public void doTheAnimation(int playerIndex){
 		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
+		ArrayList<Marble> selectedMarbles = game.getPlayers().get(playerIndex).getSelectedMarbles();
 		CardView cardView = CardView.cardToViewMap.get(selectedCard);
 		FirePitView firePitView = gameView.getFirePitView();
+		
 		SequentialTransition st = new SequentialTransition();
+		
 		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
 		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
 				PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
 		
-	
+		if (getAction(selectedCard,selectedMarbles) > 0){
+			MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
+			CellView start = (CellView) marbleView.getParent();
+			int i = gameView.getTrackView().getCellViews().indexOf(start);
+			CellView target = gameView.getTrackView().getCellViews().get(i + getAction(selectedCard,selectedMarbles));
+			
+		}
 		
 		pt.setOnFinished(e ->{
 			game.endPlayerTurn();
@@ -313,6 +337,28 @@ public class GameController{
 		st.play();
 	}
 	
+	// moveAction -> 1, backwordAction -> 2, discardAction -> 3, 
+	// fieldAction -> 4, saveAction -> 5, BurnAction -> 6, swapAction -> 7
+	public int getAction (Card card, ArrayList<Marble> marbles){ 
+		
+		switch (marbles.size()){
+			case 0 : 
+				if (card instanceof King || card instanceof Ace) return -1 ; // field action
+				if (card instanceof Queen || card instanceof Ten ) return -2 ; // discard action 
+			case 2 : 
+				if (card instanceof Jack) return -3 ; // swap action ;
+				if (card instanceof Seven) return -4 ; // dual move action 
+			default : 
+				if (card instanceof Four) return -5 ; // backword Move action 
+				if (card instanceof Saver) return -6 ; // Saver Action 
+				if (card instanceof Burner) return -7 ; // burn Action 
+				
+				Standard moveCard = (Standard)card ;
+				return moveCard.getRank() ; // nomarl move action 
+		}
+	}
+
+
 	
 	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
 	
@@ -324,9 +370,7 @@ public class GameController{
 		if(game.canPlayTurn()){
 			if(currentPlayer == realPlayer){
 				if(game.getTurn() == 0){
-					System.out.println(Arrays.toString(gameView.getFirePitView().getChildren().toArray()));
 					gameView.getFirePitView().updateFirePitView();
-					System.out.println(Arrays.toString(gameView.getFirePitView().getChildren().toArray()));
 					drawAllHands();
 				}
 				addEventHandlers();
