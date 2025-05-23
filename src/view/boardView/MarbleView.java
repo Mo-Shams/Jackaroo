@@ -60,7 +60,15 @@ public class MarbleView extends ImageView {
 		});
 	}
 	
-	private void applyGlow(Color color) {
+	public void animateScale(double targetScale) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(SCALE_ANIMATION_DURATION_MS), this);
+        st.setToX(targetScale);
+        st.setToY(targetScale);
+        st.setInterpolator(Interpolator.EASE_BOTH);
+        st.play();
+    }
+	
+	public void applyGlow(Color color) {
         DropShadow glow = new DropShadow();
         glow.setColor(color);
         glow.setWidth(30);
