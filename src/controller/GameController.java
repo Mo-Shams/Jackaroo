@@ -298,111 +298,130 @@ public class GameController{
 
     }
 	
-	// ------------------------- the main Game Animation WorkFlow --------------------------
 	
+	
+	//------------------------- the main Game Animation WorkFlow --------------------------
 	public void doTheAnimation(int playerIndex){
+		
+		//---------------------- getting the needed elements ----------------------
+		
+		
 		Card selectedCard = game.getPlayers().get(playerIndex).getSelectedCard(); 
 		ArrayList<Marble> selectedMarbles = game.getPlayers().get(playerIndex).getSelectedMarbles();
-		CardView cardView = CardView.cardToViewMap.get(selectedCard);
+		CardView selectedCardView = CardView.cardToViewMap.get(selectedCard);
 		FirePitView firePitView = gameView.getFirePitView();
+
 		
-		SequentialTransition st = new SequentialTransition();
 		
-		if (playerIndex == 0) st.getChildren().add(cardView.sendToFirePit(firePitView, playerIndex));
-		else st.getChildren().add(cardView.sendToFirePitCpu(firePitView, playerIndex));
-		PauseTransition pt = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
-		SequentialTransition st2 = new SequentialTransition();
-		PauseTransition pt2 = new PauseTransition(Duration.seconds(1.5)); // 1.5 second pause
+		//-------------------------------- the main animation ---------------------------------------------
 		
-	
-	
-		CardView cardViewDiscardedContainer = null;
-		for(int playerIndex2=0; playerIndex2<4; playerIndex2++){
-			HandView handView = gameView.getHandViews().get(playerIndex2);
+		
+		SequentialTransition animation = new SequentialTransition();
+		
+		
+		//------------------------ add thinking period for the CPUs -----------------------------------------------
+		
+		if(playerIndex > 0){
+			PauseTransition thinking = new PauseTransition(Duration.seconds(2)); //thinking for 3 seconds
+			animation.getChildren().add(thinking);
+		}
+		
+		
+		
+		
+		//---------------------- the first animation: card to firePit + pause --------------------------------------
+		
+		
+		animation.getChildren().add(selectedCardView.sendToFirePit(firePitView, playerIndex));
+		PauseTransition pt1 = new PauseTransition(Duration.seconds(0.75)); // 0.75 second pause
+		animation.getChildren().add(pt1);
+		
+		
+		//------------------------------------ adding the discard animation ------------------------------------------
+		
+		
+		CardView discardedCardView = null;
+		for(int discardedPlayerIndex=0; discardedPlayerIndex<4; discardedPlayerIndex++){
+			HandView handView = gameView.getHandViews().get(discardedPlayerIndex);
 			if(handView.getCardViews().size() == handView.getHand().size()) continue;
-			for(CardView cardViewDiscarded: handView.getCardViews()){
-				if(!handView.getHand().contains(cardViewDiscarded.getCard())) {
-					cardViewDiscardedContainer = cardViewDiscarded;
-					if (playerIndex2 == 0) st2.getChildren().add(cardViewDiscarded.sendToFirePit(firePitView ,playerIndex2));
-					else st2.getChildren().add(cardViewDiscarded.sendToFirePitCpu(firePitView,playerIndex2));
+			for(CardView cardView: handView.getCardViews()){
+				if(!handView.getHand().contains(cardView.getCard())) {
+					discardedCardView = cardView;
+					SequentialTransition sq = cardView.sendToFirePit(firePitView ,discardedPlayerIndex);
+					animation.getChildren().add(sq);
 					break;
 				}
 			}
 		}
-		CardView cardViewDiscardedContainer2 = cardViewDiscardedContainer;
-		if(st2.getChildren().size() == 0){
-			pt.setOnFinished(e ->{
-				game.endPlayerTurn();
-				gameView.updatePlayerProfiles();
-				run();
-			
+		
+		if(discardedCardView != null){
+			CardView discardedCardViewContainer = discardedCardView;
+			pt1.setOnFinished(e -> {
+				discardedCardViewContainer.dimCard();
 			});
-			st.setOnFinished(e -> {
-				// ----
-				int steps = getAction(selectedCard,selectedMarbles);
-				
-				if (steps > 0){
-					MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
-					CellView start = (CellView) marbleView.getParent();
-					int i = gameView.getTrackView().getCellViews().indexOf(start);
-					CellView target = gameView.getTrackView().getCellViews().get((i + steps)%100);
-					start.moveMarbleTo(target);
-					PauseTransition timer = new PauseTransition(Duration.millis(CellView.getMarbleSpeed()*steps+200));
-					timer.setOnFinished(ev -> {
-						gameView.updateBoardView();
-						if (target.isWasTrap()) {
-							gameScene.showSeeingTrappedEffect();
-							target.setWasTrap(false);
-						}
-					});
-					timer.play();
-				} else if (steps == -4){
-					MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
-					CellView start = (CellView) marbleView.getParent();
-					int i = gameView.getTrackView().getCellViews().indexOf(start);
-					CellView target = gameView.getTrackView().getCellViews().get((i + steps + 100)%100);
-					start.moveBackword(4);
-					PauseTransition timer = new PauseTransition(Duration.millis(CellView.getMarbleSpeed()*Math.abs(steps)+200));
-					timer.setOnFinished(ev -> {
-						gameView.updateBoardView();
-						if (target.isWasTrap()) {
-							gameScene.showSeeingTrappedEffect();
-							target.setWasTrap(false);
-						}
-					});
-					timer.play();
-				}
-				else {
-					gameView.updateBoardView();
-				}
-				pt.play();
-				if(playerIndex == 0) clearPlayerSelections();
-
-				
-			});
-			st.play();
-		}else{
-			pt.setDuration(Duration.seconds(0.5));
-			pt2.setOnFinished(e ->{
-				game.endPlayerTurn();
-				gameView.updatePlayerProfiles();
-				run();
-			});
-			st2.setOnFinished(e -> {
-				if(playerIndex == 0) clearPlayerSelections();
-				gameView.updateBoardView();
-				pt2.play();
-			});
-			st.setOnFinished(e -> {
-				pt.play();
-			});
-			pt.setOnFinished(e -> {
-				cardViewDiscardedContainer2.dimCard();
-				st2.play();
-			});
-			st.play();
 		}
+		
+		
+		//------------------------------------ getting needed elements for movement -------------------------------------
+		
+		
+		int steps = getAction(selectedCard,selectedMarbles);
+		
+		
+		//----------------------------------- adding movement animation --------------------------------------------------
+		
+		
+		if (steps > 0 || steps == -4){
+			MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
+			CellView start = (CellView) marbleView.getParent();
+			int i = gameView.getTrackView().getCellViews().indexOf(start);
+			CellView target = gameView.getTrackView().getCellViews().get((i + steps + 100)%100);
+			pt1.setOnFinished(e -> {
+				if(steps > 0)
+					start.moveMarbleTo(target);
+				else
+					start.moveBackword(4);
+			});
+			PauseTransition timer = new PauseTransition(Duration.millis(CellView.getMarbleSpeed() * Math.abs(steps) + 200));
+			animation.getChildren().add(timer);
+			
+			timer.setOnFinished(e -> {
+				gameView.updateBoardView();
+				if(target.isWasTrap()){
+					gameScene.showSeeingTrappedEffect().play();
+					target.setWasTrap(false);
+				}
+			});
+		}
+		else{
+			pt1.setOnFinished(e -> {
+				gameView.updateBoardView();
+			});
+		}
+		
+		
+		//-------------------------------- pause between the current player and the next ------------------------------------
+		
+		
+		PauseTransition pt2 = new PauseTransition(Duration.seconds(0.8)); // 1 second pause
+		animation.getChildren().add(pt2);
+	
+		
+		//---------------------------------------- playing the main animation ---------------------------------------
+		
+		animation.setOnFinished(e ->{
+			game.endPlayerTurn();
+			gameView.updatePlayerProfiles();
+			run();
+		});
+		animation.play();
+		if(playerIndex == 0) clearPlayerSelections();
 	}
+	
+	
+	
+	
+	
 	
 	// moveAction -> 1, backwordAction -> 2, discardAction -> 3, 
 	// fieldAction -> 4, saveAction -> 5, BurnAction -> 6, swapAction -> 7
@@ -440,7 +459,6 @@ public class GameController{
 			if(currentPlayer == realPlayer){
 				if(game.getTurn() == 0){
 					gameView.getFirePitView().updateFirePitView();
-					System.out.println(Arrays.toString(gameView.getFirePitView().getChildren().toArray()));
 					drawAllHands();
 				}
 				addEventHandlers();

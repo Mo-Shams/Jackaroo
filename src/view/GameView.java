@@ -223,23 +223,23 @@ public class GameView extends StackPane{
         return button;
     }
 	
-	public void checkDiscard(){
-		if(game.getFirePit().size() != firePitView.getChildren().size()){
-			Card card = game.getFirePit().get(game.getFirePit().size()-1);
-			CardView cardView = CardView.cardToViewMap.get(card);
-			if(handViews.get(0).getCardViews().size() != game.getPlayers().get(0).getHand().size()){
-				cardView.dimCard();
-				cardView.sendToFirePit(firePitView, 0).play();
-			}else{
-				for(int i=1; i<4; i++){
-					if(handViews.get(i).getCardViews().size() != game.getPlayers().get(i).getHand().size()){
-						cardView.dimCard();
-						cardView.sendToFirePitCpu(firePitView, i).play();;
-					}
-				}
-			}
-		}
-	}
+//	public void checkDiscard(){
+//		if(game.getFirePit().size() != firePitView.getChildren().size()){
+//			Card card = game.getFirePit().get(game.getFirePit().size()-1);
+//			CardView cardView = CardView.cardToViewMap.get(card);
+//			if(handViews.get(0).getCardViews().size() != game.getPlayers().get(0).getHand().size()){
+//				cardView.dimCard();
+//				cardView.sendToFirePit(firePitView, 0).play();
+//			}else{
+//				for(int i=1; i<4; i++){
+//					if(handViews.get(i).getCardViews().size() != game.getPlayers().get(i).getHand().size()){
+//						cardView.dimCard();
+//						cardView.sendToFirePitCpu(firePitView, i).play();;
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	
 	//----------------------------------------------------- Getters -----------------------------------------

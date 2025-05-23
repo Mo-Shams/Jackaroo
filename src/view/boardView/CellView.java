@@ -18,7 +18,7 @@ public class CellView extends StackPane {
 	private static final double DEFAULT_RADIUS = 12;
 	private static final Color DEFAULT_COLOR = Color.DARKSLATEBLUE;
 	private static final Color FILLING_COLOR = Color.LIGHTGRAY;
-	private static final int MARBLE_SPEED = 100 ;
+	private static final int MARBLE_SPEED =  150;
 
 	
     private final Cell cell;
@@ -58,7 +58,7 @@ public class CellView extends StackPane {
     private Circle createCircle(Color strokeColor) {
         Circle circle = new Circle(DEFAULT_RADIUS);
         circle.setFill(FILLING_COLOR);
-        // if (cell.isTrap()) circle.setFill(Color.BLACK);// debuging 
+        //if (cell.isTrap()) circle.setFill(Color.BLACK);// debuging
         circle.setStroke(strokeColor);
         circle.setStrokeWidth(2);
         return circle;

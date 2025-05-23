@@ -103,7 +103,7 @@ public class GameScene {
 	    fade.play();
 	}
 	
-	public void showSeeingTrappedEffect() {
+	public PauseTransition showSeeingTrappedEffect() {
         // Dim background with a semi-transparent black rectangle
         Rectangle dim = new Rectangle();
         dim.widthProperty().bind(root.widthProperty());
@@ -140,9 +140,11 @@ public class GameScene {
         root.getChildren().add(overlay);
 
         // Wait for 1 second then remove overlay
-        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
-        pause.setOnFinished(e -> root.getChildren().remove(overlay));
-        pause.play();
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(e ->{
+        	root.getChildren().remove(overlay);
+        });
+        return pause;
     }
 	
 	

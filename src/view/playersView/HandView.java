@@ -43,7 +43,7 @@ public class HandView extends HBox {
     		for(CardView cardView : cardViews){
     			cardView.addHoverEffect();
     			Tooltip.install(cardView, new Tooltip(cardView.getCard().toString()));
-    			st.getChildren().add((RotateTransition)cardView.flip(750, false));
+    			st.getChildren().add((RotateTransition)cardView.flip(700, false));
     		}
     		st.play();
     	}

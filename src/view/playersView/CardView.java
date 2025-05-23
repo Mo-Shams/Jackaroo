@@ -112,7 +112,8 @@ public final class CardView extends StackPane {
     }
 
     
-    public ParallelTransition sendToFirePit(FirePitView firePit, int playerIndex) {
+    public SequentialTransition sendToFirePit(FirePitView firePit, int playerIndex) {
+    	
     	((HandView) this.getParent()).getCardViews().remove(this);
     	setEffect(null);
         // Step 1: Get center of FirePit in scene coordinates
@@ -160,27 +161,20 @@ public final class CardView extends StackPane {
         rt.setByAngle(randomAngle);
         rt.setInterpolator(Interpolator.EASE_BOTH);
         
+        SequentialTransition sq = new SequentialTransition();
+        if(playerIndex > 0)
+        	sq.getChildren().add(flip(300, true));
         ParallelTransition pt = new ParallelTransition(tt, rt);
         // Play both transitions together
-        
-        pt.setOnFinished(e -> {
+        sq.getChildren().add(pt);
+        sq.setOnFinished(e -> {
         	setMouseTransparent(true); 
         	firePit.addToFirePit(this, playerIndex, randomAngle);
         	
         });
-        return pt ; 
+        return sq ; 
       
     }
-    
-    public SequentialTransition sendToFirePitCpu(FirePitView firePit, int playerIndex){
-    	SequentialTransition sq = (SequentialTransition)flip(300, true);
-    	sq.setOnFinished(e ->{
-    		sendToFirePit(firePit, playerIndex).play();
-    	});
-    	return sq ;
-    	
-    }
-    
     
     
     public Animation flip(double duration, boolean fullRotation) {
