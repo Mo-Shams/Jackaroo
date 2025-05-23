@@ -54,21 +54,34 @@ public class WelcomeScene {
         
 
         play.setOnAction(evt -> {
-            String playerName = inputField.getText().trim();
-            if (playerName.isEmpty()) {
+            String st = inputField.getText().trim();
+            final String playerName; 
+            if (st.isEmpty()) {
             	// GameScene.showExceptionPopup
             	// ("You didn't enter a name \n you will be called Player",(StackPane) backgroundPane);
             	playerName = "Player";
+            } else {
+            	playerName = st;
             }
-            try {
-            	GameController gameController = new GameController(playerName, primaryStage);
-            	Scene gameScene = gameController.getGameScene().CreateScene();
-            	primaryStage.setScene(gameScene);
-            	primaryStage.setFullScreen(true);
-            	
-            } catch (Exception e) {
-            	GameScene.showExceptionPopup("The game Failed to load" ,(StackPane) backgroundPane);
-            }
+            LoadingScene loaderPane = new LoadingScene();
+            Scene loadingScene = loaderPane.createScene();
+            primaryStage.setScene(loadingScene);
+            primaryStage.setFullScreen(true);
+            
+            //Pause Transition between loading Scene and Game Scene
+            PauseTransition wait = new PauseTransition(Duration.seconds(3));
+            wait.setOnFinished(ev -> {
+                try {
+                    GameController gameController = new GameController(playerName, primaryStage);
+                    Scene gameScene = gameController.getGameScene().CreateScene();
+                    primaryStage.setScene(gameScene);
+                    primaryStage.setFullScreen(true);
+                } catch (Exception e) {
+                    // If game loading fails, pop up on the loading pane
+                    GameScene.showExceptionPopup("Failed to load the game", loaderPane);
+                }
+            });
+            wait.play();
         });
 
         VBox vbox = new VBox(10, text, inputField, play, about, settings);

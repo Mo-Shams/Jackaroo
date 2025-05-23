@@ -1,17 +1,7 @@
-<<<<<<< HEAD
-/scene/
 /controller/
 /engine/
-/view/
-/model/
-/resources/
 /exception/
-/test/
-=======
-/view/
-/engine/
-/controller/
 /model/
-/resources/
 /scene/
->>>>>>> a927ce37a46e4677251ba087b66a45b13f3f6f32
+/test/
+/view/
