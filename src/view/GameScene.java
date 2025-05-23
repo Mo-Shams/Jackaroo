@@ -140,7 +140,7 @@ public class GameScene {
         root.getChildren().add(overlay);
 
         // Wait for 1 second then remove overlay
-        PauseTransition pause = new PauseTransition(Duration.seconds(1.8));
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         pause.setOnFinished(e -> root.getChildren().remove(overlay));
         pause.play();
     }

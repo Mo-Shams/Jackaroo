@@ -440,6 +440,7 @@ public class GameController{
 			if(currentPlayer == realPlayer){
 				if(game.getTurn() == 0){
 					gameView.getFirePitView().updateFirePitView();
+					System.out.println(Arrays.toString(gameView.getFirePitView().getChildren().toArray()));
 					drawAllHands();
 				}
 				addEventHandlers();

@@ -75,6 +75,7 @@ public class CellView extends StackPane {
 		}
 		PauseTransition pause = new PauseTransition(Duration.millis(MARBLE_SPEED));
 		pause.setOnFinished(e -> {
+			//System.out.println(marbleView);
 			next.setMarbleView(this.marbleView);
 			next.moveMarbleTo(target);
 		});
