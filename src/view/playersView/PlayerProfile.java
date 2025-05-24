@@ -21,7 +21,7 @@ public class PlayerProfile extends StackPane {
     private final Colour colour;
     private boolean active, nextActive;
     private final Circle circle;
-    private final Label chatBubble;
+    private Label chatBubble;
 
     public PlayerProfile(String name, Colour colour, boolean active, boolean nextActive, int playerIndex) {
         this.name = new Label(name);
@@ -80,12 +80,37 @@ public class PlayerProfile extends StackPane {
 
         this.getChildren().addAll(circle, this.name, chatBubble);
         this.setMaxSize(WIDTH, HEIGHT);
-//      this.setStyle("-fx-background-color: lightgray;");
+        //this.setStyle("-fx-background-color: lightgray;");
     }
     
     public PlayerProfile(String name, Colour colour, boolean active, boolean nextActive) {
-        this(name, colour, active, nextActive, 0);
+        this.name = new Label(name);
+        this.name.setFont(Font.font("Arial", 25));
+        this.name.setAlignment(Pos.CENTER);
+        this.colour = colour;
+        Color color = Color.valueOf(colour.toString());
+        this.name.setTextFill(color);
+
+        circle = new Circle(HEIGHT * 0.4);
+        circle.setStroke(color);
+        circle.setStrokeWidth(5);
+
+        String imagePath = "/resources/player_images/" + name + ".png";
+        Image image = ImageCache.getImage(imagePath);
+        circle.setFill(new ImagePattern(image));
+
+        setActive(active);
+        setNextActive(nextActive);
+
+
+        StackPane.setAlignment(circle, Pos.TOP_CENTER);
+        StackPane.setAlignment(this.name, Pos.BOTTOM_CENTER);
+
+        this.getChildren().addAll(circle, this.name);
+        this.setPrefSize(USE_PREF_SIZE, HEIGHT);
+        //this.setStyle("-fx-background-color: lightgray;");
     }
+    
 
     public void setActive(boolean active) {
         this.active = active;
@@ -129,10 +154,6 @@ public class PlayerProfile extends StackPane {
 	    }
 	}
 
-    public Colour getColour() {
-        return colour;
-    }
-
     public void showChatMessage(String message) {
         chatBubble.setText("");
         chatBubble.setVisible(true);
@@ -167,4 +188,21 @@ public class PlayerProfile extends StackPane {
         chatBubble.setVisible(false);
         chatBubble.setText("");
     }
+
+    //--------------------------------------- getters --------------------------------------------------
+    
+    public Colour getColour() {
+        return colour;
+    }
+	public String getName() {
+		return name.getText();
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public boolean isNextActive() {
+		return nextActive;
+	}
 }

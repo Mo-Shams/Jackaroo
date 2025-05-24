@@ -13,6 +13,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -42,12 +43,14 @@ public class EndScreenScene {
             0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops
         );
         StackPane root = new StackPane();
+        root.setPadding(new Insets(40));
         root.setBackground(new Background(new BackgroundFill(gradient, CornerRadii.EMPTY, Insets.EMPTY)));
 
         // Winner and losers
         PlayerProfile winner = configureProfile(players.get(0), true);
         HBox losers = new HBox(100);
-        losers.setAlignment(Pos.CENTER);
+        losers.setMaxSize(Region.USE_PREF_SIZE, 200);
+        //losers.setAlignment(Pos.CENTER);
         // no internal padding here—layout spacing handles vertical gap
         for (int i = 1; i < players.size(); i++) {
             losers.getChildren().add(configureProfile(players.get(i), false));
@@ -55,18 +58,20 @@ public class EndScreenScene {
 
         // Group them in a VBox, center the group
         VBox layout = new VBox(40, winner, losers);
+        layout.setSpacing(300);
         layout.setAlignment(Pos.CENTER);
+        layout.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         // Optionally add margin on losers to tweak vertical spacing:
         // VBox.setMargin(losers, new Insets(20, 0, 0, 0));
-
+        
+        StackPane.setAlignment(layout, Pos.BOTTOM_CENTER);
         root.getChildren().add(layout);
-
+        
         // Fade animations
         SequentialTransition seq = new SequentialTransition();
         fadeInNodes(seq, losers.getChildren(), 0.5, 0.5);
         fadeInNode(seq, winner, 0.7, 0.5);
         seq.play();
-
         return new Scene(root, 1920, 1080);
     }
 

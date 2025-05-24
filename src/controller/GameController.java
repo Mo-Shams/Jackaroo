@@ -491,10 +491,15 @@ public class GameController{
 		ArrayList<PlayerProfile> players = gameView.getPlayerProfiles();
 		ArrayList<PlayerProfile> winners = new  ArrayList<PlayerProfile>();
 				
-		for (PlayerProfile player : players)
-			if (player.getColour() == colour) winners.add(player);
-		for (PlayerProfile player : players)
-			if (player.getColour() != colour) winners.add(player);
+		for (PlayerProfile player : players){
+			PlayerProfile playerProfile = new PlayerProfile(player.getName(), player.getColour(), player.isActive(), player.isNextActive());
+			if (player.getColour() == colour) winners.add(playerProfile);
+		}
+			
+		for (PlayerProfile player : players){
+			PlayerProfile playerProfile = new PlayerProfile(player.getName(), player.getColour(), player.isActive(), player.isNextActive());
+			if (player.getColour() != colour) winners.add(playerProfile);
+		}
 
 		
 		EndScreenScene endScene = new EndScreenScene(winners);
