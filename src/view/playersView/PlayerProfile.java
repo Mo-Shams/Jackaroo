@@ -2,13 +2,18 @@ package view.playersView;
 
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -17,37 +22,117 @@ import javafx.util.Duration;
 import model.Colour;
 import view.ImageCache;
 
-public class PlayerProfile extends StackPane{
+
+	
+
+public class PlayerProfile extends StackPane {
+	
 	private ScaleTransition pulseEffect ;
-	
-	private static final double SIZE = 200;
-	private final Label name;
-	private final Colour colour;
-	private boolean active, nextActive;
-	private final Circle circle;
-	
-	public PlayerProfile(String name, Colour colour, boolean active, boolean nextActive){
+
+    private static final double WIDTH = 450;
+    private static final double HEIGHT = 200;
+    private final Label name;
+    private final Colour colour;
+    private boolean active, nextActive;
+    private final Circle circle;
+    private Label chatBubble;
+
+    public PlayerProfile(String name, Colour colour, boolean active, boolean nextActive, int playerIndex) {
 		this.pulseEffect = this.setPulseEffect();
-		this.name = new Label(name);
-		this.name.setFont(Font.font("Arial", 25));
-		this.colour = colour;
-		Color color = Color.valueOf(colour.toString());
-		this.name.setTextFill(color);
-		circle = new Circle(SIZE * 0.4);
-		// circle.setStroke(color);
-		circle.setStrokeWidth(5);
-		String imagePath = "/resources/player_images/" + name + ".png";
-		Image image = ImageCache.getImage(imagePath);
-		circle.setFill(new ImagePattern(image));
-		setActive(active);
-		setNextActive(nextActive);
-		StackPane.setAlignment(circle, Pos.TOP_CENTER);
-		StackPane.setAlignment(this.name, Pos.BOTTOM_CENTER);
-		this.getChildren().addAll(circle, this.name);
-		this.setMaxSize(SIZE, SIZE);
-		// pulseEffect.play();
-	}
-	
+    	String customizedName;
+    	switch(name){
+    	case "CPU 1": customizedName = "naruto"; break;
+    	case "CPU 2": customizedName = "luffy"; break;
+    	case "CPU 3": customizedName = "killua";break;
+    	default: customizedName = name;
+    	}
+        this.name = new Label(customizedName);
+        this.name.setFont(Font.font("Arial", 32));
+        this.name.setAlignment(Pos.CENTER);
+        this.colour = colour;
+        Color color = Color.valueOf(colour.toString());
+        this.name.setTextFill(color);
+
+        circle = new Circle(HEIGHT * 0.4);
+        circle.setStroke(color);
+        circle.setStrokeWidth(5);
+        String imagePath;
+        if(!customizedName.equals(name))
+        	imagePath = "/resources/themes/anime/" + customizedName + ".jpg";
+        else
+        	imagePath = "/resources/themes/anime/sung_jin-woo.jpg";
+        Image image = ImageCache.getImage(imagePath);
+        circle.setFill(new ImagePattern(image));
+
+        setActive(active);
+        setNextActive(nextActive);
+
+        VBox profileContainer = new VBox(5);
+        profileContainer.setAlignment(Pos.CENTER);
+        //profileContainer.setStyle("-fx-background-color: lightgray;");
+        profileContainer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        profileContainer.getChildren().addAll(circle, this.name);
+        chatBubble = new Label();
+        chatBubble.setStyle("-fx-background-color: #f5deb3; -fx-padding: 10; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 20;");
+        chatBubble.setVisible(false);
+        // Positioning chat bubble based on player corner
+        switch (playerIndex) {
+            case 0:
+                StackPane.setAlignment(profileContainer, Pos.CENTER_LEFT);
+                StackPane.setAlignment(chatBubble, Pos.TOP_RIGHT);
+                break;
+
+            case 1:
+                StackPane.setAlignment(profileContainer, Pos.CENTER_RIGHT);
+                StackPane.setAlignment(chatBubble, Pos.TOP_LEFT);
+                break;
+
+            case 2:
+                StackPane.setAlignment(profileContainer, Pos.CENTER_RIGHT);
+                StackPane.setAlignment(chatBubble, Pos.TOP_LEFT);
+                break;
+
+            case 3:
+                StackPane.setAlignment(profileContainer, Pos.CENTER_LEFT);
+                StackPane.setAlignment(chatBubble, Pos.TOP_RIGHT);
+                break;
+
+        }
+
+        this.getChildren().addAll(profileContainer, chatBubble);
+        this.setMaxSize(WIDTH, HEIGHT);
+        //this.setStyle("-fx-background-color: lightgray;");
+    }
+    
+    public PlayerProfile(String name, Colour colour, boolean active, boolean nextActive) {
+        this.name = new Label(name);
+        this.name.setFont(Font.font("Arial", 25));
+        this.name.setAlignment(Pos.CENTER);
+        this.colour = colour;
+        Color color = Color.valueOf(colour.toString());
+        this.name.setTextFill(color);
+
+        circle = new Circle(HEIGHT * 0.4);
+        circle.setStroke(color);
+        circle.setStrokeWidth(5);
+
+        String imagePath = "/resources/player_images/" + name + ".png";
+        Image image = ImageCache.getImage(imagePath);
+        circle.setFill(new ImagePattern(image));
+
+        setActive(active);
+        setNextActive(nextActive);
+
+
+        StackPane.setAlignment(circle, Pos.TOP_CENTER);
+        StackPane.setAlignment(this.name, Pos.BOTTOM_CENTER);
+
+        this.getChildren().addAll(circle, this.name);
+        this.setPrefSize(USE_PREF_SIZE, HEIGHT);
+        //this.setStyle("-fx-background-color: lightgray;");
+    }
+    
+
 	public void setActive(boolean active){
 		this.active = active;
 		if(active){
@@ -61,26 +146,31 @@ public class PlayerProfile extends StackPane{
 	public void setNextActive(boolean nextActive){
 		this.nextActive = nextActive;
 		if(nextActive)
-			applyGlow(Color.VIOLET);
+			applyGlow(Color.LIGHTSKYBLUE);
 		else circle.setEffect(null);
 	}
 	
-	private void applyGlow(Color color) {
+
+    private void applyGlow(Color color) {
         DropShadow glow = new DropShadow();
         glow.setColor(color);
         glow.setSpread(0.5);
         glow.setRadius(120);
-        //glow.setWidth(60);
-        //glow.setHeight(40);
         circle.setEffect(glow);
     }
-	
+
 	public void setProfileImage(boolean isWinner) {
 		String basePath = isWinner ? "winners" : "losers";
 		String path ;
 		if (name.getText().equals("CPU 1") || name.getText().equals("CPU 2") || name.getText().equals("CPU 3")) 
 			path = "/resources/EndScreenProfiles/" + basePath + "/" + name.getText() + ".png";
-		else path = "/resources/EndScreenProfiles/" + basePath + "/default.png";
+		else {
+			if (name.getText().equals("Walid")) {
+				path = "/resources/EndScreenProfiles/" + basePath + "/Walid.png";
+			} else {
+				path = "/resources/EndScreenProfiles/" + basePath + "/default.png";
+			}
+		}
 	    Image image = ImageCache.getImage(path);
 	    if (image != null) {
 	    	circle.setFill(new ImagePattern(image));
@@ -88,16 +178,7 @@ public class PlayerProfile extends StackPane{
 	}
 	
 	
-	public RotateTransition setRotation () {
-		setActive(false);
-		setNextActive(false);
-		circle.getStrokeDashArray().addAll(15.0, 30.0); // dash, gap
-		RotateTransition rotate = new RotateTransition(Duration.seconds(2), circle);
-		rotate.setByAngle(360);
-		rotate.setCycleCount(Animation.INDEFINITE);
-		rotate.setInterpolator(Interpolator.LINEAR); // Smooth constant speed
-		return rotate;
-	}
+	
 	
 	public void startPulse() {
 	    stopPulse(); // just to be clean
@@ -127,8 +208,48 @@ public class PlayerProfile extends StackPane{
 		return pulse ;
 	}
 
-	public Colour getColour() {
-		return colour;
+    public void showChatMessage(String message) {
+        chatBubble.setText("");
+        chatBubble.setVisible(true);
+
+        String[] words = message.split(" ");
+        Timeline timeline = new Timeline();
+
+        for (int i = 0; i < words.length; i++) {
+            final int index = i;
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(150 * i), e -> {
+                String currentText = chatBubble.getText();
+                if (currentText.isEmpty()) {
+                    chatBubble.setText(words[index]);
+                } else {
+                    chatBubble.setText(currentText + " " + words[index]);
+                }
+            });
+            timeline.getKeyFrames().add(keyFrame);
+        }
+
+        timeline.setOnFinished(e -> {
+            // Wait for 2 seconds then hide the chat bubble
+            PauseTransition delay = new PauseTransition(Duration.seconds(2));
+            delay.setOnFinished(event -> hideChatBubble());
+            delay.play();
+        });
+
+        timeline.play();
+    }
+
+    public void hideChatBubble() {
+        chatBubble.setVisible(false);
+        chatBubble.setText("");
+    }
+
+    //--------------------------------------- getters --------------------------------------------------
+    
+    public Colour getColour() {
+        return colour;
+    }
+	public String getName() {
+		return name.getText();
 	}
 
 	public ScaleTransition getPulseEffect() {
@@ -136,5 +257,11 @@ public class PlayerProfile extends StackPane{
 	}
 	
 	
-	
+	public boolean isActive() {
+		return active;
+	}
+
+	public boolean isNextActive() {
+		return nextActive;
+	}
 }

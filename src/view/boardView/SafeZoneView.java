@@ -17,6 +17,9 @@ public class SafeZoneView{
 			CellView cellView = new CellView(cell, Color.valueOf(safeZone.getColour().toString()));
 			cellViews.add(cellView);
 		}
+		for (int i = 0 ; i < cellViews.size()-1 ; i++){
+			cellViews.get(i).setNext(cellViews.get(i+1));
+		}
 	}
 	
 	public void sendToSafe(CellView cellView, int index){

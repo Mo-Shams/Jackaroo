@@ -70,14 +70,18 @@ public class CellView extends StackPane {
 			target.setMarbleView(marbleView);
 			return ;
 		}
-		if (this.getCell().getCellType() == CellType.ENTRY && target.getCell().getCellType() == CellType.SAFE){
-			return ;
-		}
 		PauseTransition pause = new PauseTransition(Duration.millis(MARBLE_SPEED));
 		pause.setOnFinished(e -> {
 			//System.out.println(marbleView);
-			next.setMarbleView(this.marbleView);
-			next.moveMarbleTo(target);
+			if (this.getCell().getCellType() == CellType.ENTRY && target.getCell().getCellType() == CellType.SAFE){
+				System.out.println("Enter enter");
+				enter.setMarbleView(this.marbleView);
+				enter.moveMarbleTo(target);
+			}
+			else {
+				next.setMarbleView(this.marbleView);
+				next.moveMarbleTo(target);
+			}
 		});
 		pause.play();
     }
@@ -162,5 +166,15 @@ public class CellView extends StackPane {
 	public void setPrev(CellView prev) {
 		this.prev = prev;
 	}
+
+	public CellView getEnter() {
+		return enter;
+	}
+
+	public void setEnter(CellView enter) {
+		this.enter = enter;
+	}
+	
+	
 
 }

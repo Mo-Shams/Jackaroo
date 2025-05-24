@@ -40,7 +40,7 @@ public class GameView extends StackPane{
 	public GameView(Game game, double width, double height){
 		this.game = game;
 		playButton = createGameButton("Play");
-		playButton.setPrefSize(width * 0.1, height * 0.08);
+		playButton.setPrefSize(width * 0.08, height * 0.06);
 		Pane ButtonContainer = new Pane();
 		playButton.setLayoutX(0);
 		playButton.setLayoutY(0);
@@ -56,12 +56,12 @@ public class GameView extends StackPane{
 		playerProfiles = new ArrayList<>();
 		int i = 0;
 		for(Player player : players){
-			PlayerProfile playerProfile = new PlayerProfile(player.getName(), player.getColour(), player == game.getCurrentPlayer(), player == game.getNextPlayer());
+			PlayerProfile playerProfile = new PlayerProfile(player.getName(), player.getColour(), player == game.getCurrentPlayer(), player == game.getNextPlayer(), i);
 			switch(i){
-			case 0: StackPane.setAlignment(playerProfile, Pos.BOTTOM_RIGHT);break;
-			case 1: StackPane.setAlignment(playerProfile, Pos.BOTTOM_LEFT);break;
-			case 2: StackPane.setAlignment(playerProfile, Pos.TOP_LEFT);break;
-			case 3: StackPane.setAlignment(playerProfile, Pos.TOP_RIGHT);break;
+			case 0: StackPane.setAlignment(playerProfile, Pos.BOTTOM_RIGHT);playerProfile.setTranslateX(150);break;
+			case 1: StackPane.setAlignment(playerProfile, Pos.BOTTOM_LEFT);playerProfile.setTranslateX(-150);break;
+			case 2: StackPane.setAlignment(playerProfile, Pos.TOP_LEFT);playerProfile.setTranslateX(-150);break;
+			case 3: StackPane.setAlignment(playerProfile, Pos.TOP_RIGHT);playerProfile.setTranslateX(150);break;
 			}
 			playerProfiles.add(playerProfile);
 			this.getChildren().add(playerProfile);

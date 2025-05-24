@@ -101,7 +101,9 @@ public class TrackView extends GridPane {
                 	}
                 	SafeZoneView safeZoneView = safeZoneViews.get(index);
                 	cellView = new CellView(cell, safeZoneView.getColor());
+                
                 	ArrayList<CellView> cellViews = safeZoneView.getCellViews();
+                	cellView.setEnter(cellViews.get(0));
                 	for(int k = 1; k <= cellViews.size(); k++)
                 		add(cellViews.get(k-1), (k * dx) + x, (k * dy) + y);
                 }
@@ -143,6 +145,18 @@ public class TrackView extends GridPane {
     		cellViews.get(i).setNext(cellViews.get((i+1)%100));
     		cellViews.get(i).setPrev(cellViews.get((i+99)%100));
     	}
+    }
+    
+    public CellView getTargetCell(Marble marble){
+    	for (Cell cell : track){
+    		if (cell.getMarble() == marble) return CellView.cellToViewMap.get(cell);
+    	}
+    	for (SafeZoneView safeZoneView : safeZoneViews){
+    		for (Cell cell : safeZoneView.getSafeZone().getCells()){
+        		if (cell.getMarble() == marble) return CellView.cellToViewMap.get(cell);
+    		}
+    	}
+    	return null ; // if trapped 
     }
   
 

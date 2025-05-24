@@ -29,7 +29,8 @@ public class LoadingScene extends StackPane {
         "Tip: If you want your character human, change your name to 'Walid' next time.",
         "Tip: A 4 Card at the start gives you a great advantage.",
         "Tip: Plan your moves ahead of time.",
-        "Tip: Use the 'S' key to field for yourself! But make sure the bots don't see you ;)."
+        "Tip: Use the 'S' key to field for yourself! But make sure the bots don't see you ;).",
+        "Tip: Field Marbles in the Base Cell to make your opponent Stuck"
     );
 
     private final Label tipLabel;

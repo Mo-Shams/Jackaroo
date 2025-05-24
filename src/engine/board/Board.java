@@ -18,12 +18,15 @@ public class Board implements BoardManager {
     private final ArrayList<SafeZone> safeZones ;
     private int splitDistance ;
     
+    private Cell targetCell  ;
+    
     //constructor
     public Board(ArrayList<Colour> colourOrder, GameManager gameManager){
         this.gameManager = gameManager ;
         this.track = new ArrayList<>();
         this.safeZones = new ArrayList<>();
         this.splitDistance = 3 ;
+        targetCell = null ; 
         setupTrack();
         for (int i = 0; i < 8; i++) assignTrapCell();
 
@@ -70,13 +73,11 @@ public class Board implements BoardManager {
 	public ArrayList<SafeZone> getSafeZones() {
 		return safeZones;
 	}
-    
-    
-    
-    
-    
-    
-    //helper getter methods of special positions and cells
+    public Cell getTargetCell() {
+		return targetCell;
+	}
+
+	//helper getter methods of special positions and cells
     //must be used whenever possible in the upcoming methods
     private ArrayList<Cell> getSafeZone(Colour colour){
         for (int i = 0; i < safeZones.size(); i++) {
@@ -251,6 +252,7 @@ public class Board implements BoardManager {
         ArrayList<Cell> fullPath = validateSteps(marble, steps);
         validatePath(marble, fullPath, destroy);
         move(marble, fullPath, destroy);
+        targetCell = fullPath.get(fullPath.size()-1);
 	}
     
     

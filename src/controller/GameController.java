@@ -112,7 +112,7 @@ public class GameController{
 		HandView playerHand = gameView.getHandViews().get(0);
 		for(CardView cardView : playerHand.getCardViews()){
 			cardView.setOnMouseClicked(e ->{
-				ThemesManager.changeTheme(0);
+		//		ThemesManager.changeTheme(0);
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
@@ -177,7 +177,7 @@ public class GameController{
 	public void canPlayTurn(boolean canPlay){
 		Button playButton = gameView.getPlayButton();
 		if(canPlay){
-			playButton.setOnMouseClicked(evt ->{
+			playButton.setOnAction(evt ->{
 				HandView handView = gameView.getHandViews().get(0);
 				FirePitView firePitView = gameView.getFirePitView();
 				Card selectedCard = game.getPlayers().get(0).getSelectedCard(); 
@@ -327,10 +327,10 @@ public class GameController{
 		if(playerIndex > 0){
 			PauseTransition thinking = new PauseTransition(Duration.seconds(2)); //thinking for 3 seconds
 			thinking.setOnFinished(e -> {
-				if (SoundManager.Effects) SoundManager.playSound("throw_Card.wav");
+				if (SoundManager.Effects) SoundManager.playEffect("throw_Card.wav");
 			});
 			animation.getChildren().add(thinking);
-		} else if (SoundManager.Effects) SoundManager.playSound("throw_Card.wav");
+		} else if (SoundManager.Effects) SoundManager.playEffect("throw_Card.wav");
 		
 		
 		
@@ -347,9 +347,9 @@ public class GameController{
 		
 		
 		CardView discardedCardView = null;
-		for(int discardedPlayerIndex=0; discardedPlayerIndex<4; discardedPlayerIndex++){
+		for(int discardedPlayerIndex = 0; discardedPlayerIndex < 4; discardedPlayerIndex++){
 			HandView handView = gameView.getHandViews().get(discardedPlayerIndex);
-			if(handView.getCardViews().size() == handView.getHand().size()) continue;
+			if(handView.getCardViews().size() <= handView.getHand().size()) continue;
 			for(CardView cardView: handView.getCardViews()){
 				if(!handView.getHand().contains(cardView.getCard())) {
 					discardedCardView = cardView;
@@ -381,7 +381,8 @@ public class GameController{
 			MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarbles.get(0));
 			CellView start = (CellView) marbleView.getParent();
 			int i = gameView.getTrackView().getCellViews().indexOf(start);
-			CellView target = gameView.getTrackView().getCellViews().get((i + steps + 100)%100);
+			// CellView target = gameView.getTrackView().getCellViews().get((i + steps + 100)%100);
+			CellView target = CellView.cellToViewMap.get(game.getBoard().getTargetCell());
 			pt1.setOnFinished(e -> {
 				if(steps > 0)
 					start.moveMarbleTo(target);
@@ -429,9 +430,11 @@ public class GameController{
 	
 	
 	
+	
+	
 	// moveAction -> 1, backwordAction -> 2, discardAction -> 3, 
 	// fieldAction -> 4, saveAction -> 5, BurnAction -> 6, swapAction -> 7
-	public int getAction (Card card, ArrayList<Marble> marbles){ 
+	private int getAction (Card card, ArrayList<Marble> marbles){ 
 		
 		switch (marbles.size()){
 			case 0 : 
@@ -454,6 +457,7 @@ public class GameController{
 
 
 	
+	
 	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
 	
 	public void run(){
@@ -471,6 +475,8 @@ public class GameController{
 				canPlayTurn(true);
 			}
 			else{
+				System.out.println("player :" +  game.getCurrentPlayerIndex() );
+				//gameView.getPlayerProfiles().get(game.getCurrentPlayerIndex()).showChatMessage("HI !! how are you?");;
 				canPlayTurn(false);
 				try {
 					game.playPlayerTurn();
@@ -481,7 +487,7 @@ public class GameController{
 			}
 		}
 		else{
-			
+			System.out.println("discarded : " + game.getCurrentPlayerIndex());
 			game.endPlayerTurn();
 			gameView.updatePlayerProfiles();
 			run();
@@ -493,10 +499,15 @@ public class GameController{
 		ArrayList<PlayerProfile> players = gameView.getPlayerProfiles();
 		ArrayList<PlayerProfile> winners = new  ArrayList<PlayerProfile>();
 				
-		for (PlayerProfile player : players)
-			if (player.getColour() == colour) winners.add(player);
-		for (PlayerProfile player : players)
-			if (player.getColour() != colour) winners.add(player);
+		for (PlayerProfile player : players){
+			PlayerProfile playerProfile = new PlayerProfile(player.getName(), player.getColour(), player.isActive(), player.isNextActive());
+			if (player.getColour() == colour) winners.add(playerProfile);
+		}
+			
+		for (PlayerProfile player : players){
+			PlayerProfile playerProfile = new PlayerProfile(player.getName(), player.getColour(), player.isActive(), player.isNextActive());
+			if (player.getColour() != colour) winners.add(playerProfile);
+		}
 
 		
 		EndScreenScene endScene = new EndScreenScene(winners);

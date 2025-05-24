@@ -130,6 +130,7 @@ public class Game implements GameManager {
 	
 	//method that ends the current player turn and sets the game ready for the next player
 	public void endPlayerTurn(){
+		System.out.println(currentPlayerIndex);
 		Player currentPlayer = players.get(currentPlayerIndex);
 //		currentPlayer.getHand().remove(currentPlayer.getSelectedCard()); // adding the null to the cardsPool
 		if(currentPlayer.getHand().remove(currentPlayer.getSelectedCard())){
