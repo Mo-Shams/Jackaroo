@@ -24,7 +24,6 @@ import java.util.*;
 
 import exception.CannotFieldException;
 import exception.IllegalDestroyException;
-import view.GameScene;
 import view.ImageCache;
 
 public class WelcomeScene {

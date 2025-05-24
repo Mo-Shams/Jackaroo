@@ -1,8 +1,10 @@
- package view;
+ package scene;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+import controller.ThemesManager;
+import view.GameView;
 import model.player.Marble;
 import model.player.Player;
 import javafx.animation.FadeTransition;
@@ -39,6 +41,7 @@ public class GameScene {
 	public GameScene (Game game){
 		super();
 		this.game = game ;	
+		ThemesManager.gameScene = this ; 
 		root = new StackPane();
 		// root.setPadding(new Insets(30));
 		root.setStyle("-fx-background-color: lightgreen;");

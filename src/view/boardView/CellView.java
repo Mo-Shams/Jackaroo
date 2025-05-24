@@ -18,7 +18,7 @@ public class CellView extends StackPane {
 	private static final double DEFAULT_RADIUS = 12;
 	private static final Color DEFAULT_COLOR = Color.DARKSLATEBLUE;
 	private static final Color FILLING_COLOR = Color.LIGHTGRAY;
-	private static final int MARBLE_SPEED =  150;
+	private static final int MARBLE_SPEED =  120;
 
 	
     private final Cell cell;

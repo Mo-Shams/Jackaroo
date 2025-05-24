@@ -14,8 +14,10 @@ public class ImageCache {
             InputStream stream = ImageCache.class.getResourceAsStream(p);
             if (stream == null) {
             	stream = ImageCache.class.getResourceAsStream("/resources/player_images/default.png");
-            	if(stream == null)
+            	if(stream == null){
+            		System.out.println("image not found");
             		throw new IllegalArgumentException("Image not found: " + p);
+            	}
             }
             return new Image(stream);
         });

@@ -3,6 +3,7 @@ package view.playersView;
 import java.util.HashMap;
 import java.util.Map;
 
+import controller.SoundManager;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
@@ -35,7 +36,7 @@ public final class CardView extends StackPane {
     private static final double HEIGHT = 140;
     private final Card card;
     private final ImageView imageView;
-    private final ImageView backImageView;
+    private ImageView backImageView;
     private boolean selected;
     private boolean flipped;
     
@@ -51,6 +52,7 @@ public final class CardView extends StackPane {
         
         
         String backImagePath = "/resources/card_images/" + colour.name() + "_back.png";
+
         backImageView = new ImageView(ImageCache.getImage(backImagePath));
         backImageView.setPreserveRatio(true);
         backImageView.setSmooth(true);
@@ -113,6 +115,7 @@ public final class CardView extends StackPane {
 
     
     public SequentialTransition sendToFirePit(FirePitView firePit, int playerIndex) {
+    	
     	
     	((HandView) this.getParent()).getCardViews().remove(this);
     	setEffect(null);
@@ -244,4 +247,18 @@ public final class CardView extends StackPane {
     public Card getCard() {
         return card;
     }
+
+	public ImageView getBackImageView() {
+		return backImageView;
+	}
+
+	public void setBackImageView(ImageView backImageView) {
+		this.backImageView = backImageView;
+	}
+
+//	public static double getHeight() {
+//		return HEIGHT;
+//	}
+	
+    
 }

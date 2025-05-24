@@ -39,7 +39,7 @@ import model.card.wild.Saver;
 import model.player.Marble;
 import model.player.Player;
 import scene.EndScreenScene;
-import view.GameScene;
+import scene.GameScene;
 import view.GameView;
 import view.boardView.CellView;
 import view.boardView.MarbleView;
@@ -59,6 +59,8 @@ public class GameController{
 	private final Game game ; 
 	private final GameScene gameScene ; 
 	private final GameView gameView;
+	
+	public static int test = 0 ; 
 	
 	private final Stage primaryStage ; 
 	
@@ -110,6 +112,7 @@ public class GameController{
 		HandView playerHand = gameView.getHandViews().get(0);
 		for(CardView cardView : playerHand.getCardViews()){
 			cardView.setOnMouseClicked(e ->{
+				ThemesManager.changeTheme(0);
 				game.deselectCard();
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
@@ -323,8 +326,11 @@ public class GameController{
 		
 		if(playerIndex > 0){
 			PauseTransition thinking = new PauseTransition(Duration.seconds(2)); //thinking for 3 seconds
+			thinking.setOnFinished(e -> {
+				if (SoundManager.Effects) SoundManager.playSound("throw_Card.wav");
+			});
 			animation.getChildren().add(thinking);
-		}
+		} else if (SoundManager.Effects) SoundManager.playSound("throw_Card.wav");
 		
 		
 		

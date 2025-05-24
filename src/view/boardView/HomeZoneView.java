@@ -113,4 +113,9 @@ public class HomeZoneView extends StackPane {
     public ArrayList<CellView> getCellViews() {
         return this.cellViews;
     }
+
+	public Rectangle getHomeSquare() {
+		return homeSquare;
+	}
+    
 }

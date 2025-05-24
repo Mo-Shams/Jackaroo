@@ -2,6 +2,7 @@ package view.playersView;
 
 import java.util.ArrayList;
 
+import controller.ThemesManager;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.geometry.Pos;

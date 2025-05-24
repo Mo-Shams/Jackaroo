@@ -99,7 +99,10 @@ public class GameView extends StackPane{
 		boardView.setMaxSize(paneWidth, paneHeight);
 		this.getChildren().add(boardView);
 		
+		firePitView = new FirePitView(game.getFirePit(), 1920, 1080);
 		
+		StackPane.setAlignment(firePitView, Pos.CENTER);
+		this.getChildren().add(firePitView);
 		
 		//setting the handViews
 		handViews = new ArrayList<>();
@@ -127,10 +130,7 @@ public class GameView extends StackPane{
 		this.getChildren().add(ButtonContainer);
 		StackPane.setAlignment(ButtonContainer, Pos.BOTTOM_RIGHT);
 		//setting the firePit
-		firePitView = new FirePitView(game.getFirePit(), 1920, 1080);
-		
-		StackPane.setAlignment(firePitView, Pos.CENTER);
-		this.getChildren().add(firePitView);
+	
 		this.setMaxSize(width * 0.8, height);
 	}
 	
@@ -161,6 +161,7 @@ public class GameView extends StackPane{
 		for(PlayerProfile playerProfile : playerProfiles){
 			if(playerProfile.getColour() == game.getActivePlayerColour()){
 				playerProfile.setActive(true);
+				playerProfile.getPulseEffect().play();
 				continue;
 			}
 			else if(playerProfile.getColour() == game.getNextPlayerColour()){
@@ -270,5 +271,7 @@ public class GameView extends StackPane{
 	public ArrayList<HomeZoneView> getHomeZoneViews() {
 		return homeZoneViews;
 	}
+	
+	
 	
 }
