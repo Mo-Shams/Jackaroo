@@ -423,9 +423,11 @@ public class GameController{
 	
 	
 	
+	
+	
 	// moveAction -> 1, backwordAction -> 2, discardAction -> 3, 
 	// fieldAction -> 4, saveAction -> 5, BurnAction -> 6, swapAction -> 7
-	public int getAction (Card card, ArrayList<Marble> marbles){ 
+	private int getAction (Card card, ArrayList<Marble> marbles){ 
 		
 		switch (marbles.size()){
 			case 0 : 
@@ -448,6 +450,7 @@ public class GameController{
 
 
 	
+	
 	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
 	
 	public void run(){
@@ -465,6 +468,7 @@ public class GameController{
 				canPlayTurn(true);
 			}
 			else{
+				//gameView.getPlayerProfiles().get(game.getCurrentPlayerIndex()).showChatMessage("HI !! how are you?");;
 				canPlayTurn(false);
 				try {
 					game.playPlayerTurn();

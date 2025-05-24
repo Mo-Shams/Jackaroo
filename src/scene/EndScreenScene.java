@@ -1,13 +1,13 @@
 package scene;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import view.playersView.PlayerProfile;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -23,95 +23,79 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class EndScreenScene {
-    
-	private ArrayList <PlayerProfile> players; 
-	
-	public EndScreenScene(ArrayList<PlayerProfile> players) {
-        this.players = players;
+    private final List<PlayerProfile> players;
+
+    public EndScreenScene(List<PlayerProfile> players) {
+        if (players.size() < 4) {
+            throw new IllegalArgumentException("Need at least 4 PlayerProfiles");
+        }
+        this.players = new ArrayList<>(players);
     }
-	
+
     public Scene createScene() {
         // Root pane with gradient background
+        Stop[] stops = {
+            new Stop(0, Color.web("#FFD700")),
+            new Stop(1, Color.web("#FFEC8B"))
+        };
+        LinearGradient gradient = new LinearGradient(
+            0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops
+        );
         StackPane root = new StackPane();
-        Stop[] stops = new Stop[] { new Stop(0, Color.web("#FFD700")), new Stop(1, Color.web("#FFEC8B")) };
-        LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
         root.setBackground(new Background(new BackgroundFill(gradient, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        if (players.size() < 4) {
-        	throw new IllegalArgumentException("I need atleast 4 PlayerProfiles");
-        }
-        
-        PlayerProfile winner = createWinnerProfile(players.get(0));
-        HBox losers = new HBox(50);
+        // Winner and losers
+        PlayerProfile winner = configureProfile(players.get(0), true);
+        HBox losers = new HBox(100);
         losers.setAlignment(Pos.CENTER);
-        losers.setPadding(new Insets(300, 0, 0, 0));
+        // no internal padding here—layout spacing handles vertical gap
         for (int i = 1; i < players.size(); i++) {
-            losers.getChildren().add(createLosingProfile(players.get(i)));
+            losers.getChildren().add(configureProfile(players.get(i), false));
         }
 
-        // this is to group everything together
-        VBox layout = new VBox(20, winner, losers);
+        // Group them in a VBox, center the group
+        VBox layout = new VBox(40, winner, losers);
         layout.setAlignment(Pos.CENTER);
+        // Optionally add margin on losers to tweak vertical spacing:
+        // VBox.setMargin(losers, new Insets(20, 0, 0, 0));
+
         root.getChildren().add(layout);
-        
-        
+
+        // Fade animations
         SequentialTransition seq = new SequentialTransition();
-        animationFadeLosers(seq, losers);
-        animationFadeWinner(seq, winner);
-        
+        fadeInNodes(seq, losers.getChildren(), 0.5, 0.5);
+        fadeInNode(seq, winner, 0.7, 0.5);
         seq.play();
-        
-        Scene scene = new Scene(root, 1920, 1080);
-        return scene ;
-     
-    }
-    
-    private void animationFadeWinner(SequentialTransition seq,
-			PlayerProfile winner) {
-    	FadeTransition winnerFt = new FadeTransition(Duration.seconds(0.7), winner);
-        winnerFt.setFromValue(0.0);
-        winnerFt.setToValue(1.0);
-        winnerFt.setDelay(Duration.seconds(0.5));
-        seq.getChildren().add(winnerFt);
-        winner.setOpacity(0);
-	}
 
-	private void animationFadeLosers(SequentialTransition seq, HBox losers) {
-    	for (Node node : losers.getChildren()) {
-            FadeTransition ft = new FadeTransition(Duration.seconds(0.5), node);
-            ft.setFromValue(0.0);
-            ft.setToValue(1.0);
-            ft.setDelay(Duration.seconds(0.5)); 
-            seq.getChildren().add(ft);
+        return new Scene(root, 1920, 1080);
+    }
+
+    private PlayerProfile configureProfile(PlayerProfile original, boolean isWinner) {
+        original.setActive(false);
+        original.setNextActive(false);
+        original.setProfileImage(isWinner);
+        original.setScaleX(isWinner ? 3.0 : 1.0);
+        original.setScaleY(isWinner ? 3.0 : 1.0);
+        return original;
+    }
+
+    private void fadeInNodes(SequentialTransition seq, Iterable<javafx.scene.Node> nodes, double duration, double delay) {
+        for (javafx.scene.Node node : nodes) {
             node.setOpacity(0);
-        }	
-	}
-
-	private PlayerProfile createWinnerProfile(PlayerProfile original) {
-        
-		original.setActive(false);
-		original.setNextActive(false); // remove these settings
-        
-        original.setProfileImage(true); // change the profile image
-        
-        original.setScaleX(3.0); // Scale 5 times
-        original.setScaleY(3.0);
-        
-        return original;
-    }
-    
-    private PlayerProfile createLosingProfile(PlayerProfile original) {
-        
-    	original.setActive(false);
-    	original.setNextActive(false); // remove these settings
-        
-        original.setProfileImage(false); // change the profile image
-        
-        original.setScaleX(1.0); // normal scale
-        original.setScaleY(1.0);
-
-        return original;
+            FadeTransition ft = new FadeTransition(Duration.seconds(duration), node);
+            ft.setFromValue(0);
+            ft.setToValue(1);
+            ft.setDelay(Duration.seconds(delay));
+            seq.getChildren().add(ft);
+        }
     }
 
- 
+    private void fadeInNode(SequentialTransition seq, javafx.scene.Node node, double duration, double delay) {
+        node.setOpacity(0);
+        FadeTransition ft = new FadeTransition(Duration.seconds(duration), node);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.setDelay(Duration.seconds(delay));
+        seq.getChildren().add(ft);
+    }
 }

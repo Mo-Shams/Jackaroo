@@ -69,17 +69,19 @@ public class WelcomeScene {
             primaryStage.setFullScreen(true);
             
             //Pause Transition between loading Scene and Game Scene
-            PauseTransition wait = new PauseTransition(Duration.seconds(3));
+            PauseTransition wait = new PauseTransition(Duration.seconds(5.5));
             wait.setOnFinished(ev -> {
-                try {
-                    GameController gameController = new GameController(playerName, primaryStage);
-                    Scene gameScene = gameController.getGameScene().CreateScene();
+                GameController gameController;
+				try {
+					gameController = new GameController(playerName, primaryStage);
+					Scene gameScene = gameController.getGameScene().CreateScene();
                     primaryStage.setScene(gameScene);
                     primaryStage.setFullScreen(true);
-                } catch (Exception e) {
-                    // If game loading fails, pop up on the loading pane
-                    GameScene.showExceptionPopup("Failed to load the game", loaderPane);
-                }
+				}catch (Exception e) {
+               
+                // If game loading fails, pop up on the loading pane
+                GameScene.showExceptionPopup("Failed to load the game", loaderPane);
+				}
             });
             wait.play();
         });
