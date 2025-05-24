@@ -18,14 +18,14 @@ public class MarbleView extends ImageView {
 	private final Marble marble ; 
 	private boolean selected ; 
 
-	private static final double DEFAULT_MARBLE_SIZE = 32;
+	private static final double DEFAULT_MARBLE_SIZE = 25;
 	private static final double SCALE_ANIMATION_DURATION_MS = 200; 
 	
 	
 	public static final Map<Marble, MarbleView> MarbleToViewMap = new HashMap<>();
 	
 	public MarbleView (Marble marble){
-        super(ImageCache.getImage("/resources/marble_images/" + marble.getColour().name() + "_marble.png"));
+        super(ImageCache.getImage("/resources/themes/anime/" + marble.getColour().name() + "_marble.png"));
 		this.marble = marble ; 
 		this.selected = false ; 
         this.setPreserveRatio(true);

@@ -50,7 +50,7 @@ public final class CardView extends StackPane {
         imageView.setFitHeight(HEIGHT);
         
         
-        String backImagePath = "/resources/card_images/" + colour.name() + "_back.png";
+        String backImagePath = "/resources/themes/anime/cardback.png";
         backImageView = new ImageView(ImageCache.getImage(backImagePath));
         backImageView.setPreserveRatio(true);
         backImageView.setSmooth(true);

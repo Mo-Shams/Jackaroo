@@ -47,17 +47,19 @@ public class GameScene {
 		this.game = game ;	
 		root = new StackPane();
 		// root.setPadding(new Insets(30));
-		Image bgImage = new Image("/resources/background_images/background.png");
+		Image bgImage = new Image("/resources/themes/anime/background.jpg");
 		BackgroundImage backgroundImage = new BackgroundImage(
 			    bgImage,
 			    BackgroundRepeat.NO_REPEAT,
 			    BackgroundRepeat.NO_REPEAT,
 			    BackgroundPosition.DEFAULT,
 			    new BackgroundSize(
-			        100, 100, true, true, false, true // width, height, %s, contain, cover
+			    		WIDTH, HEIGHT, // 100% width & height
+			    	    true, true, // interpreted as %s
+			    	    false, true // contain=false, cover=true
 			    )
 			);
-
+		
 		//root.setStyle("-fx-background-color: lightgreen;");
 		root.setBackground(new Background(backgroundImage));
 		gameView = new GameView(game, WIDTH, HEIGHT);

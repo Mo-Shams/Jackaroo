@@ -12,10 +12,10 @@ import java.util.Random;
 
 public class AnimatedMarbles extends Pane {
     private static final String[] DEFAULT_PATHS = {
-        "/resources/marble_images/BLUE_marble.png",
-        "/resources/marble_images/RED_marble.png",
-        "/resources/marble_images/GREEN_marble.png",
-        "/resources/marble_images/YELLOW_marble.png"
+        "/resources/themes/anime/BLUE_marble.png",
+        "/resources/themes/anime/RED_marble.png",
+        "/resources/themes/anime/GREEN_marble.png",
+        "/resources/themes/anime/YELLOW_marble.png"
     };
 
     public AnimatedMarbles(double width, double height) {

@@ -24,8 +24,15 @@ public class PlayerProfile extends StackPane {
     private Label chatBubble;
 
     public PlayerProfile(String name, Colour colour, boolean active, boolean nextActive, int playerIndex) {
-        this.name = new Label(name);
-        this.name.setFont(Font.font("Arial", 25));
+    	String customizedName;
+    	switch(name){
+    	case "CPU 1": customizedName = "naruto"; break;
+    	case "CPU 2": customizedName = "luffy"; break;
+    	case "CPU 3": customizedName = "killua";break;
+    	default: customizedName = name;
+    	}
+        this.name = new Label(customizedName);
+        this.name.setFont(Font.font("Arial", 32));
         this.name.setAlignment(Pos.CENTER);
         this.colour = colour;
         Color color = Color.valueOf(colour.toString());
@@ -34,8 +41,11 @@ public class PlayerProfile extends StackPane {
         circle = new Circle(HEIGHT * 0.4);
         circle.setStroke(color);
         circle.setStrokeWidth(5);
-
-        String imagePath = "/resources/player_images/" + name + ".png";
+        String imagePath;
+        if(!customizedName.equals(name))
+        	imagePath = "/resources/themes/anime/" + customizedName + ".jpg";
+        else
+        	imagePath = "/resources/themes/anime/sung_jin-woo.jpg";
         Image image = ImageCache.getImage(imagePath);
         circle.setFill(new ImagePattern(image));
 
