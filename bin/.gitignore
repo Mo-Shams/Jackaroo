@@ -1,7 +1,3 @@
-/controller/
-/engine/
-/exception/
-/model/
 /scene/
-/test/
 /view/
+/engine/

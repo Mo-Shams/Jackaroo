@@ -162,7 +162,7 @@ public class Game implements GameManager {
 	
 	//method that checks if the game ended and specifies the winner
 	public Colour checkWin(){
-//		if(turn == 2) return players.get(0).getColour();
+		if(turn == 1) return players.get(0).getColour();
 		for(int i = 0; i < 4; i++){
 			SafeZone currentSafeZone = board.getSafeZones().get(i);
 			if(currentSafeZone.isFull())

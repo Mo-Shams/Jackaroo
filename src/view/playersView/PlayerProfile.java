@@ -22,6 +22,8 @@ public class PlayerProfile extends StackPane{
 	public PlayerProfile(String name, Colour colour, boolean active, boolean nextActive){
 		this.name = new Label(name);
 		this.name.setFont(Font.font("Arial", 25));
+        this.name.setMaxWidth(SIZE * 2);
+        this.name.setAlignment(Pos.CENTER);
 		this.colour = colour;
 		Color color = Color.valueOf(colour.toString());
 		this.name.setTextFill(color);
@@ -72,7 +74,13 @@ public class PlayerProfile extends StackPane{
 		String path ;
 		if (name.getText().equals("CPU 1") || name.getText().equals("CPU 2") || name.getText().equals("CPU 3")) 
 			path = "/resources/EndScreenProfiles/" + basePath + "/" + name.getText() + ".png";
-		else path = "/resources/EndScreenProfiles/" + basePath + "/default.png";
+		else {
+			if (name.getText().equals("Walid")) {
+				path = "/resources/EndScreenProfiles/" + basePath + "/Walid.png";
+			} else {
+				path = "/resources/EndScreenProfiles/" + basePath + "/default.png";
+			}
+		}
 	    Image image = ImageCache.getImage(path);
 	    if (image != null) {
 	    	circle.setFill(new ImagePattern(image));

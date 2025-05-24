@@ -89,8 +89,8 @@ public class EndScreenScene {
 
 	private PlayerProfile createWinnerProfile(PlayerProfile original) {
         
-    	original.setNextActive(false); // remove these settings
-        original.setActive(false);
+		original.setActive(false);
+		original.setNextActive(false); // remove these settings
         
         original.setProfileImage(true); // change the profile image
         
@@ -102,8 +102,8 @@ public class EndScreenScene {
     
     private PlayerProfile createLosingProfile(PlayerProfile original) {
         
+    	original.setActive(false);
     	original.setNextActive(false); // remove these settings
-        original.setActive(false);
         
         original.setProfileImage(false); // change the profile image
         

@@ -37,7 +37,8 @@ public class WelcomeScene {
     }
 
     public Scene createScene() throws Exception {
-
+        Pane backgroundPane = AnimatedMarbles.fullScreen();
+    	
         // Title
         Text text = new Text("Enter your name:");
         text.setFont(Font.font("Arial Rounded MT", 25));
@@ -52,7 +53,6 @@ public class WelcomeScene {
         Button about = createStyledButton("About");
         Button settings = createStyledButton("Settings");
         
-
         play.setOnAction(evt -> {
             String st = inputField.getText().trim();
             final String playerName; 
@@ -83,7 +83,13 @@ public class WelcomeScene {
             });
             wait.play();
         });
-
+        
+        about.setOnAction(e -> {
+        	AboutScene aboutscene = new AboutScene(primaryStage);
+        	primaryStage.setScene(aboutscene.createScene());
+        	primaryStage.setFullScreen(true);
+        });
+        
         VBox vbox = new VBox(10, text, inputField, play, about, settings);
         vbox.setAlignment(Pos.CENTER);
         vbox.setFillWidth(false);
@@ -95,11 +101,10 @@ public class WelcomeScene {
         double width = screenBounds.getWidth();
         double height = screenBounds.getHeight();
 
-        StackPane root = new StackPane(); // Stack background and UI
+        StackPane root = new StackPane(backgroundPane, vbox); // Stack background and UI
         backgroundPane.setPrefSize(width, height);
         backgroundPane.setStyle("-fx-background-color: black;"); // Set background color
 
-        root.getChildren().addAll(backgroundPane, vbox); // Add background + UI
         Scene scene = new Scene(root, width, height);
         scene.setOnKeyPressed((KeyEvent e1) ->{
     		if(e1.getCode() == KeyCode.ENTER){
@@ -117,15 +122,6 @@ public class WelcomeScene {
         vbox.prefWidthProperty().bind(scene.widthProperty().multiply(0.75));
         vbox.prefHeightProperty().bind(scene.heightProperty().multiply(0.5));
 
-        // Start marble animation 🎆
-        startMarbleAnimation(
-            "/resources/marble_images/BLUE_marble.png",
-            "/resources/marble_images/RED_marble.png",
-            "/resources/marble_images/GREEN_marble.png",
-            "/resources/marble_images/YELLOw_marble.png",
-            width, height
-        );
-     
 
         return scene;
     }
@@ -144,46 +140,4 @@ public class WelcomeScene {
         return btn;
     }
 
-    private void startMarbleAnimation(String redPath, String bluePath, String greenPath, String yellowPath, double sceneWidth, double sceneHeight) {
-        String[] paths = {redPath, bluePath, greenPath, yellowPath};
-        Random random = new Random();
-
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.seconds(0), e -> {
-                String path = paths[random.nextInt(paths.length)];
-                ImageView marble = createMarble(path, sceneHeight);
-                backgroundPane.getChildren().add(marble);
-                animateMarble(marble, sceneWidth);
-            }),
-            new KeyFrame(Duration.seconds(0.5)) // new marble every 2 seconds
-        );
-
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-    }
-
-    private ImageView createMarble(String path, double sceneHeight) {
-   
-        ImageView marble = new ImageView(ImageCache.getImage(path));
-        marble.setPreserveRatio(true);
-        marble.setSmooth(true);
-
-        marble.setFitWidth(80);
-        marble.setFitHeight(80);
-        marble.setPreserveRatio(true);
-
-        double startY = new Random().nextDouble() * (sceneHeight - 40);
-        marble.setLayoutX(-50); // Start just off-screen to the left
-        marble.setLayoutY(startY);
-
-        return marble;
-    }
-
-    private void animateMarble(ImageView marble, double sceneWidth) {
-        TranslateTransition transition = new TranslateTransition(Duration.seconds(12), marble);
-        transition.setFromX(0);
-        transition.setToX(sceneWidth + 100);
-        transition.setOnFinished(e -> backgroundPane.getChildren().remove(marble)); // Remove when done
-        transition.play();
-    }
 }
