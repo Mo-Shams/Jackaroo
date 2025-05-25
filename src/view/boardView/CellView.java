@@ -64,6 +64,18 @@ public class CellView extends StackPane {
         return circle;
     }
     
+    public void colorCell(Color color){
+    	if(color == Color.RED) color = Color.LIGHTCORAL;
+    	if(color == Color.BLUE) color = Color.LIGHTBLUE;
+    	if(color == Color.GREEN) color = Color.LIGHTGREEN;
+    	if(color == Color.YELLOW) color = Color.hsb(60, 0.5, 1);
+    	circle.setFill(color);
+    }
+    
+    public void uncolorCell(){
+    	circle.setFill(FILLING_COLOR);
+    }
+    
     public void moveMarbleTo(CellView target) {
 		if (this == target) {
 			if (target.getCell().getMarble() == null) wasTrap = true ;

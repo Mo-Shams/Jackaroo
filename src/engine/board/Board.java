@@ -120,6 +120,105 @@ public class Board implements BoardManager {
     
     //helper methods to validate the number of steps a marble can move
     //helpers of the method moveBy
+    public ArrayList<Cell> validateSteps_(Marble marble, int steps) {
+        int start = getPositionInPath(track, marble);
+        if (start != -1){
+            if (steps == -4) return validateStepsForFour_(marble, steps, start); // 4 or -4 ? 
+            else return validateStepsOnTrack_(marble, steps, start); 
+        }
+        ArrayList<Cell> safezone = getSafeZone(marble.getColour()); 
+        start = getPositionInPath(safezone,marble);
+        if (start != -1){
+            return validateStepsOnSafeZone_(marble, steps, start) ; 
+        }
+        return null;
+    }
+    public ArrayList<Cell> validateStepsOnTrack_(Marble marble, int steps, int start) {
+    
+        int target = start + steps ;
+        ArrayList<Cell> path = new ArrayList<>();
+ 
+        for (int i = start; i <= target; i++) {
+            if (getEntryPosition(marble.getColour()) == i  && 
+                (marble.getColour() == gameManager.getActivePlayerColour())) { 
+                
+                path.add(track.get(i%100));
+                ArrayList<Cell> safeZoneCells = validateStepsOnSafeZone_(marble, target - i - 1,0);
+                if(safeZoneCells == null) return null;
+                path.addAll(safeZoneCells);
+                break ;
+            }
+            path.add(track.get(i%100));
+        }
+        return path;
+    }
+    public ArrayList<Cell> validateStepsOnSafeZone_(Marble marble, int steps, int start)  {
+        ArrayList<Cell> safezone = getSafeZone(marble.getColour());
+        ArrayList<Cell> path = new ArrayList<>();
+        int target = start + steps  ; // 0, 3
+
+        if (target >= 4) return null;
+        for (int i = start; i <= target; i++) {
+            path.add(safezone.get(i));
+        }
+        return path ;
+    }
+    public ArrayList<Cell> validateStepsForFour_(Marble marble, int steps, int start) {
+        ArrayList<Cell> path = new ArrayList<>();
+        int target = start + steps  ; // assuming it is -4 not 4 
+        for (int i = start; i >= target; i--) {
+            path.add(track.get((i + 100) % 100)); // this order is correct right ? 
+        }
+        return path ;
+        // cannot move the four in the safezone 
+    }
+    
+    //helper method to validate the path returned by validateSteps
+    //helper of the method moveBy
+    public boolean validatePath_(Marble marble, ArrayList<Cell> fullPath, boolean destroy) {
+        // Safe Zone Entry         	
+//        if (start.getCellType() == CellType.NORMAL && end.getCellType() == CellType.SAFE) {
+//        	if (track.get(getEntryPosition(movingMarble)).getMarble() != null && !destroy) {
+//                throw new IllegalMovementException("Safe Zone Entry");
+//            }
+//        }
+    	
+        // other problems  
+        int blockers = 0; 
+        for (int i = 1; i < fullPath.size(); i++) {
+        	
+            Marble found = fullPath.get(i).getMarble();
+            //System.out.println(track.indexOf(fullPath.get(i)) != -1 || fullPath.get(i).getCellType() == CellType.SAFE);
+            if (found != null){ 
+            	// Base Cell Blockage
+                if (getBasePosition(found.getColour()) == track.indexOf(fullPath.get(i)))
+                    return false;
+                
+                if (found.getColour() == gameManager.getActivePlayerColour()){ // marble same colour as me 
+                	// Self Blockage
+                	if (!destroy)  
+                		return false;
+                	// Safe-Zone Immunity
+                    if (fullPath.get(i).getCellType() == CellType.SAFE)
+                    	return false;
+                    } else { // marble colour not same as the marble moving
+                    if(fullPath.get(i).getCellType() == CellType.ENTRY && i != fullPath.size() - 1
+                    		&& fullPath.get(i+1).getCellType() == CellType.SAFE && !destroy)
+                    	return false;
+                    if (i != fullPath.size() - 1 && !destroy) {
+                        // Path Blockage
+                        blockers++;
+                        if (blockers > 1) {
+                        	return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    
     private ArrayList<Cell> validateSteps(Marble marble, int steps) throws IllegalMovementException {
         int start = getPositionInPath(track, marble);
         if (start != -1){
@@ -216,8 +315,7 @@ public class Board implements BoardManager {
             }
         }
     }
-    
-    
+
     
     
     //helper method that carries out the actual movement process

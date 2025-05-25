@@ -48,6 +48,7 @@ import view.playersView.FirePitView;
 import view.playersView.HandView;
 import view.playersView.PlayerProfile;
 import engine.Game;
+import engine.board.Cell;
 import exception.CannotFieldException;
 import exception.GameException;
 import exception.IllegalDestroyException;
@@ -117,14 +118,19 @@ public class GameController{
 				if(!cardView.isSelected()){
 					playerHand.clearSelection();
 					try {
+						handleCells(false);
 						game.selectCard(cardView.getCard());
 						cardView.setSelected(true);
+						if(game.getCurrentPlayer().getSelectedMarbles().size() == 1) handleCells(true);
+						else handleCells(false);
 					} catch (InvalidCardException e1) {
 						GameScene.showExceptionPopup(e1.getMessage(), gameScene.getRoot());
 					}
 				}
-				else cardView.setSelected(false);
-				
+				else {
+					cardView.setSelected(false);
+					handleCells(false);
+				}
 			});
 		}
 		
@@ -142,6 +148,8 @@ public class GameController{
 					try {
 						game.selectMarble(marble);
 						marbleView.setSelected(true);
+						if(game.getCurrentPlayer().getSelectedMarbles().size() == 1) handleCells(true);
+						else handleCells(false);
 					} catch (Exception e1) {
 						GameScene.showExceptionPopup(e1.getMessage(), gameScene.getRoot());
 					}
@@ -149,16 +157,52 @@ public class GameController{
 				else{
 					game.deselectMarble(marble);
 					marbleView.setSelected(false);
+					if(game.getCurrentPlayer().getSelectedMarbles().size() == 1) handleCells(true);
+					else handleCells(false);
 				}
 			});
 		}
 		
 	}
 	
+	private void handleCells(boolean selected) {
+		Card selectedCard = game.getCurrentPlayer().getSelectedCard();
+		if(selected && (selectedCard instanceof Standard)){
+				Marble selectedMarble = game.getCurrentPlayer().getSelectedMarbles().get(0);
+				MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarble);
+				int steps = ((Standard) selectedCard).getRank();
+				Color color = Color.valueOf(marbleView.getMarble().getColour().toString());
+				ArrayList<Cell> path = game.getBoard().validateSteps_(selectedMarble, (steps==4)?-4:steps);
+				if(path == null || !(game.getBoard().validatePath_(selectedMarble, path, steps == 13)) || 
+						(steps != 5 && (!selectedMarble.getColour().toString().equals(game.getPlayers().get(0).getColour().toString())))) {
+					handleCells(false);
+					return;
+				}
+				CellView start = (CellView) marbleView.getParent();
+				if(steps != 4){
+					while(steps-- > 0){
+						if(game.getBoard().getTrack().get(98) == start.getCell()) start = start.getEnter();
+						else start = start.getNext();
+						start.colorCell(color);
+					}
+				}else{
+					while(steps-- > 0){
+						start = start.getPrev();
+						start.colorCell(color);
+					}
+				}
+		}else{
+			for(CellView cellView: CellView.cellToViewMap.values()){
+				cellView.uncolorCell();
+			}
+		}
+	}
+	
 	public void clearPlayerSelections(){
 		Player player = game.getPlayers().get(0);
 		CardView cardView = CardView.cardToViewMap.get(player.getSelectedCard());
 		cardView.setSelected(false);
+		handleCells(false);
 		cardView.scaleCard(1.15);
 		for(Marble marble : player.getSelectedMarbles()){
 			MarbleView.MarbleToViewMap.get(marble).setSelected(false);
@@ -186,10 +230,10 @@ public class GameController{
 					SplitDistanceView();
 					return ;
 				}
-
 				try {
 					game.playPlayerTurn();
 					doTheAnimation(0);
+				
 				} 
 				catch (GameException e) {
 					GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());

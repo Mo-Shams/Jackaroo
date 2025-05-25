@@ -1,9 +1,5 @@
 /controller/
-/engine/
-/exception/
-/model/
-/scene/
-/test/
-/view/
 /resources/
-/settings/
+/scene/
+/view/
+/engine/
