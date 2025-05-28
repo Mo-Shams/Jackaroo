@@ -220,7 +220,7 @@ public class PlayerProfile extends StackPane {
 
         timeline.setOnFinished(e -> {
             // Wait for 2 seconds then hide the chat bubble
-            PauseTransition delay = new PauseTransition(Duration.seconds(2));
+            PauseTransition delay = new PauseTransition(Duration.seconds(4));
             delay.setOnFinished(event -> hideChatBubble());
             delay.play();
         });
