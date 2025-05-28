@@ -171,9 +171,9 @@ public class GameController{
 	}
 	
 	private void handleCells(boolean selected) {
-		Card selectedCard = game.getCurrentPlayer().getSelectedCard();
+		Card selectedCard = game.getPlayers().get(0).getSelectedCard();
 		if(selected && (selectedCard instanceof Standard)){
-				Marble selectedMarble = game.getCurrentPlayer().getSelectedMarbles().get(0);
+				Marble selectedMarble = game.getPlayers().get(0).getSelectedMarbles().get(0);
 				MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarble);
 				int steps = ((Standard) selectedCard).getRank();
 				Color color = Color.valueOf(marbleView.getMarble().getColour().toString());
