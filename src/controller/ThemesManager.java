@@ -78,7 +78,7 @@ public class ThemesManager {
 			
 			changeCards("/resources/themes/ancient_civilizations/cardback.png");
 			
-			playerPaths.add("/resources/themes/ancient_civilizations/pharoah.png");
+			playerPaths.add("/resources/themes/ancient_civilizations/default.png");
 			playerPaths.add("/resources/themes/ancient_civilizations/greek.png");
 			playerPaths.add("/resources/themes/ancient_civilizations/roman.png");
 			playerPaths.add("/resources/themes/ancient_civilizations/viking.png");

@@ -1,5 +1,10 @@
 package view.playersView;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import controller.ThemesManager;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -36,6 +41,14 @@ public class PlayerProfile extends StackPane {
     private boolean active, nextActive;
     private final Circle circle;
     private Label chatBubble;
+    
+    private static final String[] THEME_FOLDERS = {
+        "ancient_civilizations",              // theme 0
+        "anime",  // theme 1
+        "original", // theme 2
+        "sci-fi-dystopia", // theme 3
+        "theme_images" // theme 4
+    };
 
     public PlayerProfile(Label name, Colour colour, boolean active, boolean nextActive, int playerIndex) {
 		this.pulseEffect = this.setPulseEffect();
@@ -150,20 +163,57 @@ public class PlayerProfile extends StackPane {
     }
 
 	public void setProfileImage(boolean isWinner) {
-		String basePath = isWinner ? "winners" : "losers";
-		String path ;
-		if (name.getText().equals("CPU 1") || name.getText().equals("CPU 2") || name.getText().equals("CPU 3")) 
-			path = "/resources/EndScreenProfiles/" + basePath + "/" + name.getText() + ".png";
-		else {
-			if (name.getText().equals("Walid")) {
-				path = "/resources/EndScreenProfiles/" + basePath + "/Walid.png";
-			} else {
-				path = "/resources/EndScreenProfiles/" + basePath + "/default.png";
-			}
-		}
+		int themeId = ThemesManager.theme;
+		String themeFolder = "original";
+	    if (themeId >= 0 && themeId < THEME_FOLDERS.length) {
+	        themeFolder = THEME_FOLDERS[themeId];
+	    }
+		String basePath = isWinner ? "Winners" : "Losers";
+		String prefix;
+		Set<String> validNames;
+	    switch (themeFolder) {
+	        case "original": {
+	            prefix = "/resources/themes/original/" + basePath + "/";
+	            validNames = new HashSet<>(Arrays.asList("cool", "muscles", "normal", "smart"));
+	            break;
+	        }
+	        case "anime": {
+	            prefix = "/resources/themes/anime/" + basePath + "/";
+	            validNames = new HashSet<>(Arrays.asList("luffy", "naruto", "kilua", "sun_jin-woo"));
+	            break;
+	        }
+	        case "sci-fi-dystopia": {
+	            prefix = "/resources/themes/sci-fi-dystopia/" + basePath + "/";
+	            validNames = new HashSet<>(Arrays.asList("cyborge", "enforcer", "mystic", "survivor"));
+	            break;
+	        }
+	        case "ancient_civilizations": {
+	            prefix = "/resources/themes/ancient_civilizations/" + basePath + "/";
+	            validNames = new HashSet<>(Arrays.asList("greek", "pharoah", "roman", "viking"));
+	            break;
+	        }
+	        default: {
+	            // fallback to original
+	            prefix = "/resources/themes/original/" + basePath + "/";
+	            validNames = new HashSet<>(Arrays.asList("cool", "muscles", "normal", "smart"));
+	            break;
+	        }
+	    }
+
+	    String playerName = name.getText();
+	    String finalName = validNames.contains(playerName.toLowerCase())
+	        ? playerName
+	        : "default";
+
+	    // 5) full path and load
+	    String path = prefix + finalName + ".png";
 	    Image image = ImageCache.getImage(path);
 	    if (image != null) {
-	    	circle.setFill(new ImagePattern(image));
+	        circle.setFill(new ImagePattern(image));
+	    }
+	    path = prefix + finalName + ".jpg";
+	    if (image != null) {
+	        circle.setFill(new ImagePattern(image));
 	    }
 	}
 	
