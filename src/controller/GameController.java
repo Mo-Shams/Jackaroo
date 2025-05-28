@@ -61,7 +61,7 @@ public class GameController{
 	private final GameScene gameScene ; 
 	private final GameView gameView;
 	
-	public static int test = 0 ; 
+	public static int test = 1 ; 
 	
 	private final Stage primaryStage ; 
 	
@@ -73,6 +73,8 @@ public class GameController{
 		run();
 		addShortCuts();
 		addEventHandlers();
+		ThemesManager.changeTheme(0);
+		
 	}
 	public Game getGame() {
 		return game;
@@ -100,7 +102,7 @@ public class GameController{
 					game.fieldMarble(3);
 				}
 				else if(e1.getCode() == KeyCode.T){
-					ThemesManager.changeTheme(test++%7);
+					ThemesManager.changeTheme(test++%5);
 				}
 				gameView.updateBoardView();
 				addEventHandlers();
@@ -195,9 +197,7 @@ public class GameController{
 					}
 				}
 		}else{
-			for(CellView cellView: CellView.cellToViewMap.values()){
-				cellView.uncolorCell();
-			}
+			ThemesManager.changeTheme(ThemesManager.theme);
 		}
 	}
 	
@@ -218,13 +218,15 @@ public class GameController{
 			handView.drawCardViews(players.get(i).getHand());
 			i++;
 		}
+		ThemesManager.changeTheme(ThemesManager.theme);
 	}
 	
 	
 	public void canPlayTurn(boolean canPlay){
 		Button playButton = gameView.getPlayButton();
 		if(canPlay){
-			playButton.setOnAction(evt ->{
+			playButton.setOnMouseClicked(evt ->{
+				//if (evt.getClickCount() == 2)return;
 				HandView handView = gameView.getHandViews().get(0);
 				FirePitView firePitView = gameView.getFirePitView();
 				Card selectedCard = game.getPlayers().get(0).getSelectedCard(); 
@@ -236,6 +238,7 @@ public class GameController{
 				try {
 					game.playPlayerTurn();
 					doTheAnimation(0);
+					playButton.setOnMouseClicked(null);
 				
 				} 
 				catch (GameException e) {
@@ -248,8 +251,10 @@ public class GameController{
 						gameView.updatePlayerProfiles();
 					}
 					game.deselectAll();
-					handView.clearSelection();				
+					handView.clearSelection();		
+					playButton.setOnMouseClicked(null);
 					run();
+					
 				}
 			});
 		}
@@ -522,7 +527,6 @@ public class GameController{
 				canPlayTurn(true);
 			}
 			else{
-				System.out.println("player :" +  game.getCurrentPlayerIndex() );
 				//gameView.getPlayerProfiles().get(game.getCurrentPlayerIndex()).showChatMessage("HI !! how are you?");;
 				canPlayTurn(false);
 				try {
@@ -534,7 +538,6 @@ public class GameController{
 			}
 		}
 		else{
-			System.out.println("discarded : " + game.getCurrentPlayerIndex());
 			game.endPlayerTurn();
 			gameView.updatePlayerProfiles();
 			run();

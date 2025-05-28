@@ -41,10 +41,10 @@ public class LoadingScene extends StackPane {
 
         // Create and size marbles at 3×
         MarbleView[] marbles = new MarbleView[]{
-            new MarbleView(new Marble(Colour.RED),"/resources/themes/anime/RED_marble.png"),
-            new MarbleView(new Marble(Colour.GREEN), "/resources/themes/anime/GREEN_marble.png"),
-            new MarbleView(new Marble(Colour.BLUE), "/resources/themes/anime/BLUE_marble.png"),
-            new MarbleView(new Marble(Colour.YELLOW), "/resources/themes/anime/YELLOW_marble.png")
+            new MarbleView(new Marble(Colour.RED),"/resources/themes/original/RED_marble.png"),
+            new MarbleView(new Marble(Colour.GREEN), "/resources/themes/original/GREEN_marble.png"),
+            new MarbleView(new Marble(Colour.BLUE), "/resources/themes/original/BLUE_marble.png"),
+            new MarbleView(new Marble(Colour.YELLOW), "/resources/themes/original/YELLOW_marble.png")
         };
         for (MarbleView mv : marbles) {
             mv.setScaleX(BASE_SCALE);

@@ -50,21 +50,9 @@ public class GameScene {
 		ThemesManager.gameScene = this ; 
 		root = new StackPane();
 		// root.setPadding(new Insets(30));
-		Image bgImage = new Image("/resources/themes/anime/background.jpg");
-		BackgroundImage backgroundImage = new BackgroundImage(
-			    bgImage,
-			    BackgroundRepeat.NO_REPEAT,
-			    BackgroundRepeat.NO_REPEAT,
-			    BackgroundPosition.DEFAULT,
-			    new BackgroundSize(
-			    		WIDTH, HEIGHT, // 100% width & height
-			    	    true, true, // interpreted as %s
-			    	    false, true // contain=false, cover=true
-			    )
-			);
 		
-		//root.setStyle("-fx-background-color: lightgreen;");
-		root.setBackground(new Background(backgroundImage));
+		
+		root.setStyle("-fx-background-color: #faedcd;");
 		gameView = new GameView(game, WIDTH, HEIGHT);
 		root.getChildren().add(gameView);
 	}

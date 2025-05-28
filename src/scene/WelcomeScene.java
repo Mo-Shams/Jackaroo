@@ -77,9 +77,9 @@ public class WelcomeScene {
                     primaryStage.setScene(gameScene);
                     primaryStage.setFullScreen(true);
 				}catch (Exception e) {
-               
+					e.printStackTrace();
                 // If game loading fails, pop up on the loading pane
-                GameScene.showExceptionPopup("Failed to load the game", loaderPane);
+                // GameScene.showExceptionPopup("Failed to load the game", loaderPane);
 				}
             });
             wait.play();

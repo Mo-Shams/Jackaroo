@@ -57,7 +57,14 @@ public class GameView extends StackPane{
 		playerProfiles = new ArrayList<>();
 		int i = 0;
 		for(Player player : players){
-			Label label = new Label(player.getName());
+			String name ; 
+			switch (player.getName()){
+			case "CPU 1" : name = "Muscles"; break ; 
+			case "CPU 2" : name = "Cool"; break ; 
+			case "CPU 3" : name = "Normal"; break ; 
+			default : name = player.getName();
+			}
+			Label label = new Label(name);
 			PlayerProfile playerProfile = new PlayerProfile(label, player.getColour(), player == game.getCurrentPlayer(), player == game.getNextPlayer(), i);
 			switch(i){
 			case 0: StackPane.setAlignment(playerProfile, Pos.BOTTOM_RIGHT);playerProfile.setTranslateX(150);break;
