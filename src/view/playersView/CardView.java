@@ -51,7 +51,7 @@ public final class CardView extends StackPane {
         imageView.setFitHeight(HEIGHT);
         
    
-        String backImagePath = "/resources/themes/anime/cardback.png";
+        String backImagePath = "/resources/themes/original/cardback.png";
         backImageView = new ImageView(ImageCache.getImage(backImagePath));
         backImageView.setPreserveRatio(true);
         backImageView.setSmooth(true);
@@ -113,7 +113,7 @@ public final class CardView extends StackPane {
     }
 
     
-    public SequentialTransition sendToFirePit(FirePitView firePit, int playerIndex) {
+    public SequentialTransition sendToFirePit(FirePitView firePit, int playerIndex, boolean dimmed) {
     	
     	
     	((HandView) this.getParent()).getCardViews().remove(this);
@@ -169,6 +169,11 @@ public final class CardView extends StackPane {
         ParallelTransition pt = new ParallelTransition(tt, rt);
         // Play both transitions together
         sq.getChildren().add(pt);
+        sq.statusProperty().addListener((obs, oldStatus, newStatus) -> {
+            if (newStatus == Animation.Status.RUNNING) {
+            	if(dimmed) this.dimCard();
+            }
+        });
         sq.setOnFinished(e -> {
         	setMouseTransparent(true); 
         	firePit.addToFirePit(this, playerIndex, randomAngle);

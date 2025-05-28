@@ -8,6 +8,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
@@ -37,14 +38,16 @@ public class ThemesManager {
 	
 	public static int theme ; 
 	
-	public static void changeTheme(int theme){
+	public static void changeTheme(int id){
 		ArrayList<String> playerPaths = new ArrayList<>();
 		ArrayList<String> playerNames = new ArrayList<>();
 		String themePath ;
 
-		switch (theme){
+		switch (id){
 		
 		case 0 : // the brown 
+			theme = 0 ; 
+
 			themePath = "/resources/themes/original/";
 			setWithColors("faedcd");
 			setCellsWithColors("d4a373","6c584c");
@@ -67,11 +70,14 @@ public class ThemesManager {
 			
 			return ;
 		case 1 :
+			theme = 1 ; 
+
 			themePath = "/resources/themes/ancient_civilizations/";
 			
 			setWithImage("/resources/themes/ancient_civilizations/background.png");
 			
-			changeFirePit("bc6c25","6c584c","a68a64");
+			setCellsWithColors("d4a373","6c584c");
+			changeFirePit(null,"0077b6","a2d2ff");
 			changeHomeZone("99582a","7f4f24","6c584c");
 			changeSafeZoneCells("99582a","6c584c");
 			changeHomeZoneCells("faedcd","6c584c");
@@ -79,11 +85,12 @@ public class ThemesManager {
 			changeCards("/resources/themes/ancient_civilizations/cardback.png");
 			
 			playerPaths.add("/resources/themes/ancient_civilizations/default.png");
-			playerPaths.add("/resources/themes/ancient_civilizations/greek.png");
+			playerPaths.add("/resources/themes/ancient_civilizations/pharoah.png");
 			playerPaths.add("/resources/themes/ancient_civilizations/roman.png");
-			playerPaths.add("/resources/themes/ancient_civilizations/viking.png");
+			playerPaths.add("/resources/themes/ancient_civilizations/greek.png");
+
 			
-			playerNames.add("Yoo") ; playerNames.add("shams"); playerNames.add("walid");
+			playerNames.add("pharoah") ; playerNames.add("roman"); playerNames.add("greek");
 			changePlayerProfiles(playerPaths, playerNames);
 			
 			changeMarbleImages(themePath);
@@ -92,20 +99,98 @@ public class ThemesManager {
 			
 			
 		case 2 : 
+			theme = 2 ; 
+
+			themePath = "/resources/themes/anime/";
+			
+			setWithImage("/resources/themes/anime/background.jpg");
+			
+			setCellsWithColors("d4a373","6c584c");
+			changeFirePit(null,"0077b6","a2d2ff");
+			changeHomeZone("99582a","7f4f24","6c584c");
+			changeSafeZoneCells("99582a","6c584c");
+			changeHomeZoneCells("faedcd","6c584c");
+			
+			changeCards("/resources/themes/anime/cardback.png");
+			
+			playerPaths.add("/resources/themes/anime/default.jpg");
+			playerPaths.add("/resources/themes/anime/naruto.jpg");
+			playerPaths.add("/resources/themes/anime/luffy.jpg");
+			playerPaths.add("/resources/themes/anime/killua.jpg");
+
+			
+			playerNames.add("naruto") ; playerNames.add("luffy"); playerNames.add("killua");
+			changePlayerProfiles(playerPaths, playerNames);
+			
+			changeMarbleImages(themePath);
+			
+			return ;
 			
 		case 3 : 
+			theme = 3 ; 
+
+			
+			themePath = "/resources/themes/sci-fi_dystopia/";
+			
+			setWithImage("/resources/themes/sci-fi_dystopia/background.png");
+			
+			setCellsWithColors("c77dff","3c096c");
+			changeFirePit(null,"5a189a","a2d2ff");
+			changeHomeZone("9d4edd","10002b","e0aaff");
+			
+			changeSafeZoneCells("5a189a","e0aaff");
+			changeHomeZoneCells("5a189a","e0aaff");
+			
+			changeCards("/resources/themes/sci-fi_dystopia/cardback.png");
+			
+			playerPaths.add("/resources/themes/sci-fi_dystopia/default.png");
+			playerPaths.add("/resources/themes/sci-fi_dystopia/cyborge.png");
+			playerPaths.add("/resources/themes/sci-fi_dystopia/mystic.png");
+			playerPaths.add("/resources/themes/sci-fi_dystopia/survivor.png");
+
+			
+			playerNames.add("cyborge") ; playerNames.add("mystic"); playerNames.add("survivor");
+			changePlayerProfiles(playerPaths, playerNames);
+			
+			changeMarbleImages(themePath);
+			
+			return ;
 			
 		case 4 : 
+			theme = 4 ; 
+
+			themePath = "/resources/themes/original/";
+			setWithColors("ffc2d1");
+			setCellsWithColors("ff8fab","fb6f92");
+			changeFirePit("ff4d6d","ff758f","ffb3c6");
+			changeHomeZone("c9184a","7f4f24","6c584c");
+			changeSafeZoneCells("ff4d6d","c9184a");
+			changeHomeZoneCells("ff758f","ff4d6d");
 			
+			changeCards("/resources/themes/original/pinkback.png");
+			
+			playerPaths.add("/resources/themes/original/default.png");
+			playerPaths.add("/resources/themes/original/muscles.png");
+			playerPaths.add("/resources/themes/original/cool.png");
+			playerPaths.add("/resources/themes/original/normal.png");
+			
+			playerNames.add("muscles") ; playerNames.add("cool"); playerNames.add("normal");
+			changePlayerProfiles(playerPaths, playerNames);
+			
+			changeMarbleImages(themePath);
+			
+			return ;
 			
 			
 		}
 		
+		System.out.println(ThemesManager.theme);
+		
 
 	}
 	private static void setWithColors(String background){
-		gameScene.getRoot().setBackground(null);
-		gameScene.getRoot().setStyle("-fx-background-color: #" + background + ";"); 
+		gameScene.getRoot().setBackground(new Background(new BackgroundFill(getColor(background), null, null)));
+		// gameScene.getRoot().setStyle("-fx-background-color: #" + background + ";"); 
 		
 	}
 	private static void setWithImage(String path){
@@ -212,13 +297,14 @@ public class ThemesManager {
 	private static void changeMarbleImages(String themePath){
 		int i = 0 ; 
 		for (Marble marble : MarbleView.MarbleToViewMap.keySet()) {
-		    MarbleView view = MarbleView.MarbleToViewMap.get(marble);
-		    view = new MarbleView(marble,themePath + marble.getColour() + "_marble.png");
+		    MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);
+		    marbleView.setImage(ImageCache.getImage(themePath + marble.getColour() + "_marble.png"));
 		}
 	}
 	
 	private static Color getColor (String hex){
-		return Color.web("#" + hex );
+		if (hex == null) return Color.web("#000000",0.0);
+		else return Color.web("#" + hex );
 	}
 	
 	

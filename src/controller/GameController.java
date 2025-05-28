@@ -61,7 +61,7 @@ public class GameController{
 	private final GameScene gameScene ; 
 	private final GameView gameView;
 	
-	public static int test = 0 ; 
+	public static int test = 1 ; 
 	
 	private final Stage primaryStage ; 
 	
@@ -73,6 +73,8 @@ public class GameController{
 		run();
 		addShortCuts();
 		addEventHandlers();
+		ThemesManager.changeTheme(0);
+		
 	}
 	public Game getGame() {
 		return game;
@@ -100,7 +102,7 @@ public class GameController{
 					game.fieldMarble(3);
 				}
 				else if(e1.getCode() == KeyCode.T){
-					ThemesManager.changeTheme(test++%7);
+					ThemesManager.changeTheme(test++%5);
 				}
 				gameView.updateBoardView();
 				addEventHandlers();
@@ -169,9 +171,9 @@ public class GameController{
 	}
 	
 	private void handleCells(boolean selected) {
-		Card selectedCard = game.getCurrentPlayer().getSelectedCard();
+		Card selectedCard = game.getPlayers().get(0).getSelectedCard();
 		if(selected && (selectedCard instanceof Standard)){
-				Marble selectedMarble = game.getCurrentPlayer().getSelectedMarbles().get(0);
+				Marble selectedMarble = game.getPlayers().get(0).getSelectedMarbles().get(0);
 				MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarble);
 				int steps = ((Standard) selectedCard).getRank();
 				Color color = Color.valueOf(marbleView.getMarble().getColour().toString());
@@ -195,9 +197,7 @@ public class GameController{
 					}
 				}
 		}else{
-			for(CellView cellView: CellView.cellToViewMap.values()){
-				cellView.uncolorCell();
-			}
+			ThemesManager.changeTheme(ThemesManager.theme);
 		}
 	}
 	
@@ -218,13 +218,15 @@ public class GameController{
 			handView.drawCardViews(players.get(i).getHand());
 			i++;
 		}
+		ThemesManager.changeTheme(ThemesManager.theme);
 	}
 	
 	
 	public void canPlayTurn(boolean canPlay){
 		Button playButton = gameView.getPlayButton();
 		if(canPlay){
-			playButton.setOnAction(evt ->{
+			playButton.setOnMouseClicked(evt ->{
+				//if (evt.getClickCount() == 2)return;
 				HandView handView = gameView.getHandViews().get(0);
 				FirePitView firePitView = gameView.getFirePitView();
 				Card selectedCard = game.getPlayers().get(0).getSelectedCard(); 
@@ -236,20 +238,23 @@ public class GameController{
 				try {
 					game.playPlayerTurn();
 					doTheAnimation(0);
+					playButton.setOnMouseClicked(null);
 				
 				} 
 				catch (GameException e) {
 					GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 					if(cardView != null){
-						cardView.dimCard();
-						cardView.sendToFirePit(firePitView, 0).play();
+						//cardView.dimCard();
+						cardView.sendToFirePit(firePitView, 0, true).play();
 						clearPlayerSelections();
 						game.endPlayerTurn();
 						gameView.updatePlayerProfiles();
 					}
 					game.deselectAll();
-					handView.clearSelection();				
+					handView.clearSelection();		
+					playButton.setOnMouseClicked(null);
 					run();
+					
 				}
 			});
 		}
@@ -269,8 +274,8 @@ public class GameController{
 		catch (GameException e) {
 			GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 			if(cardView != null){
-				cardView.dimCard();
-				cardView.sendToFirePit(firePitView, 0).play();
+				//cardView.dimCard();
+				cardView.sendToFirePit(firePitView, 0, true).play();
 				game.endPlayerTurn();
 				gameView.updatePlayerProfiles();
 			}
@@ -385,7 +390,7 @@ public class GameController{
 		//---------------------- the first animation: card to firePit + pause --------------------------------------
 		
 		
-		animation.getChildren().add(selectedCardView.sendToFirePit(firePitView, playerIndex));
+		animation.getChildren().add(selectedCardView.sendToFirePit(firePitView, playerIndex, false));
 		PauseTransition pt1 = new PauseTransition(Duration.seconds(0.75)); // 0.75 second pause
 		animation.getChildren().add(pt1);
 		
@@ -400,19 +405,19 @@ public class GameController{
 			for(CardView cardView: handView.getCardViews()){
 				if(!handView.getHand().contains(cardView.getCard())) {
 					discardedCardView = cardView;
-					SequentialTransition sq = cardView.sendToFirePit(firePitView ,discardedPlayerIndex);
+					SequentialTransition sq = cardView.sendToFirePit(firePitView ,discardedPlayerIndex, true);
 					animation.getChildren().add(sq);
 					break;
 				}
 			}
 		}
 		
-		if(discardedCardView != null){
-			CardView discardedCardViewContainer = discardedCardView;
-			pt1.setOnFinished(e -> {
-				discardedCardViewContainer.dimCard();
-			});
-		}
+//		if(discardedCardView != null){
+//			CardView discardedCardViewContainer = discardedCardView;
+//			pt1.setOnFinished(e -> {
+//				discardedCardViewContainer.dimCard();
+//			});
+//		}
 		
 		
 		//------------------------------------ getting needed elements for movement -------------------------------------
@@ -522,7 +527,6 @@ public class GameController{
 				canPlayTurn(true);
 			}
 			else{
-				System.out.println("player :" +  game.getCurrentPlayerIndex() );
 				//gameView.getPlayerProfiles().get(game.getCurrentPlayerIndex()).showChatMessage("HI !! how are you?");;
 				canPlayTurn(false);
 				try {
@@ -534,7 +538,6 @@ public class GameController{
 			}
 		}
 		else{
-			System.out.println("discarded : " + game.getCurrentPlayerIndex());
 			game.endPlayerTurn();
 			gameView.updatePlayerProfiles();
 			run();

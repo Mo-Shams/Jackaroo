@@ -43,11 +43,11 @@ public class PlayerProfile extends StackPane {
     private Label chatBubble;
     
     private static final String[] THEME_FOLDERS = {
+    	"original",
         "ancient_civilizations",              // theme 0
         "anime",  // theme 1
-        "original", // theme 2
-        "sci-fi-dystopia", // theme 3
-        "theme_images" // theme 4
+        "sci-fi_dystopia", // theme 3
+        "original"
     };
 
     public PlayerProfile(Label name, Colour colour, boolean active, boolean nextActive, int playerIndex) {
@@ -168,22 +168,23 @@ public class PlayerProfile extends StackPane {
 	    if (themeId >= 0 && themeId < THEME_FOLDERS.length) {
 	        themeFolder = THEME_FOLDERS[themeId];
 	    }
-		String basePath = isWinner ? "Winners" : "Losers";
+		String basePath = isWinner ? "Winning" : "Losing";
 		String prefix;
 		Set<String> validNames;
 	    switch (themeFolder) {
 	        case "original": {
 	            prefix = "/resources/themes/original/" + basePath + "/";
 	            validNames = new HashSet<>(Arrays.asList("cool", "muscles", "normal", "smart"));
+	            
 	            break;
 	        }
 	        case "anime": {
 	            prefix = "/resources/themes/anime/" + basePath + "/";
-	            validNames = new HashSet<>(Arrays.asList("luffy", "naruto", "kilua", "sun_jin-woo"));
+	            validNames = new HashSet<>(Arrays.asList("luffy", "naruto", "killua", "sun_jin-woo"));
 	            break;
 	        }
-	        case "sci-fi-dystopia": {
-	            prefix = "/resources/themes/sci-fi-dystopia/" + basePath + "/";
+	        case "sci-fi_dystopia": {
+	            prefix = "/resources/themes/sci-fi_dystopia/" + basePath + "/";
 	            validNames = new HashSet<>(Arrays.asList("cyborge", "enforcer", "mystic", "survivor"));
 	            break;
 	        }
@@ -208,15 +209,8 @@ public class PlayerProfile extends StackPane {
 	    // 5) full path and load
 	    String path = prefix + finalName + ".png";
 	    Image image = ImageCache.getImage(path);
-	    if (image != null) {
-	        circle.setFill(new ImagePattern(image));
-	    }
-	    path = prefix + finalName + ".jpg";
-	    if (image != null) {
-	        circle.setFill(new ImagePattern(image));
-	    }
+	    circle.setFill(new ImagePattern(image));
 	}
-	
 	
 	
 	
