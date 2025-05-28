@@ -15,7 +15,20 @@ public class AnimatedMarbles extends Pane {
         "/resources/themes/anime/BLUE_marble.png",
         "/resources/themes/anime/RED_marble.png",
         "/resources/themes/anime/GREEN_marble.png",
-        "/resources/themes/anime/YELLOW_marble.png"
+        "/resources/themes/anime/YELLOW_marble.png",
+        "/resources/themes/original/BLUE_marble.png",
+        "/resources/themes/original/RED_marble.png",
+        "/resources/themes/original/GREEN_marble.png",
+        "/resources/themes/original/YELLOW_marble.png",
+        "/resources/themes/sci-fi_dystopia/BLUE_marble.png",
+        "/resources/themes/sci-fi_dystopia/RED_marble.png",
+        "/resources/themes/sci-fi_dystopia/GREEN_marble.png",
+        "/resources/themes/sci-fi_dystopia/YELLOW_marble.png",
+        "/resources/themes/ancient_civilizations/BLUE_marble.png",
+        "/resources/themes/ancient_civilizations/RED_marble.png",
+        "/resources/themes/ancient_civilizations/GREEN_marble.png",
+        "/resources/themes/ancient_civilizations/YELLOW_marble.png",
+
     };
 
     public AnimatedMarbles(double width, double height) {

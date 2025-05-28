@@ -91,6 +91,14 @@ public class WelcomeScene {
         	primaryStage.setFullScreen(true);
         });
         
+        settings.setOnAction(e -> {
+        	SettingsPage settingsPage = new SettingsPage();
+        	primaryStage.setScene(settingsPage.createScene());
+        	primaryStage.setFullScreen(true);
+        	primaryStage.setResizable(false);
+        });
+      
+        
         VBox vbox = new VBox(10, text, inputField, play, about, settings);
         vbox.setAlignment(Pos.CENTER);
         vbox.setFillWidth(false);
