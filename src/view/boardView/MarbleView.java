@@ -24,8 +24,8 @@ public class MarbleView extends ImageView {
 	
 	public static final Map<Marble, MarbleView> MarbleToViewMap = new HashMap<>();
 	
-	public MarbleView (Marble marble){
-        super(ImageCache.getImage("/resources/themes/anime/" + marble.getColour().name() + "_marble.png"));
+	public MarbleView (Marble marble, String imagePath){
+        super(ImageCache.getImage(imagePath));
 		this.marble = marble ; 
 		this.selected = false ; 
         this.setPreserveRatio(true);
@@ -96,5 +96,6 @@ public class MarbleView extends ImageView {
 	public Marble getMarble() {
 		return marble;
 	}
+	
 
 }

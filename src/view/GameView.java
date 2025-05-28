@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -56,7 +57,8 @@ public class GameView extends StackPane{
 		playerProfiles = new ArrayList<>();
 		int i = 0;
 		for(Player player : players){
-			PlayerProfile playerProfile = new PlayerProfile(player.getName(), player.getColour(), player == game.getCurrentPlayer(), player == game.getNextPlayer(), i);
+			Label label = new Label(player.getName());
+			PlayerProfile playerProfile = new PlayerProfile(label, player.getColour(), player == game.getCurrentPlayer(), player == game.getNextPlayer(), i);
 			switch(i){
 			case 0: StackPane.setAlignment(playerProfile, Pos.BOTTOM_RIGHT);playerProfile.setTranslateX(150);break;
 			case 1: StackPane.setAlignment(playerProfile, Pos.BOTTOM_LEFT);playerProfile.setTranslateX(-150);break;

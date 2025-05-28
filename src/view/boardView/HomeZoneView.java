@@ -31,7 +31,7 @@ public class HomeZoneView extends StackPane {
 
         for (int i = 0; i < marbles.size(); i++) {  // changed from 4 
         	CellView cellView = new CellView(new Cell(CellType.NORMAL), color);
-        	cellView.setMarbleView(new MarbleView(marbles.get(i)));
+        	cellView.setMarbleView(new MarbleView(marbles.get(i),"/resources/themes/anime/" + marbles.get(i).getColour().name() + "_marble.png"));
             cellViews.add(cellView);
         }
 

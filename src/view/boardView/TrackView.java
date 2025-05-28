@@ -114,7 +114,7 @@ public class TrackView extends GridPane {
                 // If there's a marble on this cell, add a MarbleView
                 if (cell.getMarble() != null) {
                     Marble marble = cell.getMarble(); // get the model's marble
-                    MarbleView marbleView = new MarbleView(marble);
+                    MarbleView marbleView = new MarbleView(marble,"/resources/themes/anime/" + marble.getColour().name() + "_marble.png");
                     cellView.setMarbleView(marbleView);
                 }
                 

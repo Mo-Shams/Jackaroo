@@ -99,6 +99,9 @@ public class GameController{
 				else if(e1.getCode() == KeyCode.D){
 					game.fieldMarble(3);
 				}
+				else if(e1.getCode() == KeyCode.T){
+					ThemesManager.changeTheme(test++%7);
+				}
 				gameView.updateBoardView();
 				addEventHandlers();
 			}

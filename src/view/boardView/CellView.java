@@ -17,7 +17,7 @@ import engine.board.CellType;
 public class CellView extends StackPane {
 	private static final double DEFAULT_RADIUS = 12;
 	private static final Color DEFAULT_COLOR = Color.DARKSLATEBLUE;
-	private static final Color FILLING_COLOR = Color.LIGHTGRAY;
+	private static Color FILLING_COLOR = Color.LIGHTGRAY;
 	private static final int MARBLE_SPEED =  120;
 
 	
@@ -185,6 +185,14 @@ public class CellView extends StackPane {
 
 	public void setEnter(CellView enter) {
 		this.enter = enter;
+	}
+
+	public static Color getFILLING_COLOR() {
+		return FILLING_COLOR;
+	}
+
+	public static void setFILLING_COLOR(Color fILLING_COLOR) {
+		FILLING_COLOR = fILLING_COLOR;
 	}
 	
 	
