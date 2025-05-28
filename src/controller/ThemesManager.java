@@ -36,7 +36,7 @@ public class ThemesManager {
 	public static EndScreenScene endScene ;
 	public static LoadingScene loadingScene ;
 	
-	public static int theme ; 
+	public static int theme = -1 ; 
 	
 	public static void changeTheme(int id){
 		ArrayList<String> playerPaths = new ArrayList<>();
@@ -46,8 +46,9 @@ public class ThemesManager {
 		switch (id){
 		
 		case 0 : // the brown 
-			theme = 0 ; 
 
+			MarbleView.setDEFAULT_MARBLE_SIZE(32);
+			
 			themePath = "/resources/themes/original/";
 			setWithColors("faedcd");
 			setCellsWithColors("d4a373","6c584c");
@@ -68,19 +69,24 @@ public class ThemesManager {
 			
 			changeMarbleImages(themePath);
 			
+			
+			if (theme != id) SoundManager.playMusic("original.mp3");
+			theme = 0 ; 
 			return ;
+			
 		case 1 :
-			theme = 1 ; 
+			
+			MarbleView.setDEFAULT_MARBLE_SIZE(26);
 
 			themePath = "/resources/themes/ancient_civilizations/";
 			
 			setWithImage("/resources/themes/ancient_civilizations/background.png");
 			
-			setCellsWithColors("d4a373","6c584c");
-			changeFirePit(null,"0077b6","a2d2ff");
-			changeHomeZone("99582a","7f4f24","6c584c");
-			changeSafeZoneCells("99582a","6c584c");
-			changeHomeZoneCells("faedcd","6c584c");
+			setCellsWithColors("ffb563","e0afa0");
+			changeFirePit("ffb563","0a0908","5e503f");
+			changeHomeZone("d68c45","7f4f24","6c584c");
+			changeSafeZoneCells("c6ac8f","5e503f");
+			changeHomeZoneCells("c6ac8f","5e503f");
 			
 			changeCards("/resources/themes/ancient_civilizations/cardback.png");
 			
@@ -93,23 +99,26 @@ public class ThemesManager {
 			playerNames.add("pharoah") ; playerNames.add("roman"); playerNames.add("greek");
 			changePlayerProfiles(playerPaths, playerNames);
 			
-			changeMarbleImages(themePath);
 			
+			changeMarbleImages(themePath);
+			if (theme != id) SoundManager.playMusic("ancient_civilization.mp3");
+			theme = 1 ; 
 			return ;
 			
 			
 		case 2 : 
-			theme = 2 ; 
+			
+			MarbleView.setDEFAULT_MARBLE_SIZE(26);
 
 			themePath = "/resources/themes/anime/";
 			
 			setWithImage("/resources/themes/anime/background.jpg");
 			
-			setCellsWithColors("d4a373","6c584c");
-			changeFirePit(null,"0077b6","a2d2ff");
-			changeHomeZone("99582a","7f4f24","6c584c");
-			changeSafeZoneCells("99582a","6c584c");
-			changeHomeZoneCells("faedcd","6c584c");
+			setCellsWithColors("62b6cb","1b4965");
+			changeFirePit("cae9ff","1b4965","1b4965");
+			changeHomeZone("cae9ff","7f4f24","6c584c");
+			changeSafeZoneCells("62b6cb","1b4965");
+			changeHomeZoneCells("62b6cb","1b4965");
 			
 			changeCards("/resources/themes/anime/cardback.png");
 			
@@ -122,20 +131,22 @@ public class ThemesManager {
 			playerNames.add("naruto") ; playerNames.add("luffy"); playerNames.add("killua");
 			changePlayerProfiles(playerPaths, playerNames);
 			
+
 			changeMarbleImages(themePath);
-			
+			if (theme != id) SoundManager.playMusic("anime.mp3");
+			theme = 2 ; 
 			return ;
 			
 		case 3 : 
-			theme = 3 ; 
 
-			
+			MarbleView.setDEFAULT_MARBLE_SIZE(26);
+
 			themePath = "/resources/themes/sci-fi_dystopia/";
 			
 			setWithImage("/resources/themes/sci-fi_dystopia/background.png");
 			
 			setCellsWithColors("c77dff","3c096c");
-			changeFirePit(null,"5a189a","a2d2ff");
+			changeFirePit("9d4edd","5a189a","a2d2ff");
 			changeHomeZone("9d4edd","10002b","e0aaff");
 			
 			changeSafeZoneCells("5a189a","e0aaff");
@@ -152,13 +163,16 @@ public class ThemesManager {
 			playerNames.add("cyborge") ; playerNames.add("mystic"); playerNames.add("survivor");
 			changePlayerProfiles(playerPaths, playerNames);
 			
+
 			changeMarbleImages(themePath);
-			
+			if (theme != id) SoundManager.playMusic("sci-fi_dystopia.mp3");
+			theme = 3 ; 
 			return ;
 			
 		case 4 : 
-			theme = 4 ; 
 
+			MarbleView.setDEFAULT_MARBLE_SIZE(32);
+			
 			themePath = "/resources/themes/original/";
 			setWithColors("ffc2d1");
 			setCellsWithColors("ff8fab","fb6f92");
@@ -177,15 +191,15 @@ public class ThemesManager {
 			playerNames.add("muscles") ; playerNames.add("cool"); playerNames.add("normal");
 			changePlayerProfiles(playerPaths, playerNames);
 			
+
 			changeMarbleImages(themePath);
-			
+			if (theme != id) SoundManager.playMusic("original.mp3");
+			theme = 4 ; 
 			return ;
 			
 			
 		}
-		
-		System.out.println(ThemesManager.theme);
-		
+				
 
 	}
 	private static void setWithColors(String background){
@@ -299,6 +313,7 @@ public class ThemesManager {
 		for (Marble marble : MarbleView.MarbleToViewMap.keySet()) {
 		    MarbleView marbleView = MarbleView.MarbleToViewMap.get(marble);
 		    marbleView.setImage(ImageCache.getImage(themePath + marble.getColour() + "_marble.png"));
+		    marbleView.setFitHeight(MarbleView.getDEFAULT_MARBLE_SIZE());
 		}
 	}
 	

@@ -4,5 +4,10 @@
 /model/
 /scene/
 /test/
+<<<<<<< HEAD
 /view/
 /resources/
+=======
+/resources/
+/view/
+>>>>>>> cb23d40e7ab4f4fd2c151e4882883ebc18fe653c

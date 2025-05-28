@@ -11,14 +11,14 @@ public class SoundManager {
     public static boolean Music = true;
     public static boolean Effects = true;
     public static boolean Jokes = true;
-
-    // For music and long media
-    private static final HashMap<String, Media> mediaCache = new HashMap<>();
     
-    // For short sound effects
+    public static double MusicVolume = 0.5;
+
+    private static final HashMap<String, Media> mediaCache = new HashMap<>();
     private static final HashMap<String, AudioClip> audioClipCache = new HashMap<>();
 
-    // ✅ New method using AudioClip for effects (no thread issues)
+    private static MediaPlayer currentMusicPlayer = null;
+
     public static void playEffect(String filename) {
         if (!Effects) return;
 
@@ -32,13 +32,43 @@ public class SoundManager {
         }
     }
 
-    // 🎵 Still here if you ever need longer audio (like background music)
     public static MediaPlayer getLoopingMusic(String filename) {
         if (!Music) return null;
 
-        Media media = new Media(new File("src/assets/sounds/" + filename).toURI().toString());
+        Media media = mediaCache.computeIfAbsent(filename, fn ->
+            new Media(new File("src/resources/sounds/" + fn).toURI().toString())
+        );
         MediaPlayer player = new MediaPlayer(media);
         player.setCycleCount(MediaPlayer.INDEFINITE);
+        
+        player.setVolume(MusicVolume);
+        
         return player;
+    }
+
+    // ✅ New method: Play music and stop the previous one
+    public static void playMusic(String filename) {
+        if (!Music) return;
+
+        try {
+            if (currentMusicPlayer != null) {
+                currentMusicPlayer.stop(); 
+            }
+
+            currentMusicPlayer = getLoopingMusic(filename);
+            if (currentMusicPlayer != null) {
+                currentMusicPlayer.play();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ✅ New method: Stop any currently playing music
+    public static void stopMusic() {
+        if (currentMusicPlayer != null) {
+            currentMusicPlayer.stop();
+            currentMusicPlayer = null;
+        }
     }
 }

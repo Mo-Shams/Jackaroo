@@ -16,9 +16,10 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.ThemesManager;
 import view.ImageCache;
 
-public class SettingsPage extends Application {
+public class SettingsPage {
 
     private BorderPane mainLayout;
     private VBox sideMenu;
@@ -27,9 +28,9 @@ public class SettingsPage extends Application {
     private VBox themeGridContainer;
     private Button saveApplyButton;
 
-    @Override
-    public void start(Stage primaryStage) {
-        settings = new Settings();
+
+    public Scene createScene() {
+    	settings = new Settings();
         mainLayout = new BorderPane();
         contentArea = new StackPane();
 
@@ -38,12 +39,10 @@ public class SettingsPage extends Application {
         mainLayout.setLeft(sideMenu);
         mainLayout.setCenter(contentArea);
 
-        Scene scene = new Scene(mainLayout, 1000, 600);
-        primaryStage.setTitle("Settings Page");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
+        return new Scene(mainLayout, 1920, 1080);
+    }
+    
     private void setupSideMenu() {
         sideMenu = new VBox(10);
         sideMenu.setPadding(new Insets(20));
@@ -133,7 +132,7 @@ public class SettingsPage extends Application {
         card.getChildren().addAll(imageView, nameLabel, descLabel);
 
         card.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            settings.selectedTheme = theme.name;
+            settings.selectedTheme = theme.id;
             showThemes(getThemes());
         });
 
@@ -161,14 +160,7 @@ public class SettingsPage extends Application {
         playLoading.setFont(labelFont);
         playLoading.setSelected(settings.playLoadingScene);
 
-        Label marbleSpeedLabel = new Label("Marble Speed");
-        marbleSpeedLabel.setFont(labelFont);
-        Slider marbleSpeedSlider = new Slider(0, 10, settings.marbleSpeed);
-
-        Label throwSpeedLabel = new Label("Throw Card Speed");
-        throwSpeedLabel.setFont(labelFont);
-        Slider throwSpeedSlider = new Slider(0, 10, settings.throwSpeed);
-
+ 
         Label audioLevelLabel = new Label("Audio Level");
         audioLevelLabel.setFont(labelFont);
         Slider audioLevelSlider = new Slider(0, 100, settings.audioLevel);
@@ -177,21 +169,16 @@ public class SettingsPage extends Application {
             playAudio,
             playMusic,
             playLoading,
-            marbleSpeedLabel,
-            marbleSpeedSlider,
-            throwSpeedLabel,
-            throwSpeedSlider,
             audioLevelLabel,
             audioLevelSlider
         );
 
         saveApplyButton.setOnAction(e -> {
             settings.selectedTheme = settings.selectedTheme; // retained from theme settings
+            ThemesManager.changeTheme(settings.selectedTheme);
             settings.playAudio = playAudio.isSelected();
             settings.playMusic = playMusic.isSelected();
             settings.playLoadingScene = playLoading.isSelected();
-            settings.marbleSpeed = marbleSpeedSlider.getValue();
-            settings.throwSpeed = throwSpeedSlider.getValue();
             settings.audioLevel = audioLevelSlider.getValue();
             System.out.println("Theme applied: " + settings.selectedTheme);
             System.out.println("Settings saved");
@@ -216,10 +203,6 @@ public class SettingsPage extends Application {
         return themes;
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     static class Theme {
     	int id ; 
         String name;
@@ -235,12 +218,10 @@ public class SettingsPage extends Application {
     }
 
     static class Settings {
-        String selectedTheme = "Light Mode";
+        int selectedTheme = 0;
         boolean playAudio = true;
         boolean playMusic = true;
         boolean playLoadingScene = true;
-        double marbleSpeed = 5;
-        double throwSpeed = 5;
         double audioLevel = 50;
     }
 }
