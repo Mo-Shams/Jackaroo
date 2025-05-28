@@ -171,9 +171,9 @@ public class GameController{
 	}
 	
 	private void handleCells(boolean selected) {
-		Card selectedCard = game.getCurrentPlayer().getSelectedCard();
+		Card selectedCard = game.getPlayers().get(0).getSelectedCard();
 		if(selected && (selectedCard instanceof Standard)){
-				Marble selectedMarble = game.getCurrentPlayer().getSelectedMarbles().get(0);
+				Marble selectedMarble = game.getPlayers().get(0).getSelectedMarbles().get(0);
 				MarbleView marbleView = MarbleView.MarbleToViewMap.get(selectedMarble);
 				int steps = ((Standard) selectedCard).getRank();
 				Color color = Color.valueOf(marbleView.getMarble().getColour().toString());
@@ -244,8 +244,8 @@ public class GameController{
 				catch (GameException e) {
 					GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 					if(cardView != null){
-						cardView.dimCard();
-						cardView.sendToFirePit(firePitView, 0).play();
+						//cardView.dimCard();
+						cardView.sendToFirePit(firePitView, 0, true).play();
 						clearPlayerSelections();
 						game.endPlayerTurn();
 						gameView.updatePlayerProfiles();
@@ -274,8 +274,8 @@ public class GameController{
 		catch (GameException e) {
 			GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 			if(cardView != null){
-				cardView.dimCard();
-				cardView.sendToFirePit(firePitView, 0).play();
+				//cardView.dimCard();
+				cardView.sendToFirePit(firePitView, 0, true).play();
 				game.endPlayerTurn();
 				gameView.updatePlayerProfiles();
 			}
@@ -390,7 +390,7 @@ public class GameController{
 		//---------------------- the first animation: card to firePit + pause --------------------------------------
 		
 		
-		animation.getChildren().add(selectedCardView.sendToFirePit(firePitView, playerIndex));
+		animation.getChildren().add(selectedCardView.sendToFirePit(firePitView, playerIndex, false));
 		PauseTransition pt1 = new PauseTransition(Duration.seconds(0.75)); // 0.75 second pause
 		animation.getChildren().add(pt1);
 		
@@ -405,19 +405,19 @@ public class GameController{
 			for(CardView cardView: handView.getCardViews()){
 				if(!handView.getHand().contains(cardView.getCard())) {
 					discardedCardView = cardView;
-					SequentialTransition sq = cardView.sendToFirePit(firePitView ,discardedPlayerIndex);
+					SequentialTransition sq = cardView.sendToFirePit(firePitView ,discardedPlayerIndex, true);
 					animation.getChildren().add(sq);
 					break;
 				}
 			}
 		}
 		
-		if(discardedCardView != null){
-			CardView discardedCardViewContainer = discardedCardView;
-			pt1.setOnFinished(e -> {
-				discardedCardViewContainer.dimCard();
-			});
-		}
+//		if(discardedCardView != null){
+//			CardView discardedCardViewContainer = discardedCardView;
+//			pt1.setOnFinished(e -> {
+//				discardedCardViewContainer.dimCard();
+//			});
+//		}
 		
 		
 		//------------------------------------ getting needed elements for movement -------------------------------------
@@ -528,6 +528,7 @@ public class GameController{
 			}
 			else{
 				//gameView.getPlayerProfiles().get(game.getCurrentPlayerIndex()).showChatMessage("HI !! how are you?");;
+				sayMessage();
 				canPlayTurn(false);
 				try {
 					game.playPlayerTurn();
@@ -541,6 +542,42 @@ public class GameController{
 			game.endPlayerTurn();
 			gameView.updatePlayerProfiles();
 			run();
+		}
+	}
+	
+	
+	public void sayMessage(){
+		ArrayList<String> messages = new ArrayList<>();
+		messages.add("You’re really consistent\nconsistently terrible.");
+		messages.add("If I had a dollar for every\nmistake you made, I’d be rich\nenough to quit this game.");
+		messages.add("You’re not behind\nyou’re just giving us all\na head start, right?");
+		messages.add("Keep it up! You might\njust break the record… \nfor worst play ever.");
+		messages.add("Wow, that was such a smart play\n. For a potato.");
+		messages.add("Oh look, you’re finally doing\nsomething useful: losing to me.");
+		messages.add("You call that a comeback?\nI call it a comedy.");
+		messages.add("You're not losing\nyou're just... \ninnovating new ways to fail.");
+		messages.add("Impressive strategy\nif losing was the goal.");
+		messages.add("Did you shuffle the cards\nor your brain?");
+		messages.add("Impressive! You managed to lose\nwithout anyone targeting you!");
+		messages.add("Don’t worry, your cards\naren’t the problem. You are.");
+		messages.add("You're making it too easy\nfor me.");
+		messages.add("Risky move\nlet’s see if it pays off.");
+		messages.add("Every card counts now.");
+		messages.add("Go ahead, play your\nbest card\nI need a good laugh.");
+		messages.add("Your strategy is so\nmysterious even you\ndon’t understand it.");
+		messages.add("Wow, bold move\nplaying that like you\nactually had a plan.");
+		messages.add("You sure you’re not\nhere just to make the\nrest of us look good?");
+		messages.add("You’re making history here\nworst hand ever witnessed.");
+		messages.add("Keep playing like\nthat and you’ll invent\nnew ways to lose.");
+		messages.add("You must be a magician…\nbecause your chances\ndisappeared.");
+		messages.add("You’re not out of\nthe game yet…\njust deeply,\nhilariously behind.");
+		messages.add("So brave of you\nto play with no\nclue what you're doing.");
+		messages.add("You just made everyone’s\njob easier.\nThanks for that.");
+
+		int possibility = (int)(Math.random()*101);
+		int index = (int)(Math.random()*messages.size());
+		if(possibility < 75){
+			gameView.getPlayerProfiles().get(game.getCurrentPlayerIndex()).showChatMessage(messages.get(index));
 		}
 	}
 	
@@ -572,4 +609,5 @@ public class GameController{
 	public GameView getGameView() {
 		return gameView;
 	}
+	
 }
