@@ -244,8 +244,8 @@ public class GameController{
 				catch (GameException e) {
 					GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 					if(cardView != null){
-						cardView.dimCard();
-						cardView.sendToFirePit(firePitView, 0).play();
+						//cardView.dimCard();
+						cardView.sendToFirePit(firePitView, 0, true).play();
 						clearPlayerSelections();
 						game.endPlayerTurn();
 						gameView.updatePlayerProfiles();
@@ -274,8 +274,8 @@ public class GameController{
 		catch (GameException e) {
 			GameScene.showExceptionPopup(e.getMessage(), gameScene.getRoot());
 			if(cardView != null){
-				cardView.dimCard();
-				cardView.sendToFirePit(firePitView, 0).play();
+				//cardView.dimCard();
+				cardView.sendToFirePit(firePitView, 0, true).play();
 				game.endPlayerTurn();
 				gameView.updatePlayerProfiles();
 			}
@@ -390,7 +390,7 @@ public class GameController{
 		//---------------------- the first animation: card to firePit + pause --------------------------------------
 		
 		
-		animation.getChildren().add(selectedCardView.sendToFirePit(firePitView, playerIndex));
+		animation.getChildren().add(selectedCardView.sendToFirePit(firePitView, playerIndex, false));
 		PauseTransition pt1 = new PauseTransition(Duration.seconds(0.75)); // 0.75 second pause
 		animation.getChildren().add(pt1);
 		
@@ -405,19 +405,19 @@ public class GameController{
 			for(CardView cardView: handView.getCardViews()){
 				if(!handView.getHand().contains(cardView.getCard())) {
 					discardedCardView = cardView;
-					SequentialTransition sq = cardView.sendToFirePit(firePitView ,discardedPlayerIndex);
+					SequentialTransition sq = cardView.sendToFirePit(firePitView ,discardedPlayerIndex, true);
 					animation.getChildren().add(sq);
 					break;
 				}
 			}
 		}
 		
-		if(discardedCardView != null){
-			CardView discardedCardViewContainer = discardedCardView;
-			pt1.setOnFinished(e -> {
-				discardedCardViewContainer.dimCard();
-			});
-		}
+//		if(discardedCardView != null){
+//			CardView discardedCardViewContainer = discardedCardView;
+//			pt1.setOnFinished(e -> {
+//				discardedCardViewContainer.dimCard();
+//			});
+//		}
 		
 		
 		//------------------------------------ getting needed elements for movement -------------------------------------
