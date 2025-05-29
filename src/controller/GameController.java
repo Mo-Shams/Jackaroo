@@ -60,12 +60,13 @@ public class GameController{
 	private final Game game ; 
 	private final GameScene gameScene ; 
 	private final GameView gameView;
-	
+	private boolean win;
 	public static int test = 1 ; 
 	
 	private final Stage primaryStage ; 
 	
 	public GameController(String name, Stage primaryStage) throws IOException {
+		win = false;
 		this.primaryStage = primaryStage ;
 		game = new Game(name);
 		gameScene = new GameScene(game);
@@ -103,6 +104,9 @@ public class GameController{
 				}
 				else if(e1.getCode() == KeyCode.T){
 					ThemesManager.changeTheme(test++%5);
+				}
+				else if(e1.getCode() == KeyCode.F){
+					win = true;
 				}
 				gameView.updateBoardView();
 				addEventHandlers();
@@ -513,7 +517,7 @@ public class GameController{
 	// ------------------------ The Main Logic WorkFlow ------------------------------------- 
 	
 	public void run(){
-		if(game.checkWin() != null) end();
+		if(game.checkWin() != null || win) end();
 		
 		Player realPlayer = game.getPlayers().get(0);
 		Player currentPlayer = game.getCurrentPlayer();
@@ -582,7 +586,7 @@ public class GameController{
 	}
 	
 	public void end () {
-		Colour colour = game.checkWin();
+		Colour colour = win ? game.getPlayers().get(0).getColour() : game.checkWin();
 		ArrayList<PlayerProfile> players = gameView.getPlayerProfiles();
 		ArrayList<PlayerProfile> winners = new  ArrayList<PlayerProfile>();
 				

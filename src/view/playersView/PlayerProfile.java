@@ -118,19 +118,30 @@ public class PlayerProfile extends StackPane {
         circle = new Circle(HEIGHT * 0.4);
         circle.setStroke(color);
         circle.setStrokeWidth(5);
-
-        String imagePath = "/resources/player_images/" + name + ".png";
+        String developerName;
+        switch(name.charAt(name.length()-1)){
+        case 'a': developerName = "yoo"; break;
+        case 's': developerName = "shams"; break;
+        case 'd': developerName = "walid"; break;
+        default : developerName = "el2ot"; break;
+        }
+        String imagePath = "/resources/developers/" + developerName + ".png";
         Image image = ImageCache.getImage(imagePath);
         circle.setFill(new ImagePattern(image));
 
         setActive(active);
         setNextActive(nextActive);
-
+        
+        VBox profileContainer = new VBox(5);
+        profileContainer.setAlignment(Pos.CENTER);
+        //profileContainer.setStyle("-fx-background-color: lightgray;");
+        profileContainer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        profileContainer.getChildren().addAll(circle, this.name);
 
         StackPane.setAlignment(circle, Pos.TOP_CENTER);
         StackPane.setAlignment(this.name, Pos.BOTTOM_CENTER);
 
-        this.getChildren().addAll(circle, this.name);
+        this.getChildren().add(profileContainer);
         this.setPrefSize(USE_PREF_SIZE, HEIGHT);
         //this.setStyle("-fx-background-color: lightgray;");
     }

@@ -68,7 +68,7 @@ public class WelcomeScene {
             primaryStage.setFullScreen(true);
             
             //Pause Transition between loading Scene and Game Scene
-            PauseTransition wait = new PauseTransition(Duration.seconds(0.5));
+            PauseTransition wait = new PauseTransition(Duration.seconds(3));
             wait.setOnFinished(ev -> {
                 GameController gameController;
 				try {

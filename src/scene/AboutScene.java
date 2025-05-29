@@ -66,7 +66,7 @@ public class AboutScene {
     private final Pane dimOverlay = new Pane();
 	
 	private final List<String> names = Arrays.asList(
-	    "Youssef Tarek", "Mohammed Walid", "Youssef Mostafa", "Mohammed Shams"
+	    "Youssef\nTarek", "Mohammad\nWalid", "Youssef\nMostafa", "Mohammad\nShams"
 	);
     
 	private final List<String> urls = Arrays.asList(
