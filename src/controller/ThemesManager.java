@@ -78,33 +78,35 @@ public class ThemesManager {
 			
 			MarbleView.setDEFAULT_MARBLE_SIZE(26);
 
-			themePath = "/resources/themes/ancient_civilizations/";
+			themePath = "/resources/themes/sci-fi_dystopia/";
 			
-			setWithImage("/resources/themes/ancient_civilizations/background.png");
+			setWithImage("/resources/themes/sci-fi_dystopia/background.png");
 			
-			setCellsWithColors("ffb563","e0afa0");
-			changeFirePit("ffb563","0a0908","5e503f");
-			changeHomeZone("d68c45","7f4f24","6c584c");
-			changeSafeZoneCells("c6ac8f","5e503f");
-			changeHomeZoneCells("c6ac8f","5e503f");
+			setCellsWithColors("c77dff","3c096c");
+			changeFirePit("9d4edd","5a189a","a2d2ff");
+			changeHomeZone("9d4edd","10002b","e0aaff");
 			
-			changeCards("/resources/themes/ancient_civilizations/cardback.png");
+			changeSafeZoneCells("5a189a","e0aaff");
+			changeHomeZoneCells("5a189a","e0aaff");
 			
-			playerPaths.add("/resources/themes/ancient_civilizations/default.png");
-			playerPaths.add("/resources/themes/ancient_civilizations/pharoah.png");
-			playerPaths.add("/resources/themes/ancient_civilizations/roman.png");
-			playerPaths.add("/resources/themes/ancient_civilizations/greek.png");
+			changeCards("/resources/themes/sci-fi_dystopia/cardback.png");
+			
+			playerPaths.add("/resources/themes/sci-fi_dystopia/default.png");
+			playerPaths.add("/resources/themes/sci-fi_dystopia/cyborge.png");
+			playerPaths.add("/resources/themes/sci-fi_dystopia/mystic.png");
+			playerPaths.add("/resources/themes/sci-fi_dystopia/survivor.png");
 
 			
-			playerNames.add("pharoah") ; playerNames.add("roman"); playerNames.add("greek");
+			playerNames.add("cyborge") ; playerNames.add("mystic"); playerNames.add("survivor");
 			changePlayerProfiles(playerPaths, playerNames);
 			
-			
+
 			changeMarbleImages(themePath);
-			if (theme != id) SoundManager.playMusic("ancient_civilization.mp3");
+			if (theme != id) SoundManager.playMusic("science.mp3");
 			theme = 1 ; 
 			return ;
 			
+		
 			
 		case 2 : 
 			
@@ -138,36 +140,37 @@ public class ThemesManager {
 			return ;
 			
 		case 3 : 
-
+			
 			MarbleView.setDEFAULT_MARBLE_SIZE(26);
 
-			themePath = "/resources/themes/sci-fi_dystopia/";
+			themePath = "/resources/themes/ancient_civilizations/";
 			
-			setWithImage("/resources/themes/sci-fi_dystopia/background.png");
+			setWithImage("/resources/themes/ancient_civilizations/background.png");
 			
-			setCellsWithColors("c77dff","3c096c");
-			changeFirePit("9d4edd","5a189a","a2d2ff");
-			changeHomeZone("9d4edd","10002b","e0aaff");
+			setCellsWithColors("ffb563","e0afa0");
+			changeFirePit("ffb563","0a0908","5e503f");
+			changeHomeZone("d68c45","7f4f24","6c584c");
+			changeSafeZoneCells("c6ac8f","5e503f");
+			changeHomeZoneCells("c6ac8f","5e503f");
 			
-			changeSafeZoneCells("5a189a","e0aaff");
-			changeHomeZoneCells("5a189a","e0aaff");
+			changeCards("/resources/themes/ancient_civilizations/cardback.png");
 			
-			changeCards("/resources/themes/sci-fi_dystopia/cardback.png");
-			
-			playerPaths.add("/resources/themes/sci-fi_dystopia/default.png");
-			playerPaths.add("/resources/themes/sci-fi_dystopia/cyborge.png");
-			playerPaths.add("/resources/themes/sci-fi_dystopia/mystic.png");
-			playerPaths.add("/resources/themes/sci-fi_dystopia/survivor.png");
+			playerPaths.add("/resources/themes/ancient_civilizations/default.png");
+			playerPaths.add("/resources/themes/ancient_civilizations/pharoah.png");
+			playerPaths.add("/resources/themes/ancient_civilizations/roman.png");
+			playerPaths.add("/resources/themes/ancient_civilizations/greek.png");
 
 			
-			playerNames.add("cyborge") ; playerNames.add("mystic"); playerNames.add("survivor");
+			playerNames.add("pharoah") ; playerNames.add("roman"); playerNames.add("greek");
 			changePlayerProfiles(playerPaths, playerNames);
 			
-
+			
 			changeMarbleImages(themePath);
-			if (theme != id) SoundManager.playMusic("sci-fi_dystopia.mp3");
+			if (theme != id) SoundManager.playMusic("ancient_civilization.mp3");
 			theme = 3 ; 
 			return ;
+
+		
 			
 		case 4 : 
 

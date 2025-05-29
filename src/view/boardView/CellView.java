@@ -3,6 +3,8 @@ package view.boardView;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import controller.SoundManager;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.effect.DropShadow;
@@ -85,6 +87,7 @@ public class CellView extends StackPane {
 		PauseTransition pause = new PauseTransition(Duration.millis(MARBLE_SPEED));
 		pause.setOnFinished(e -> {
 			//System.out.println(marbleView);
+			SoundManager.playEffect("marble.wav");
 			if (this.getCell().getCellType() == CellType.ENTRY && target.getCell().getCellType() == CellType.SAFE){
 				System.out.println("Enter enter");
 				enter.setMarbleView(this.marbleView);
@@ -106,6 +109,7 @@ public class CellView extends StackPane {
  		}
  		PauseTransition pause = new PauseTransition(Duration.millis(MARBLE_SPEED));
  		pause.setOnFinished(e -> {
+			SoundManager.playEffect("marble.wav");
  			prev.setMarbleView(this.marbleView);
  			prev.moveBackword(i-1);
  		});

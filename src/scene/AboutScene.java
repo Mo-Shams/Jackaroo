@@ -37,6 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import controller.SoundManager;
+
 /**
  * AboutScene shows animated marble background, "About" text, and clickable player profiles.
  */
@@ -110,6 +112,8 @@ public class AboutScene {
         // add the back button in the top left for now
         StackPane.setAlignment(back, Pos.TOP_LEFT);
 
+        SoundManager.playMusic("ending.m4a");
+        
         return new Scene(root, width, height);
     }
     

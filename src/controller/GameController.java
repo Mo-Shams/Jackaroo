@@ -381,7 +381,7 @@ public class GameController{
 		//------------------------ add thinking period for the CPUs -----------------------------------------------
 		
 		if(playerIndex > 0){
-			PauseTransition thinking = new PauseTransition(Duration.seconds(2)); //thinking for 3 seconds
+			PauseTransition thinking = new PauseTransition(Duration.seconds(1.5)); //thinking for 3 seconds
 			thinking.setOnFinished(e -> {
 				if (SoundManager.Effects) SoundManager.playEffect("throw_Card.wav");
 			});
@@ -452,6 +452,7 @@ public class GameController{
 				gameView.updateBoardView();
 				if(target.isWasTrap()){
 					gameScene.showSeeingTrappedEffect().play();
+					// SoundManager.playEffect("trap.wav");
 					target.setWasTrap(false);
 				}
 			});
@@ -459,6 +460,10 @@ public class GameController{
 		else{
 			pt1.setOnFinished(e -> {
 				gameView.updateBoardView();
+				if (steps == -1) SoundManager.playEffect("field.wav");
+				if (steps == -6) SoundManager.playEffect("saving.wav");
+				if (steps == -7) SoundManager.playEffect("burner.wav");
+				if (steps == -3) SoundManager.playEffect("swap.wav");
 			});
 		}
 		
@@ -604,6 +609,8 @@ public class GameController{
 		EndScreenScene endScene = new EndScreenScene(winners);
 		Scene scene = endScene.createScene();
 		primaryStage.setScene(scene);
+		// SoundManager.playEffect("laugh.wav");
+		SoundManager.stopMusic();
 		primaryStage.setResizable(false);
 		primaryStage.setFullScreen(true);
 	}

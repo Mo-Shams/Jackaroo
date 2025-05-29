@@ -3,6 +3,7 @@
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+import controller.SoundManager;
 import controller.ThemesManager;
 import view.GameView;
 import model.player.Marble;
@@ -111,10 +112,12 @@ public class GameScene {
 	    FadeTransition fade = new FadeTransition(Duration.millis(300), popupWrapper);
 	    fade.setFromValue(0);
 	    fade.setToValue(1);
+	    SoundManager.playEffect("Exception.wav");
 	    fade.play();
 	}
 	
 	public PauseTransition showSeeingTrappedEffect() {
+		
         // Dim background with a semi-transparent black rectangle
         Rectangle dim = new Rectangle();
         dim.widthProperty().bind(root.widthProperty());

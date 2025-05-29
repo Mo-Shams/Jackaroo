@@ -49,7 +49,6 @@ public class Game implements GameManager {
         for (Player player : players) {
         	ArrayList<Card> player_cards = Deck.drawCards();
         	player.getHand().addAll(player_cards); 
-        	
         }
         
         this.currentPlayerIndex = 0;

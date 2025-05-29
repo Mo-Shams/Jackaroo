@@ -13,7 +13,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setFullScreen(true); // This will make the scene fill the 			// entire screen
+		primaryStage.setFullScreen(true); // This will make the scene fill the 
 		primaryStage.setResizable(false);// Disable window resizing
 		
 		WelcomeScene welcomeScene = new WelcomeScene(primaryStage);

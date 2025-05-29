@@ -64,6 +64,30 @@ public class Deck {
 		return hand;
 	}
 	
+//	public static ArrayList<Card> drawspecial1(){
+//		ArrayList<Card> hand = new ArrayList<>();
+//		boolean [] flags = new boolean [4];
+//		for (int i = 0 ; i < cardsPool.size() ; i++){
+//			if (cardsPool.get(i) instanceof Seven && !flags[0]) {hand.add(cardsPool.remove(i)); flags[0] = true; }
+//			if (cardsPool.get(i) instanceof King  && !flags[1]) {hand.add(cardsPool.remove(i)); flags[1] = true; }
+//			if (cardsPool.get(i) instanceof Queen && !flags[2]) {hand.add(cardsPool.remove(i)); flags[2] = true; }
+//			if (cardsPool.get(i) instanceof Standard && !flags[3]) {hand.add(cardsPool.remove(i)); flags[3] = true; }
+//		}
+//		return hand;
+//	}
+//	
+//	public static ArrayList<Card> drawspecial2(){
+//		ArrayList<Card> hand = new ArrayList<>();
+//		boolean [] flags = new boolean [4];
+//		for (int i = 0 ; i < cardsPool.size() ; i++){
+//			if (cardsPool.get(i) instanceof Saver && !flags[0]) {hand.add(cardsPool.remove(i)); flags[0] = true; }
+//			if (cardsPool.get(i) instanceof Burner  && !flags[1]) {hand.add(cardsPool.remove(i)); flags[1] = true; }
+//			if (cardsPool.get(i) instanceof Queen && !flags[2]) {hand.add(cardsPool.remove(i)); flags[2] = true; }
+//			if (cardsPool.get(i) instanceof Standard && !flags[3]) {hand.add(cardsPool.remove(i)); flags[3] = true; }
+//		}
+//		return hand;
+//	}
+//	
 	public static void refillPool(ArrayList<Card> cards){
 		cardsPool.addAll(cards);
 	}
