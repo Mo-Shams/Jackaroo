@@ -23,7 +23,6 @@ Play exclusively against **unique CPU characters** in a world full of animated c
 
 ![image](https://github.com/user-attachments/assets/9d683844-be95-4547-88ee-7dda40c1fd18)
 ![image](https://github.com/user-attachments/assets/c92543ee-6505-4906-93c6-90911ee42905)
-![image](https://github.com/user-attachments/assets/d8a06cd2-9242-43a7-8e11-c4468d198161)
 ![image](https://github.com/user-attachments/assets/4f9d9677-93b1-4fe2-b083-0ab4f92770b9)
 
 
