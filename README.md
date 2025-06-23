@@ -37,8 +37,6 @@ Built with 💡 and a lot of passion by a 4-member developer team:
 - **Mohammad Shams** – [LinkedIn](https://www.linkedin.com/in/mohamedshamss/)
 - **Youssef Tarek** – [LinkedIn](https://www.linkedin.com/in/youssef-tarek-44118b22a/)
 
-> *Replace the `#` with actual LinkedIn profile URLs.*
-
 ---
 
 ## 📜 License & Usage
