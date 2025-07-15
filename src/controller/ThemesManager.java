@@ -176,7 +176,7 @@ public class ThemesManager {
 
 			MarbleView.setDEFAULT_MARBLE_SIZE(32);
 			
-			themePath = "/resources/themes/original/";
+			themePath = "/resources/themes/girl/";
 			setWithColors("ffc2d1");
 			setCellsWithColors("ff8fab","fb6f92");
 			changeFirePit("ff4d6d","ff758f","ffb3c6");
@@ -184,19 +184,19 @@ public class ThemesManager {
 			changeSafeZoneCells("ff4d6d","c9184a");
 			changeHomeZoneCells("ff758f","ff4d6d");
 			
-			changeCards("/resources/themes/original/pinkback.png");
+			changeCards("/resources/themes/girl/pinkback.png");
 			
-			playerPaths.add("/resources/themes/original/default.png");
-			playerPaths.add("/resources/themes/original/muscles.png");
-			playerPaths.add("/resources/themes/original/cool.png");
-			playerPaths.add("/resources/themes/original/normal.png");
+			playerPaths.add("/resources/themes/girl/default.png");
+			playerPaths.add("/resources/themes/girl/muscles.png");
+			playerPaths.add("/resources/themes/girl/cool.png");
+			playerPaths.add("/resources/themes/girl/normal.png");
 			
 			playerNames.add("muscles") ; playerNames.add("cool"); playerNames.add("normal");
 			changePlayerProfiles(playerPaths, playerNames);
 			
 
 			changeMarbleImages(themePath);
-			if (theme != id) SoundManager.playMusic("original.mp3");
+			if (theme != id) SoundManager.playMusic("girl.mp3");
 			theme = 4 ; 
 			return ;
 			

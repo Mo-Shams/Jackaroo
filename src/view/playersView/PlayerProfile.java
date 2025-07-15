@@ -47,7 +47,7 @@ public class PlayerProfile extends StackPane {
         "ancient_civilizations",              // theme 0
         "anime",  // theme 1
         "sci-fi_dystopia", // theme 3
-        "original"
+        "girl"
     };
 
     public PlayerProfile(Label name, Colour colour, boolean active, boolean nextActive, int playerIndex) {
@@ -186,7 +186,6 @@ public class PlayerProfile extends StackPane {
 	        case "original": {
 	            prefix = "/resources/themes/original/" + basePath + "/";
 	            validNames = new HashSet<>(Arrays.asList("cool", "muscles", "normal", "smart"));
-	            
 	            break;
 	        }
 	        case "anime": {
@@ -202,6 +201,11 @@ public class PlayerProfile extends StackPane {
 	        case "ancient_civilizations": {
 	            prefix = "/resources/themes/ancient_civilizations/" + basePath + "/";
 	            validNames = new HashSet<>(Arrays.asList("greek", "pharoah", "roman", "viking"));
+	            break;
+	        }
+	        case "girl": {
+	        	prefix = "/resources/themes/girl/" + basePath + "/";
+	            validNames = new HashSet<>(Arrays.asList("cool", "muscles", "normal", "smart"));
 	            break;
 	        }
 	        default: {
