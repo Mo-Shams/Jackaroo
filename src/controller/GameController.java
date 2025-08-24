@@ -610,7 +610,7 @@ public class GameController{
 		Scene scene = endScene.createScene();
 		primaryStage.setScene(scene);
 		// SoundManager.playEffect("laugh.wav");
-		SoundManager.stopMusic();
+		//SoundManager.stopMusic();
 		primaryStage.setResizable(false);
 		primaryStage.setFullScreen(true);
 	}
